@@ -1,15 +1,15 @@
 import { Form, Button } from 'semantic-ui-react'
 import { useFormik } from 'formik'
-import { initialValues, validationSchema } from './change-name-form.form';
+import { initialValues, validationSchema } from './change-email-form.form';
 import { useAuth } from '@/hooks';
 import { User } from '@/api'
 
-function ChangeNameForm() {
+function ChangeEmailForm() {
   const { user } = useAuth()
   const userCtrl = new User()
-  console.log('user=', user);
+  
   const formik = useFormik({
-    initialValues: initialValues(user?.name),
+    initialValues: initialValues(user?.email),
     validationSchema: validationSchema(),
     validateOnChange: false, // prevent validation on input change
     onSubmit: async (formValue) => {
@@ -24,19 +24,19 @@ function ChangeNameForm() {
   return (
     <Form onSubmit={ formik.handleSubmit }>
       <Form.Input
-        name="name"
-        label="New Name"
-        placeholder="Enter new name..."
-        value={ formik.values.name }
+        name="email"
+        label="New Email"
+        placeholder="Enter new email..."
+        value={ formik.values.email }
         onChange={ formik.handleChange }
-        error={ formik.errors.name }
+        error={ formik.errors.email }
       />
       
       <Button primary type="submit" loading={ formik.isSubmitting }>
-        Change Name
+        Change Email
       </Button>
     </Form>
   );
 }
 
-export default ChangeNameForm;
+export default ChangeEmailForm;

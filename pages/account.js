@@ -3,6 +3,7 @@ import { Tab, Button } from "semantic-ui-react"
 import { AccountInfo } from "@/components/account/info";
 import { useAuth } from "@/hooks";
 import ChangeNameForm from "@/components/account/settings/change-name-form/change-name-form";
+import ChangeEmailForm from "@/components/account/settings/change-email-form/change-email-form";
 
 function AccountPage() {
   const { user, logout } = useAuth()
@@ -43,6 +44,7 @@ function AccountPage() {
       render: () => (
         <Tab.Pane attached={ false }>
           <ChangeNameForm />
+          <ChangeEmailForm />
         </Tab.Pane>
       )
     },
