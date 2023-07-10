@@ -10,7 +10,7 @@ const Layout = ({ children }) => {
       </Head>
       <div className={ `text-gamma transition duration-300 flex flex-col h-screen` }>
         <Header />
-        <main className={`flex-1 dark:bg-psi dark:text-white`}>
+        <main className={`flex-1`}>
           <div className='flex flex-row'>
             <AsideMenu />
             {children}

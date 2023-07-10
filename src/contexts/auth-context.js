@@ -37,7 +37,6 @@ export function AuthProvider(props) {
       tokenCtrl.setToken(token)
       // Obtener los datos del usuario
       const response = await userCtrl.getMe()
-      console.log('getMe() response=', response);
       // Setear los datos del usuario en el estado user
       setUser(response)
       // Setear el valor del token en el state token
