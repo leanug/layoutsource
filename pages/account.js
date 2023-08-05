@@ -1,22 +1,24 @@
 import { useRouter } from "next/router";
-import { Tab, Button } from "semantic-ui-react"
-import { AccountInfo } from "@/components/account/info";
+import { useState, useCallback } from 'react'; // Import useCallback
+import { Tab, Button } from "semantic-ui-react";
+import { Info, Settings, Layout } from "@/components/account";
 import { useAuth } from "@/hooks";
-import ChangeNameForm from "@/components/account/settings/change-name-form/change-name-form";
-import ChangeEmailForm from "@/components/account/settings/change-email-form/change-email-form";
+import { ListUserLayouts, AddLayoutForm } from "@/components/account/layout";
 
 function AccountPage() {
-  const { user, logout } = useAuth()
-  const router = useRouter()
+  const { user, logout } = useAuth();
+  const router = useRouter();
+  const [reload, setReload] = useState(false);
 
-  if (! user) {
-    return null
+  if (!user) {
+    return null;
   }
+  console.log('layout', Layout);
 
   const onLogout = () => {
-    logout()
-    router.push('/')
-  }
+    logout();
+    router.push('/');
+  };
 
   const TabPane = ({ attached = false, children }) => (
     <Tab.Pane attached={attached}>{children}</Tab.Pane>
@@ -24,10 +26,10 @@ function AccountPage() {
 
   const panes = [
     {
-      menuItem: { key: 'mis-pedidos', content: 'Mis pedidos' },
+      menuItem: { key: 'user-layouts', content: 'My layouts' },
       render: () => (
         <Tab.Pane attached={ false }>
-          <p>Mis pedidos...</p>
+          <ListUserLayouts />
         </Tab.Pane>
       )
     },
@@ -40,11 +42,20 @@ function AccountPage() {
       )
     },
     {
+      menuItem: { key: 'addLayout', content: 'Add layout' },
+      render: () => (
+        <Tab.Pane attached={ false }>
+          <AddLayoutForm />
+        </Tab.Pane>
+      )
+    },
+    {
       menuItem: { key: 'ajustes', content: 'Ajustes' },
       render: () => (
         <Tab.Pane attached={ false }>
-          <ChangeNameForm />
-          <ChangeEmailForm />
+          <Settings.ChangeNameForm />
+          <Settings.ChangeEmailForm />
+          <Settings.ChangePasswordForm />
         </Tab.Pane>
       )
     },
@@ -52,8 +63,7 @@ function AccountPage() {
 
   return (
     <div className="p-14">
-      <h1 className="text-xl">Account page</h1>
-      <AccountInfo />
+      <Info />
       
       <Tab menu={{ secondary: true, pointing: true }} panes={panes} />
       <Button content="Logout" onClick={ onLogout } />

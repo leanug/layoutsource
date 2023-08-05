@@ -4,10 +4,10 @@ import { initialValues, validationSchema } from './change-name-form.form';
 import { useAuth } from '@/hooks';
 import { User } from '@/api'
 
-function ChangeNameForm() {
+export function ChangeNameForm() {
   const { user } = useAuth()
   const userCtrl = new User()
-  console.log('user=', user);
+  
   const formik = useFormik({
     initialValues: initialValues(user?.name),
     validationSchema: validationSchema(),
@@ -38,5 +38,3 @@ function ChangeNameForm() {
     </Form>
   );
 }
-
-export default ChangeNameForm;

@@ -1,5 +1,6 @@
 import React from "react";
 import { useAuth } from '@/hooks'
+import FeaturedLayouts from "@/components/home/featured-layouts";
 
 function HomePage() {
   const { user, logout} = useAuth()
@@ -7,11 +8,11 @@ function HomePage() {
 
   return (
     <div>
-      <h1>Estoy en el home</h1>
-      <p>This is a simple React component.</p>
+      <h1 className="text-xl mb-10">Home page</h1>
+      <FeaturedLayouts />
 
       {user ?
-      <div>
+      <div className="mt-10">
         <p>Hola { user.firstname } { user.lastname }</p>
         <button onClick={ logout }>Logout</button>
       </div>

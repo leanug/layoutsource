@@ -1,1 +1,3 @@
-export { default } from './info.js'
+export * from './info'
+export * from './settings'
+export * from './layout'

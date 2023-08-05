@@ -13,7 +13,7 @@ const Account = () => {
   return (
     <div>
       <button 
-        className='bg-blue-500'
+        className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
         onClick={ user ? goToAccount : goToLogin }  
       >
         User

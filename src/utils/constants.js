@@ -7,9 +7,11 @@ export const ENV = {
       REGISTER: "auth/local/register",
       LOGIN: "auth/local"
     },
+    LAYOUTS: 'layouts',
     USERS_ME: "users/me",
     USERS: 'users',
-    CATEGORY: "categories"
+    CATEGORY: "categories",
+    USER_LAYOUTS: "user-layouts",
   },
   TOKEN: 'token'
 }

@@ -19,12 +19,15 @@ const AsideMenu = () => {
   }, [])
 
   return (
-    <aside className="bg-gray-200 p-4">
-      <h2 className="text-xl font-bold mb-4">Categories</h2>
+    <aside className="">
+      <h2 className="text-2xl font-bold mb-4">Categories</h2>
       <ul className="space-y-2">
         {categories?.map((category) => (
-          <li key={ category.id }>
-            <a href={`/category/${category.attributes.slug}`} className="text-blue-500 hover:text-blue-700">
+          <li key={category.id}>
+            <a
+              href={`/category/${category.attributes.slug}`}
+              className="text-blue-500 hover:text-blue-700 transition-colors duration-300"
+            >
               {category.attributes.title}
             </a>
           </li>

@@ -52,7 +52,7 @@ export function AuthProvider(props) {
   }
 
   /* 
-   + Delete token from local storage and reset states
+   * Delete token from local storage and reset states
    */
   const logout = () => {
     tokenCtrl.removeToken()
@@ -60,6 +60,9 @@ export function AuthProvider(props) {
     setUser(null)
   }
 
+  /* 
+   * Locally update data
+   */
   const updateUser = (key, value) => {
     setUser({
       ...user, 

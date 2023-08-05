@@ -1,5 +1,6 @@
 import React from "react";
 import { useAuth } from '@/hooks'
+import FeaturedLayouts from "@/components/home/featured-layouts";
 
 function Index() {
   const { user, logout} = useAuth()
@@ -7,12 +8,12 @@ function Index() {
 
   return (
     <div>
-      <h1>Hello, World!</h1>
-      <p>This is a simple React component.</p>
+      <h1 className="text-xl mb-10">Home page</h1>
+      <FeaturedLayouts title="Featured layouts" />
 
       {user ?
-      <div>
-        <p>Hola { user.firstname } { user.lastname }</p>
+      <div className="mt-10">
+        <p>{ user.firstname } { user.lastname }</p>
         <button onClick={ logout }>Logout</button>
       </div>
     : null}

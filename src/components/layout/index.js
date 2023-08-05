@@ -11,7 +11,7 @@ const Layout = ({ children }) => {
       <div className={ `text-gamma transition duration-300 flex flex-col h-screen` }>
         <Header />
         <main className={`flex-1`}>
-          <div className='flex flex-row'>
+          <div className='flex flex-row gap-10'>
             <AsideMenu />
             {children}
           </div>
