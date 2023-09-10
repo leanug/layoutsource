@@ -4,7 +4,6 @@ import FeaturedLayouts from "@/components/home/featured-layouts";
 
 function Index() {
   const { user, logout} = useAuth()
-  console.log(user);
 
   return (
     <div>

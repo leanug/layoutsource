@@ -11,7 +11,6 @@ const AsideMenu = () => {
       try {
         const response = await categoryCtrl.getAll()
         setCategories(response.data)
-        console.log('categories', categories)
       } catch (error) {
         console.error(error);
       }
@@ -25,7 +24,7 @@ const AsideMenu = () => {
         {categories?.map((category) => (
           <li key={category.id}>
             <a
-              href={`/category/${category.attributes.slug}`}
+              href={`/layouts/${category.attributes.slug}`}
               className="text-blue-500 hover:text-blue-700 transition-colors duration-300"
             >
               {category.attributes.title}

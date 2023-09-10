@@ -1,0 +1,86 @@
+import { ENV, authFetch } from '@/utils'
+
+export class LikedLayouts {
+  /**
+   * Updates the user information for the given userId.
+   * @param {string} userId - The ID of the user to be updated.
+   * @param {Object} data - The data containing the updated user information.
+   * @returns {Promise<Object>} A promise that resolves to the updated user information.
+   */
+  async check (userId, layoutId) {
+    try {
+      const filterUser = `filters[user][id][$eq][0]=${ userId }`
+      const filterLayout = `filters[layout][id][$eq][1]=${ layoutId }`
+      const urlParams = `${ filterUser }&${ filterLayout }`
+      const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.LIKED_LAYOUTS }?${ urlParams }`
+
+      const response = await authFetch(url, urlParams)
+      const result = await response.json()
+
+      if (response.status !== 200 ) throw result
+
+      if (result.data.length === 0) return false
+
+      return result.data[0]
+    } catch (error) {
+      console.error(error)
+    }
+  }  
+
+  async add (userId, layoutId) {
+    try {
+      const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.LIKED_LAYOUTS }`
+      const params = {
+        method: 'POST',
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          data: {
+            user: userId,
+            layout: layoutId,
+          }
+        })
+      }
+      // Send a request to the server to like the layout
+      const response = await authFetch(url, params);
+      // Handle the response
+      const result = await response.json()
+
+      if (response.status !== 200) {
+        // Handle the error here, for example, log it
+        console.error('Error deleting liked layout:', result);
+        throw new Error('Failed to delete liked layout');
+      }
+  
+      return result.data; // Return the response data or status
+    } catch (error) {
+      console.error(error);
+      throw new Error('An error occurred while deleting a liked layout');
+    }
+  }
+
+  async delete (id) {
+    try {
+      const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.LIKED_LAYOUTS }/${ id }`
+      const params = {
+        method: 'DELETE',
+      }
+      // Send a request to the server to delete the layout
+      const response = await authFetch(url, params);
+      // Handle the response
+      const result = await response.json()
+
+      if (response.status !== 200) {
+        // Handle the error here, for example, log it
+        console.error('Error deleting liked layout:', result);
+        throw new Error('Failed to delete liked layout');
+      }
+  
+      return result; // Return the response data or status
+    } catch (error) {
+      console.error(error);
+      throw new Error('An error occurred while deleting a liked layout');
+    }
+  }
+}

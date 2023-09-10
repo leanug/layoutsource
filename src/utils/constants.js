@@ -12,6 +12,7 @@ export const ENV = {
     USERS: 'users',
     CATEGORY: "categories",
     USER_LAYOUTS: "user-layouts",
+    LIKED_LAYOUTS: "liked-layouts",
   },
   TOKEN: 'token'
 }
