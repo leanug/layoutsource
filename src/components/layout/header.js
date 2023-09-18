@@ -1,23 +1,32 @@
 import Link from 'next/link';
 import Account from './account';
 import Menu from './menu';
+import { useAuth } from '@/hooks'
 
-const Header = (props) => {  
+export const Header = (props) => {  
+  const { user, logout } = useAuth()
+
   return (
     <header>
-      <div className='flex flex-row justify-between px-10 py-6'>
+      <div className='flex flex-row justify-between md-px-10 py-6'>
         <div className="text-lg font-bold flex items-center">
-          LOGO
+          <Link href="/">
+            LOGO
+          </Link>
         </div>
         <div>
-          <Menu isOpenSearch={ false} />
+          <Menu isOpenSearch={ false } />
         </div>
-        <div>
+        <div className='flex flex-row gap-4'>
+        {user ?
+          <div>
+            {/* <p>{ user.firstname } { user.lastname }</p> */}
+            <button onClick={ logout }>Logout</button>
+          </div>
+        : null}
           <Account />
         </div>
       </div>
     </header>
   );
 };
-
-export default Header;

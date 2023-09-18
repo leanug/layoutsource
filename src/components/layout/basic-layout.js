@@ -1,7 +1,7 @@
 import Head from 'next/head';
-import Header from './';
+import { Header, Footer } from './';
 
-const BasicLayout = ({ children }) => {
+export const BasicLayout = ({ children }) => {
   return (
     <>
       <Head>
@@ -9,15 +9,11 @@ const BasicLayout = ({ children }) => {
       </Head>
       <div className={ `text-gamma transition duration-300 flex flex-col h-screen` }>
         <Header />
-        <main className={`flex-1 dark:bg-psi dark:text-white`}>
+        <main className={`flex-1`}>
           {children}
         </main>
-        <footer>
-          <div>footer</div>
-        </footer>
+        <Footer />
       </div>
     </>
   );
 };
-
-export default BasicLayout;

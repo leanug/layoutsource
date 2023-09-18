@@ -1,88 +1,91 @@
 import { createContext, useEffect, useState } from "react";
 import { Token, User } from "@/api";
 
-export const AuthContext = createContext()
+export const AuthContext = createContext();
 
-const tokenCtrl = new Token()
-const userCtrl = new User()
+const tokenCtrl = new Token();
+const userCtrl = new User();
 
 export function AuthProvider(props) {
-  const { children } = props
-  const [user, setUser] = useState(null)
-  const [token, setToken] = useState(null)
-  const [loading, setLoading] = useState(true)
+  const { children } = props;
+  const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null);
+  const [loading, setLoading] = useState(true);
 
-  useEffect(()=> {
-    (async () => {
-      const token = tokenCtrl.getToken()
+  useEffect(() => {
+    const initializeAuth = async () => {
+      try {
+        const storedToken = tokenCtrl.getToken();
 
-      if (! token) {
-        logout()
-        setLoading(false)
-        return
+        if (!storedToken) {
+          logout();
+          setLoading(false);
+          return;
+        }
+
+        if (tokenCtrl.isTokenExpired(storedToken)) {
+          logout();
+        } else {
+          await login(storedToken);
+        }
+      } catch (error) {
+        console.error("Error initializing auth:", error);
+      } finally {
+        setLoading(false);
       }
+    };
 
-      if (tokenCtrl.isTokenExpired(token)) {
-        logout()
-      } else {
-        await login(token)
-      }
-    })()
-    setLoading(false)
-  }, [])
+    initializeAuth();
+  }, []);
 
   const login = async (token) => {
     try {
-      // Setear los datos en el localStorage
-      tokenCtrl.setToken(token)
-      // Obtener los datos del usuario
-      const response = await userCtrl.getMe()
-      // Setear los datos del usuario en el estado user
-      setUser(response)
-      // Setear el valor del token en el state token
-      setToken(token)
-      
-      // Hacer un setLoading false
-      setLoading(false)
+      // Set the token in localStorage
+      tokenCtrl.setToken(token);
+
+      // Get user data
+      const response = await userCtrl.getMe();
+
+      // Set user data in the state
+      setUser(response);
+
+      // Set the token in the state
+      setToken(token);
     } catch (error) {
-      throw new Error(error)
+      console.error("Error during login:", error);
+      throw new Error(error);
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
-  }
+  };
 
-  /* 
-   * Delete token from local storage and reset states
-   */
   const logout = () => {
-    tokenCtrl.removeToken()
-    setToken(null)
-    setUser(null)
-  }
+    // Remove the token from local storage
+    tokenCtrl.removeToken();
 
-  /* 
-   * Locally update data
-   */
+    // Reset user and token states
+    setUser(null);
+    setToken(null);
+  };
+
   const updateUser = (key, value) => {
     setUser({
-      ...user, 
-      [key]: value
-    })
-  }
+      ...user,
+      [key]: value,
+    });
+  };
 
   const data = {
-    accessToken: null,
+    accessToken: token, // Corrected to use the actual token
     user,
     login,
     logout,
     updateUser,
-  }
-
-  //if (login) return null
+  };
 
   return (
-    <AuthContext.Provider value={ data }>
-      { children }
+    <AuthContext.Provider value={data}>
+      {children}
     </AuthContext.Provider>
-  )
+  );
 }

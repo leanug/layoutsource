@@ -16,9 +16,7 @@ function LoginForm() {
     validationSchema: validationSchema(),
     validateOnChange: false,
     onSubmit: async (formValue) => {
-      console.log('hola');
       try {
-        console.log('Form enviado', formValue);
         const response = await authCtrl.login(formValue)
         login(response.jwt)
         router.push("/")

@@ -27,7 +27,6 @@ export function LikedLayoutsIcon(props) {
   // Function to handle liking a layout
   const handleLikeLayout = async () => {
     if (user) {
-      console.log('handle Like Layout');
       // Send a request to like the layout
       const response = await likedLayoutCtrl.add(user.id, layoutId);
       setLikedLayout(response)
@@ -39,8 +38,6 @@ export function LikedLayoutsIcon(props) {
   // Function to handle disliking a layout
   const handleDislikeLayout = async () => {
     if (user) {
-      console.log('handle Dislike Layout');
-      
       // Send a request to dislike the layout
       const response = await likedLayoutCtrl.delete(likedLayout.id);
       // Handle the response (e.g., update UI or state)

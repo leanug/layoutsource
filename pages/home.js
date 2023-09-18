@@ -1,6 +1,7 @@
 import React from "react";
 import { useAuth } from '@/hooks'
 import FeaturedLayouts from "@/components/home/featured-layouts";
+import CategoryFilterNav from "@/components/shared/category-nav";
 
 function HomePage() {
   const { user, logout} = useAuth()
@@ -9,6 +10,7 @@ function HomePage() {
   return (
     <div>
       <h1 className="text-xl mb-10">Home page</h1>
+      <CategoryFilterNav />
       <FeaturedLayouts />
 
       {user ?

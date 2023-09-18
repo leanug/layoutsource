@@ -13,11 +13,23 @@ export async function getServerSideProps (context) {
   const layoutCtrl = new Layout()
   const responseLayouts = await layoutCtrl.getLayoutsByCategory({ slug: category, page })
   
+  // Response code = 500, category is not found in the database
+  if (!responseCategory) {
+    // Handle the case where the category does not exist
+    return {
+      props: {
+        data: null
+      },
+    };
+  }
+
   return {
     props: {
-      category: responseCategory,
-      layouts: responseLayouts.data,
-      pagination: responseLayouts.meta.pagination
+      data: {
+        category: responseCategory,
+        layouts: responseLayouts.data,
+        pagination: responseLayouts.meta.pagination,
+      },
     }
   }
 }

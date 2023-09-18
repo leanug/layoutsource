@@ -4,9 +4,9 @@ import { GridLayouts, CategoryNav } from "@/components/shared"
 
 const layoutCtrl = new Layout()
 
-export default function FeaturedLayouts (props) {
+export function DisplayDesigns (props) {
   const [layouts, setLayouts] = useState([])
-  const { limit = 9, categoryId } = props
+  const { limit = 9, categoryId, type, headerText } = props
 
   useEffect(() => {
     (async () => {
@@ -24,9 +24,9 @@ export default function FeaturedLayouts (props) {
 
   return (
     <>
-    <h1>Featured designs</h1>
+    <h1>{ headerText }</h1>
       <div className="my-8">
-        <CategoryNav categorySlug='featured' />
+        <CategoryNav type={ type } />
       </div>
       <GridLayouts layouts={ layouts } />
     </>

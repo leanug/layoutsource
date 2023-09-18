@@ -83,4 +83,30 @@ export class LikedLayouts {
       throw new Error('An error occurred while deleting a liked layout');
     }
   }
+
+  /**
+   * Get all the liked layouts for a given userId.
+   * @param {string} userId - The ID of the user to be updated.
+   * @returns {Promise<Object>} A promise that resolves to the updated user information.
+   */
+  async getAll (userId) {
+    try {
+      const filters = `filters[user][id][$eq]=${ userId }`
+      const populate = `populate[0]=layout&populate[1]=layout.cover`
+      const urlParams = `${ filters }&${ populate }`
+      const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.LIKED_LAYOUTS }?${ urlParams }`
+
+      const response = await authFetch(url)
+      const result = await response.json()
+
+      if (response.status !== 200) {
+        console.error('Error retrieving liked layout list:', result);
+        throw new Error('Failed to retrieve liked layout list');
+      }
+  
+      return result.data; // Return the response data or status
+    } catch (error) {
+      console.error(error)
+    }
+  }  
 }

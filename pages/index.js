@@ -1,21 +1,18 @@
 import React from "react";
-import { useAuth } from '@/hooks'
 import FeaturedLayouts from "@/components/home/featured-layouts";
+import { useAuth } from '@/hooks/use-auth'
 
 function Index() {
-  const { user, logout} = useAuth()
+  const { user } = useAuth()
 
   return (
     <div>
-      <h1 className="text-xl mb-10">Home page</h1>
+      { ! user ? (
+        <h1 className="text-xl mb-10">
+          Home page Message for not logged in user
+        </h1>
+      ) : null }
       <FeaturedLayouts title="Featured layouts" />
-
-      {user ?
-      <div className="mt-10">
-        <p>{ user.firstname } { user.lastname }</p>
-        <button onClick={ logout }>Logout</button>
-      </div>
-    : null}
     </div>
   );
 }

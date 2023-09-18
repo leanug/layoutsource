@@ -1,7 +1,7 @@
 import { useRouter } from "next/router";
 import { useState, useCallback } from 'react'; // Import useCallback
 import { Tab, Button } from "semantic-ui-react";
-import { Info, Settings, Layout } from "@/components/account";
+import { Info, Settings, Layout, LikedLayoutList } from "@/components/account";
 import { useAuth } from "@/hooks";
 import { ListUserLayouts, AddLayoutForm } from "@/components/account/layout";
 
@@ -13,7 +13,6 @@ function AccountPage() {
   if (!user) {
     return null;
   }
-  console.log('layout', Layout);
 
   const onLogout = () => {
     logout();
@@ -37,7 +36,7 @@ function AccountPage() {
       menuItem: { key: 'favoritos', content: 'Favoritos' },
       render: () => (
         <Tab.Pane attached={ false }>
-          <p>Favoritos...</p>
+          <LikedLayoutList />
         </Tab.Pane>
       )
     },

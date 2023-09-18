@@ -1,13 +1,13 @@
 import { AuthProvider } from '@/contexts'
 import '../src/app/globals.css'
-import Layout from '@/components/layout/'
+import { BasicLayout } from '@/components/layout/'
 
 function MyApp({ Component, pageProps }) {
   return (
     <AuthProvider>
-      <Layout>
+      <BasicLayout>
         <Component { ...pageProps } />
-      </Layout>
+      </BasicLayout>
     </AuthProvider>
   )
 }
