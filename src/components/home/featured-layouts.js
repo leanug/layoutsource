@@ -6,13 +6,12 @@ const layoutCtrl = new Layout()
 
 export default function FeaturedLayouts (props) {
   const [layouts, setLayouts] = useState([])
-  const { limit = 9, categoryId } = props
+  const { categoryId } = props
 
   useEffect(() => {
     (async () => {
       try {
         const response = await layoutCtrl.getFeaturedLayouts({
-          limit,
           categoryId
         })
         setLayouts(response.data)

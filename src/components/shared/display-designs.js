@@ -1,34 +1,105 @@
 import { useState, useEffect } from "react"
 import { Layout } from '@/api'
-import { GridLayouts, CategoryNav } from "@/components/shared"
+import { GridLayouts } from "@/components/shared"
+import Button from "./button"
+import Loading from "./loading"
 
 const layoutCtrl = new Layout()
 
+/**
+ * DisplayDesigns component displays a list of layouts based on the provided type.
+ * It supports loading more layouts using a "Load More" button.
+ *
+ * @param {Object} props - Component props.
+ * @param {number} [props.limit=45] - The number of layouts to display per page.
+ * @param {string} props.type - The type of layouts to display.
+ * @param {string} props.headerText - The header text to display above the layouts.
+ * @returns {JSX.Element} React component.
+ */
 export function DisplayDesigns (props) {
-  const [layouts, setLayouts] = useState([])
-  const { limit = 9, categoryId, type, headerText } = props
+  const { category, type, layouts } = props
+  const [layoutsData, setLayoutsData] = useState(layouts || [])
+  // Track if there are more layouts to load
+  const [hasMoreLayouts, setHasMoreLayouts] = useState(true); 
+  const [page, setPage] = useState(1)
+  const [loading, setLoading] = useState(false)
 
+  // Awaits for page to update before calling loadLayouts()
   useEffect(() => {
-    (async () => {
-      try {
-        const response = await layoutCtrl.getFeaturedLayouts({
-          limit,
-          categoryId
-        })
-        setLayouts(response.data)
-      } catch (error) {
-        console.error(error)
+    if (page > 1) loadLayouts(); // Load layouts when the component mounts
+  }, [page]); // Re-run the effect when the page changes
+  
+  const loadLayouts = async () => {
+    let response
+
+    try {
+      setLoading(true)
+      await new Promise(resolve => setTimeout(resolve, 2000));
+
+
+      if (type) {
+        response = await layoutCtrl.getLayoutsByType({
+          type,
+          page // Use the current page
+        });
       }
-    })()
-  }, [])
+        
+      if (category) {
+        response = await layoutCtrl.getLayoutsByCategory({
+          category,
+          page // Use the current page
+        });
+      }
+
+      // Check if the response contains new layouts
+      if (response?.data.length > 0) {
+        // Append the new layouts to the existing ones
+        setLayoutsData(prevLayouts => [...prevLayouts, ...(response.data)]);
+      } else {
+        // No more layouts to load, disable the "Load More" button
+        setHasMoreLayouts(false);
+      }
+    } catch (error) {
+      console.error(error);
+    }
+
+    // Loading is complete, set it to false
+    setLoading(false);
+  }
+  
+  const handleLoadMore = () => {
+    setPage(prevPage => prevPage + 1); // Increment the page when the button is clicked
+  };
 
   return (
     <>
-    <h1>{ headerText }</h1>
-      <div className="my-8">
-        <CategoryNav type={ type } />
-      </div>
-      <GridLayouts layouts={ layouts } />
+      {
+        layouts && layouts.length > 0 ? (
+          <>
+            <GridLayouts layouts={layoutsData} page={0} />
+            {loading ? (
+              <div className="flex text-center justify-items-center">
+                <Loading />
+              </div>
+            ) : (
+              hasMoreLayouts && (
+                <div className="flex justify-center">
+                  <Button
+                    type="secondary-gray"
+                    onClick={handleLoadMore}
+                  >
+                    Load More
+                  </Button>
+                </div>
+
+                
+              )
+            )}
+          </>
+        ) : (
+          null
+        )
+      }
     </>
   )
 }

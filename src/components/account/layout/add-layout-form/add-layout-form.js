@@ -20,7 +20,6 @@ export function AddLayoutForm () {
           title: formValue.title,
           status: false
         }
-        console.log('VALUES=', formValue);
         await userLayoutCtrl.create(user.id, data)
         formik.handleReset() // reinicia el formulario y lo deja vacio
       } catch (error) {

@@ -14,7 +14,7 @@ export class Category {
     }
   }
 
-  async getByType (type = 'home-page') {
+  async getCategoriesByType (type = 'home-pages') {
     try {
       const sort = 'sort=order:asc'
       const filters = `filters[type][$eq]=${ type }`
@@ -29,7 +29,7 @@ export class Category {
     }
   }
 
-  async getBySlug (slug) {
+  async getCategoryBySlug (slug) {
     try {
       const filters = `filters[slug][$eq]=${ slug }`
       const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.CATEGORY }?${ filters }`

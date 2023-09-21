@@ -7,7 +7,7 @@ export const BasicLayout = ({ children }) => {
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
-      <div className={ `text-gamma transition duration-300 flex flex-col h-screen` }>
+      <div className={ `text-gamma transition duration-300 flex flex-col h-screen font-inter` }>
         <Header />
         <main className={`flex-1`}>
           {children}

@@ -1,22 +1,10 @@
 import { useRouter } from "next/router"
 import Link from 'next/link';
 import { useEffect, useState } from "react"
-import { Input, Button } from 'semantic-ui-react'
 
-const Menu = (props) => {
-  const [categories, setCategories]  = useState(null)
+const Menu = () => {
   const [searchText, setSearchText] = useState("");
   const router = useRouter()
-
-  useEffect(() => {
-    (async () => {
-      try {
-        // TODO peticion
-      } catch (error) {
-        console.error(error)
-      }
-    })()
-  },[])  
 
   const onSearchClick = () => {
     if (searchText.trim() !== "") {
@@ -27,7 +15,7 @@ const Menu = (props) => {
 
   return (
     <div className="flex flex-row">
-      <nav className="bg-gray-800 p-4">
+      <nav className="p-4">
         <ul className="flex space-x-4">
           <li>
             <Link href="/designs/home-pages">Home Pages</Link>
@@ -43,13 +31,24 @@ const Menu = (props) => {
           </li>
         </ul>
       </nav>
-      <Input
+      <input
         id="search-layouts"
+        className="p-2 rounded-lg border border-gray-300 placeholder-gray-400 focus:outline-none focus:border-purple-500"
+        type="text"
         placeholder="Search"
         value={searchText}
         onChange={(e) => setSearchText(e.target.value)}
       />
-      <Button onClick={onSearchClick}>Search</Button>
+      <button 
+        className="w-28 h-10 rounded-lg justify-start items-start inline-flex"
+        onClick={onSearchClick}
+      >
+        <div className="px-4 py-2.5 bg-violet-500 rounded-lg shadow border border-violet-500 justify-center items-center gap-2 flex">
+          <div className="text-white text-sm font-semibold font-inter leading-tight">
+            Search
+          </div>
+        </div>
+      </button>
     </div>
   )
 }
