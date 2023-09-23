@@ -1,34 +1,42 @@
 import Link from 'next/link';
 
-// type can be home-pages, inner-pages, components, landing-pages
-export const DisplayCategories = ({ categorySlug, type, categories }) => {
-  
+export const DisplayCategories = ({ categorySlug, type, categories, className }) => {
   return (
-    <aside className="">
-      <ul className="flex flex-row gap-2">
-      <li key="all">
-    <Link 
-      href={`/designs/${ type }`}
-      className={`${
-        categorySlug === 'all' ? 'bg-blue-500 text-white' : ''
-      } text-blue-500 hover:text-blue-700 transition-colors duration-300`}
-    >
-        All
-    </Link>
-  </li>
-        {categories?.map((category) => (
-          <li key={ category.id }>
-            <Link
-              href={`/designs/${ type }/${ category.attributes.slug }`}
-              className={`${
-                categorySlug === category.attributes.slug ? 'bg-blue-500 text-white' : ''
-              } text-blue-500 hover:text-blue-700 transition-colors duration-300`}
-            >
-              { category.attributes.title }
-            </Link>
+    <aside className={`w-full px-3 mb-3 md:px-16 ${className}`}>
+      <div className="overflow-x-auto" style={{ paddingBottom: '14px' }}>
+        <ul className="flex flex-row items-center gap-4">
+          {/* All category */}
+          <li key="all">
+            {categorySlug === 'all' ? (
+              <div className="px-3 py-1.5 bg-gray-100 rounded-lg justify-center items-center inline-flex">
+                <div className="text-gray-900 font-medium">All</div>
+              </div>
+            ) : (
+              <Link href={`/designs/${type}`} className="text-gray-600 hover:text-gray-800 transition">
+                All
+              </Link>
+            )}
           </li>
-        ))}
-      </ul>
+
+          {/* Other categories */}
+          {categories?.map((category) => (
+            <li key={category.id}>
+              {categorySlug === category.attributes.slug ? (
+                <div className="px-3 py-1.5 bg-gray-100 rounded-lg justify-center items-center inline-flex">
+                  <div className="text-gray-900 font-medium">{category.attributes.title}</div>
+                </div>
+              ) : (
+                <Link
+                  href={`/designs/${type}/${category.attributes.slug}`}
+                  className="text-gray-600 hover:text-gray-800 transition"
+                >
+                  {category.attributes.title}
+                </Link>
+              )}
+            </li>
+          ))}
+        </ul>
+      </div>
     </aside>
   );
 };

@@ -1,4 +1,4 @@
-import { ENV } from '@/utils';
+import { ENV, authFetch } from '@/utils';
 
 export class Layout {
   async getFeaturedLayouts({ limit = 8, categoryId = null }) {
@@ -43,7 +43,7 @@ export class Layout {
     try {
       const filters = [];
       const category = `filters[categories][slug][$eq]=${ slug }`
-      const pagination = `pagination[page]=${ page }&pagination[pageSize]=1`;
+      const pagination = `pagination[page]=${ page }&pagination[pageSize]=4`;
       const populate = 'populate=*';
 
       const urlParams = filters.concat(
@@ -79,7 +79,7 @@ export class Layout {
     try {
       const filters = [];
       const categoryType = `filters[categories][type][$eq]=${ type }`
-      const pagination = `pagination[page]=${ page }&pagination[pageSize]=1`;
+      const pagination = `pagination[page]=${ page }&pagination[pageSize]=4`;
       const populate = 'populate=*';
 
       const urlParams = filters.concat(
@@ -145,6 +145,76 @@ export class Layout {
       return result
     } catch (error) {
       console.error(error);
+    }
+  }
+
+  async like (layoutLikes, layoutId) {
+    try {
+      const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.LAYOUTS }/${ layoutId }`
+      const currentLikes = layoutLikes || 0; // Default to 0 if likes field is undefined
+      const updatedLikes = currentLikes + 1 // Increment the likes count by one
+
+      const params = {
+        method: 'PUT',
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          data: {
+            likes: updatedLikes,
+          }
+        })
+      }
+      // Send a request to the server to like the layout
+      const response = await authFetch(url, params);
+      // Handle the response
+      const result = await response.json()
+
+      if (response.status !== 200) {
+        // Handle the error here, for example, log it
+        console.error('Error updating liked layout:', result);
+        throw new Error('Failed to update liked layout');
+      }
+  
+      return result.data; // Return the response data or status
+    } catch (error) {
+      console.error(error);
+      throw new Error('An error occurred while updating a liked layout');
+    }
+  }
+
+  async dislike(layoutLikes, layoutId) {
+    try {
+      const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.LAYOUTS }/${ layoutId }`;
+      const currentLikes = layoutLikes || 0; // Default to 0 if likes field is undefined
+      const updatedLikes = Math.max(currentLikes - 1, 0) // Decrement the likes count by one
+  
+      const params = {
+        method: 'PUT',
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          data: {
+            likes: updatedLikes,
+          },
+        }),
+      };
+      // Send a request to the server to dislike the layout
+      const response = await authFetch(url, params);
+      // Handle the response
+      const result = await response.json();
+  
+      if (response.status !== 200) {
+        // Handle the error here, for example, log it
+        console.error('Error updating disliked layout:', result);
+        throw new Error('Failed to update disliked layout');
+      }
+  
+      return result.data; // Return the response data or status
+    } catch (error) {
+      console.error(error);
+      throw new Error('An error occurred while updating a disliked layout');
     }
   }
 }

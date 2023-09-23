@@ -38,7 +38,7 @@ const PageTypePage = (props) => {
       <DisplayCategories 
         categorySlug={ categorySlug }
         type={ type }
-        categories={ categories } 
+        categories={ categories }
       />
       <DisplayDesigns 
         layouts={ layouts } 

@@ -26,9 +26,6 @@ export async function getServerSideProps (context) {
     // Gets category list by type (home-pages, landing-pages, ...)
     const categoriesResponse = await categoryCtrl.getCategoriesByType(type)
     
-    // Gets the category by slug
-    const categoryResponse = await categoryCtrl.getCategoryBySlug(slug)
-    
     if (layoutsResponse && categoriesResponse)
       return {
         props: {

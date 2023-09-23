@@ -3,6 +3,7 @@ import { Layout } from '@/api'
 import { GridLayouts } from "@/components/shared"
 import Button from "./button"
 import Loading from "./loading"
+import { useLoading } from "@/hooks"
 
 const layoutCtrl = new Layout()
 
@@ -17,12 +18,12 @@ const layoutCtrl = new Layout()
  * @returns {JSX.Element} React component.
  */
 export function DisplayDesigns (props) {
+  const { loading, startLoading, stopLoading } = useLoading()
   const { category, type, layouts } = props
   const [layoutsData, setLayoutsData] = useState(layouts || [])
   // Track if there are more layouts to load
   const [hasMoreLayouts, setHasMoreLayouts] = useState(true); 
   const [page, setPage] = useState(1)
-  const [loading, setLoading] = useState(false)
 
   // Awaits for page to update before calling loadLayouts()
   useEffect(() => {
@@ -33,7 +34,7 @@ export function DisplayDesigns (props) {
     let response
 
     try {
-      setLoading(true)
+      startLoading()
       await new Promise(resolve => setTimeout(resolve, 2000));
 
 
@@ -61,10 +62,9 @@ export function DisplayDesigns (props) {
       }
     } catch (error) {
       console.error(error);
+    } finally {
+      stopLoading()
     }
-
-    // Loading is complete, set it to false
-    setLoading(false);
   }
   
   const handleLoadMore = () => {
@@ -75,15 +75,15 @@ export function DisplayDesigns (props) {
     <>
       {
         layouts && layouts.length > 0 ? (
-          <>
+          <section className="w-full px-3 md:px-16">
             <GridLayouts layouts={layoutsData} page={0} />
             {loading ? (
-              <div className="flex text-center justify-items-center">
+              <div className="flex text-center justify-items-center my-12">
                 <Loading />
               </div>
             ) : (
               hasMoreLayouts && (
-                <div className="flex justify-center">
+                <div className="flex justify-center my-12">
                   <Button
                     type="secondary-gray"
                     onClick={handleLoadMore}
@@ -91,11 +91,9 @@ export function DisplayDesigns (props) {
                     Load More
                   </Button>
                 </div>
-
-                
               )
             )}
-          </>
+          </section>
         ) : (
           null
         )

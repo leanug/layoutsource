@@ -8,13 +8,11 @@ export const Header = (props) => {
 
   return (
     <header>
-      <div className='flex flex-row justify-between md-px-10 py-6 max-w-screen-2xl mx-auto'>
-        <div className="text-lg font-bold flex items-center">
+      <div className='flex flex-row justify-between mb-16 px-3 md:px-10 py-6 max-w-screen-2xl mx-auto'>
+        <div className="flex items-center gap-4">
           <Link href="/">
             LOGO
           </Link>
-        </div>
-        <div>
           <Menu isOpenSearch={ false } />
         </div>
         <div className='flex flex-row gap-4'>
