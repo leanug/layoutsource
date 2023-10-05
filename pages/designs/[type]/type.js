@@ -1,7 +1,13 @@
-import { 
-  DisplayDesigns, 
-  DisplayCategories 
-} from "@/components/shared"
+import { Layout } from "@/api"
+import { DisplayDesigns } from "@/containers"
+import { DisplayCategories  } from "@/components"
+import PropTypes from 'prop-types'
+
+/* TESTING */
+import { useContext } from "react"
+import { NotificationContext } from "@/contexts"
+
+const layoutCtrl = new Layout()
 
 /**
  * PageTypePage component displays a page with categories and designs based on the provided data.
@@ -14,21 +20,24 @@ import {
  * @param {Object} [props.data.pagination] - Pagination data for layouts.
  * @returns {JSX.Element} React component.
  */
-const PageTypePage = (props) => {
+const DesignsByTypePage = (props) => {
   const { data } = props
   const { 
     layouts, 
-    type, 
+    type: slug, 
     categories, 
     categorySlug,
     pagination 
   } = data || {}
 
+  /* TESTING */
+  let { handleNotification } = useContext(NotificationContext)
+
   // Check if there are layouts. If not, display a message.
   if (! layouts ) {
     return (
       <>
-        <p>No data available.</p>
+        <p>No designs available.</p>
       </>
     );
   }
@@ -37,16 +46,29 @@ const PageTypePage = (props) => {
     <>
       <DisplayCategories 
         categorySlug={ categorySlug }
-        type={ type }
+        type={ slug }
         categories={ categories }
       />
       <DisplayDesigns 
         layouts={ layouts } 
-        type={ type }
+        slug={ slug }
         pagination={ pagination }
+        fetchDesigns={ ({ slug, page }) => layoutCtrl.getLayoutsByType({ slug, page }) }
       />
+      <button onClick={() => handleNotification({message: 'Message test', type: 'success'})}>Open notifications</button>
     </>
   )
 }
 
-export default PageTypePage
+// Define PropTypes for your component
+DesignsByTypePage.propTypes = {
+  data: PropTypes.shape({
+    layouts: PropTypes.array,
+    type: PropTypes.string.isRequired,
+    categories: PropTypes.array,
+    categorySlug: PropTypes.string,
+    pagination: PropTypes.object,
+  }),
+};
+
+export default DesignsByTypePage

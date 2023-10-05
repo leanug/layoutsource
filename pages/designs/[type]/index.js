@@ -4,11 +4,11 @@ import { isValidType } from '@/utils/validation';
 export { default } from './type'
 
 /**
- * Retrieves data for the PageTypePage component during server-side rendering.
+ * Retrieves data for the DesignsByTypePage component during server-side rendering.
  *
  * @param {object} context - The context object provided by Next.js.
  * @param {object} context.params - The parameters from the URL.
- * @param {string} context.params.type - The type of page.
+ * @param {string} context.params.type - The type of the designs (homes, landings, components...)
  * @returns {Promise<{ props: { data: object|null } }>} A promise that resolves to the props for the PageTypePage component.
  */
 export async function getServerSideProps (context) {
@@ -27,7 +27,7 @@ export async function getServerSideProps (context) {
 
   try {
     const layoutsResponse = await layoutCtrl.getLayoutsByType({ 
-      type,
+      slug: type,
       page: 1
     })
 

@@ -1,5 +1,4 @@
 import { useRouter } from 'next/router';
-import { Icon, Button, Label } from 'semantic-ui-react'
 import { AuthContext } from '@/contexts';
 import { useAuth } from '@/hooks';
 
@@ -18,7 +17,6 @@ const Account = () => {
       >
         User
       </button>
-
     </div>
   )
 }

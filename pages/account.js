@@ -1,15 +1,15 @@
 import { useRouter } from "next/router";
 import { useState, useCallback } from 'react'; // Import useCallback
-import { Tab, Button } from "semantic-ui-react";
 import { Info, Settings, Layout, LikedLayoutList } from "@/components/account";
 import { useAuth } from "@/hooks";
-import { ListUserLayouts, AddLayoutForm } from "@/components/account/layout";
+import { ListUserLayouts, AddLayoutForm } from "@/components/account/user-websites";
 
 function AccountPage() {
+  const [activeTab, setActiveTab] = useState('user-layouts');
   const { user, logout } = useAuth();
   const router = useRouter();
-  const [reload, setReload] = useState(false);
 
+  console.log('user', user);
   if (!user) {
     return null;
   }
@@ -19,55 +19,67 @@ function AccountPage() {
     router.push('/');
   };
 
-  const TabPane = ({ attached = false, children }) => (
-    <Tab.Pane attached={attached}>{children}</Tab.Pane>
-  );
 
-  const panes = [
-    {
-      menuItem: { key: 'user-layouts', content: 'My layouts' },
-      render: () => (
-        <Tab.Pane attached={ false }>
-          <ListUserLayouts />
-        </Tab.Pane>
-      )
-    },
-    {
-      menuItem: { key: 'favoritos', content: 'Favoritos' },
-      render: () => (
-        <Tab.Pane attached={ false }>
-          <LikedLayoutList />
-        </Tab.Pane>
-      )
-    },
-    {
-      menuItem: { key: 'addLayout', content: 'Add layout' },
-      render: () => (
-        <Tab.Pane attached={ false }>
-          <AddLayoutForm />
-        </Tab.Pane>
-      )
-    },
-    {
-      menuItem: { key: 'ajustes', content: 'Ajustes' },
-      render: () => (
-        <Tab.Pane attached={ false }>
-          <Settings.ChangeNameForm />
-          <Settings.ChangeEmailForm />
-          <Settings.ChangePasswordForm />
-        </Tab.Pane>
-      )
-    },
-  ]
+  const changeTab = (tab) => {
+    setActiveTab(tab);
+  };
 
   return (
-    <div className="p-14">
+    <section className="w-full px-3 md:px-16">
       <Info />
-      
-      <Tab menu={{ secondary: true, pointing: true }} panes={panes} />
-      <Button content="Logout" onClick={ onLogout } />
-    </div>
+
+      <div className="space-y-6">
+        <div className="flex justify-between items-center">
+          <div className="space-x-4">
+            <button
+              onClick={() => changeTab('user-layouts')}
+              className={`px-4 py-2 ${activeTab === 'user-layouts' ? 'bg-blue-500 text-white' : 'bg-gray-300 hover:bg-gray-400 text-gray-700'} rounded`}
+            >
+              My layouts
+            </button>
+            <button
+              onClick={() => changeTab('favoritos')}
+              className={`px-4 py-2 ${activeTab === 'favoritos' ? 'bg-blue-500 text-white' : 'bg-gray-300 hover:bg-gray-400 text-gray-700'} rounded`}
+            >
+              Favoritos
+            </button>
+            <button
+              onClick={() => changeTab('addLayout')}
+              className={`px-4 py-2 ${activeTab === 'addLayout' ? 'bg-blue-500 text-white' : 'bg-gray-300 hover:bg-gray-400 text-gray-700'} rounded`}
+            >
+              Add layout
+            </button>
+            <button
+              onClick={() => changeTab('ajustes')}
+              className={`px-4 py-2 ${activeTab === 'ajustes' ? 'bg-blue-500 text-white' : 'bg-gray-300 hover:bg-gray-400 text-gray-700'} rounded`}
+            >
+              Ajustes
+            </button>
+          </div>
+          <button
+            className="px-4 py-2 bg-red-500 text-white rounded hover:bg-red-600"
+            onClick={onLogout}
+          >
+            Logout
+          </button>
+        </div>
+
+        <div className="p-4 bg-white rounded shadow">
+          {activeTab === 'user-layouts' && <ListUserLayouts />}
+          {activeTab === 'favoritos' && <LikedLayoutList />}
+          {activeTab === 'addLayout' && <AddLayoutForm />}
+          {activeTab === 'ajustes' && (
+            <div>
+              <Settings.ChangeNameForm />
+              <Settings.ChangeEmailForm />
+              <Settings.ChangePasswordForm />
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
   );
 }
+
 
 export default AccountPage;

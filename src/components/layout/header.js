@@ -3,7 +3,7 @@ import Account from './account';
 import Menu from './menu';
 import { useAuth } from '@/hooks'
 
-export const Header = (props) => {  
+export const Header = () => {  
   const { user, logout } = useAuth()
 
   return (

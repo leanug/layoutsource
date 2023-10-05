@@ -75,10 +75,10 @@ export class Layout {
    * @throws {Error} If an error occurs during the fetch.
    * @returns {Promise<Object>} A promise that resolves to the fetched layouts.
    */
-  async getLayoutsByType({ type = null, page = 1 }) {
+  async getLayoutsByType({ slug = null, page = 1 }) {
     try {
       const filters = [];
-      const categoryType = `filters[categories][type][$eq]=${ type }`
+      const categoryType = `filters[categories][type][$eq]=${ slug }`
       const pagination = `pagination[page]=${ page }&pagination[pageSize]=4`;
       const populate = 'populate=*';
 

@@ -37,11 +37,11 @@ const Menu = () => {
         type="text"
         placeholder="Search"
         value={searchText}
-        onChange={(e) => setSearchText(e.target.value)}
+        onChange={ (e) => setSearchText(e.target.value) }
       />
       <button 
         className="w-28 h-10 rounded-lg justify-start items-start inline-flex"
-        onClick={onSearchClick}
+        onClick={ onSearchClick }
       >
         <div className="px-4 py-2.5 bg-violet-500 rounded-lg shadow border border-violet-500 justify-center items-center gap-2 flex">
           <div className="text-white text-sm font-semibold font-inter leading-tight">

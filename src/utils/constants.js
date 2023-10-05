@@ -8,6 +8,7 @@ export const ENV = {
       LOGIN: "auth/local"
     },
     LAYOUTS: 'layouts',
+    COLLECTIONS: 'collections',
     USERS_ME: "users/me",
     USERS: 'users',
     CATEGORY: "categories",

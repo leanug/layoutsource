@@ -1,8 +1,16 @@
 import Link from 'next/link';
 
-export const DisplayCategories = ({ categorySlug, type, categories, className }) => {
+export const DisplayCategories = (props) => {
+  const { 
+    categorySlug, 
+    type, 
+    categories, 
+    className 
+  } = props
+  
   return (
-    <aside className={`w-full px-3 mb-3 md:px-16 ${className}`}>
+    <aside className={`w-full px-3 mb-3 md:px-16 ${ className }`}>
+      
       <div className="overflow-x-auto" style={{ paddingBottom: '14px' }}>
         <ul className="flex flex-row items-center gap-4">
           {/* All category */}

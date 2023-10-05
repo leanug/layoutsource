@@ -1,7 +1,8 @@
-import { 
-  DisplayDesigns, 
-  DisplayCategories 
-} from "@/components/shared"
+import { Layout } from "@/api"
+import { DisplayCategories } from "@/components"
+import { DisplayDesigns } from "@/containers"
+
+const layoutCtrl = new Layout()
 
 /**
  * PageTypePage component displays a page with categories and designs based on the provided data.
@@ -42,8 +43,9 @@ const DesignsByCategoryPage = (props) => {
       />
       <DisplayDesigns 
         layouts={ layouts } 
-        type={ type }
+        slug={ categorySlug }
         pagination={ pagination }
+        fetchDesigns={ ({ slug, page }) => layoutCtrl.getLayoutsByCategory({ slug, page }) }
       />
     </>
   )

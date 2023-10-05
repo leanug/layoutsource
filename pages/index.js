@@ -1,4 +1,6 @@
-function HomePage() {
+import Link from "next/link";
+
+export default function HomePage() {
   return (
     <>
       <h1 className="mb-4 text-center text-3xl">
@@ -8,12 +10,10 @@ function HomePage() {
         Explore proven website designs thoughtfully curated to boost conversion rates.
       </p>
       <div className="flex justify-items-center">
-      <button className="font-bold py-2 px-4 rounded-full mx-auto block">
+        <Link href="/designs/home-pages" className="font-bold py-2 px-4 rounded-full mx-auto block">
           Click Me
-        </button>
+        </Link>
       </div>
     </>
   );
 }
-
-export default HomePage

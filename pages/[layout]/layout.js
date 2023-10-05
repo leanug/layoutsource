@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import CategoryList from './category-list'; // Adjust the path
-import { LikedLayoutsIcon } from '@/components/shared/design-liker-btn';
+import { DesignLikerBtn } from '@/containers/design-liker-btn';
 
 export default function LayoutPage (props) {
   const layoutId = props.data.data[0]?.id

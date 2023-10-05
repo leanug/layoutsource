@@ -2,10 +2,13 @@ import { ENV, authFetch } from '@/utils'
 
 export class LikedLayouts {
   /**
-   * Updates the user information for the given userId.
-   * @param {string} userId - The ID of the user to be updated.
-   * @param {Object} data - The data containing the updated user information.
-   * @returns {Promise<Object>} A promise that resolves to the updated user information.
+   * Checks if the specified design is liked by the user.
+   *
+   * @param {string} userId - The ID of the user.
+   * @param {string} layoutId - The ID of the layout to be checked.
+   *
+   * @returns {Promise<boolean>} A promise that resolves to `true` if the layout is liked, or `false` if it is not liked.
+   * @throws {Error} If an error occurs during the check process.
    */
   async check (userId, layoutId) {
     try {

@@ -3,7 +3,7 @@ import { Header, Footer } from './';
 
 export const BasicLayout = ({ children }) => {
   return (
-    <>
+    <div className='relative'>
       <Head>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
       </Head>
@@ -14,6 +14,8 @@ export const BasicLayout = ({ children }) => {
         </main>
         <Footer />
       </div>
-    </>
+      <div id="modal-root"></div>
+      <div id="notification-root"></div>
+    </div>
   );
 };

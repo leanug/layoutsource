@@ -10,7 +10,7 @@ export class User {
    */
   async getMe() {
     try {
-      const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.USERS_ME }`
+      const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.USERS_ME }?${ 'populate=*' }`
       const response = await authFetch(url) // uso authFetch porque es una peticion autenticada
       const result = await response.json()
 

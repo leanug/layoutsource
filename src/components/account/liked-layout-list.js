@@ -20,7 +20,6 @@ export function LikedLayoutList() {
 
   return (
     <div>
-      <h2>Liked Layouts</h2>
       {likedLayouts === null ? (
         <p>Error fetching liked layouts.</p>
       ) : likedLayouts.length === 0 ? (

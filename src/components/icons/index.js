@@ -1,0 +1,5 @@
+export * from './heart-solid'
+export * from './heart-regular'
+export * from './eye-solid'
+export * from './bookmark-regular'
+export * from './bookmark-solid'

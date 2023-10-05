@@ -1,4 +1,3 @@
-import { Form, Button } from 'semantic-ui-react'
 import { useFormik } from 'formik'
 import { initialValues, validationSchema } from './change-name-form.form';
 import { useAuth } from '@/hooks';
@@ -22,8 +21,8 @@ export function ChangeNameForm() {
   })
 
   return (
-    <Form onSubmit={ formik.handleSubmit }>
-      <Form.Input
+    <form onSubmit={ formik.handleSubmit }>
+      <input
         name="name"
         label="New Name"
         placeholder="Enter new name..."
@@ -32,9 +31,9 @@ export function ChangeNameForm() {
         error={ formik.errors.name }
       />
       
-      <Button primary type="submit" loading={ formik.isSubmitting }>
+      <button primary type="submit" loading={ formik.isSubmitting }>
         Change Name
-      </Button>
-    </Form>
+      </button>
+    </form>
   );
 }
