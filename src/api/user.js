@@ -41,11 +41,17 @@ export class User {
       const response = await authFetch(url, params)
       const result = await response.json()
 
-      if (response.status !== 200 ) throw result
+      if (response.status !== 200 ) {
+        if(ENV.IS_DEV) {
+          console.error(result)
+        }
+      }
 
       return result
     } catch (error) {
-      console.error(error)
+      if(ENV.IS_DEV) {
+        console.error(error)
+      }
     }
   }
 }

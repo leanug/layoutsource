@@ -1,39 +1,33 @@
-import React, { useEffect, useState } from 'react';
-import { Category } from '@/api';
+import Link from 'next/link';
+import { useAuth } from '@/hooks';
 
-const categoryCtrl = new Category()
+export function AsideMenu ({ isOpen, closeMenu }) {
+  const { user, logout } = useAuth()
 
-const AsideMenu = () => {
-  const [categories, setCategories] = useState(null)
-
-  useEffect(() => {
-    (async () => {
-      try {
-        const response = await categoryCtrl.getAll()
-        setCategories(response.data)
-      } catch (error) {
-        console.error(error);
-      }
-    })()
-  }, [])
+  if (! isOpen) {
+    return null;
+  }
 
   return (
-    <aside className="">
-      <h2 className="text-2xl font-bold mb-4">Categories</h2>
-      <ul className="space-y-2">
-        {categories?.map((category) => (
-          <li key={category.id}>
-            <a
-              href={`/layouts/${category.attributes.slug}`}
-              className="text-blue-500 hover:text-blue-700 transition-colors duration-300"
-            >
-              {category.attributes.title}
-            </a>
-          </li>
-        ))}
+    <div className="absolute top-20 right-4 bg-white rounded-md shadow max-w-xs w-full">
+      <button className='p-3' onClick={closeMenu}>X</button>
+      {/* Your aside menu content */}
+      <ul className='p-10 flex flex-col gap-4'>
+        <li>
+          <Link href={`/user/${ user?.username || '' }`}>Profile</Link>
+        </li>
+        <li>
+          <Link href={'/user/settings'}>Settings</Link>
+        </li>
+        {
+          user ? (
+            <li>
+              <button onClick={ logout }>Logout</button>
+            </li>
+          ) : null
+        }
       </ul>
-    </aside>
-  );
-};
-
-export default AsideMenu;
+      
+    </div>
+  )
+}

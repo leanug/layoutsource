@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import { useState, useCallback } from 'react'; // Import useCallback
-import { Info, Layout, LikedLayoutList } from "@/components/account";
+import { Info, Settings, Layout, LikedLayoutList } from "@/components/account";
 import { useAuth } from "@/hooks";
 import { ListUserLayouts, AddLayoutForm } from "@/components/account/user-websites";
 

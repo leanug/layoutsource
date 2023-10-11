@@ -1,11 +1,9 @@
 import { useState } from "react"
-import { DesignLikerBtn } from "../design-liker-btn"
-import { 
-  HeartSolid, 
-  EyeSolid, 
-  BookmarkRegular 
-} from '@/components/icons'
+import Image from "next/image"
+import { DesignLikerBtn } from "@/containers"
+import { BookmarkRegular } from '@/components'
 import Link from "next/link"
+import { ItemCardFooter } from "./item-card-footer"
 
 export default function GridItem(props) {
   const { layout, openCollectionsModal } = props
@@ -13,14 +11,22 @@ export default function GridItem(props) {
   
   return (
     <div key={ layout.id }>
-      <div className="transition">
-        <div className="w-full mb-4 relative group">
+      <div className="transition h-full flex flex-col justify-between">
+        <div className="w-full mb-4 relative group flex-grow overflow-hidden">
           <Link href={ `/${ layout.attributes.slug }` }>
-            <img
-              src={ layout.attributes.cover.data.attributes.url }
-              alt={ layout.title }
-              className="w-full h-full object-cover rounded-md"
-            />
+            <div className="h-full max-h-[420px] overflow-hidden w-full bg-slate-200 origin-top">
+              <Image
+                src={ layout.attributes.image.data.attributes.formats.small.url }
+                alt={ layout.attributes.image.data.attributes.name }
+                className="w-full h-full object-cover rounded-md mx-auto origin-top"
+                width="0"
+                height="0"
+                sizes="100vw"
+                blurDataURL={ layout.attributes.image.data.attributes.formats.small.url }
+                placeholder="blur"
+                priority={false}
+              />
+            </div>
           </Link>
           <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
             <div className="flex gap-3">
@@ -38,22 +44,13 @@ export default function GridItem(props) {
             </div>
           </div>
         </div>
-        <div className="flex flex-row items-center justify-between gap-3">
-          <Link href={`/${ layout.attributes.slug }` }>
-            <h2 className="text-gray-900">
-              { layout.attributes.title }
-            </h2>
-          </Link>
-          <div className="flex flex-row items-center gap-4">
-            <div className="flex flex-row gap-1.5 items-center">
-              <EyeSolid className="w-4 h-4 fill-slate-400" />
-              <span className="text-gray-600">{ layout.attributes.views }</span>
-            </div>
-            <div className="flex flex-row gap-1.5 items-center">
-              <HeartSolid className="w-4 h-4 fill-slate-400" />
-              <span className="text-gray-600">{ likes }</span>
-            </div>
-          </div>
+        <div className="row-span-1">
+          <ItemCardFooter
+            slug={ layout.attributes.slug }
+            title={ layout.attributes.title }
+            likes={ likes }
+            views={ layout.attributes.views }
+          />
         </div>
       </div>
     </div>

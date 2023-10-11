@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react"
 import { LikedLayouts as LikedLayoutsCtrl } from "@/api"
 import { useAuth } from "@/hooks"
-import { GridLayouts } from "../shared"
+import { GridLayouts } from "@/containers"
 
 const likedLayoutsCtrl = new LikedLayoutsCtrl()
 

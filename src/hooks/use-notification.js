@@ -16,6 +16,19 @@ export function useNotification() {
   const defaultNotification = { message: '', type: 'info' }
   let [notificationData, setNotificationData] = useState(defaultNotification)
 
+  /* Close notifications after a few seconds */
+  useEffect(() => {
+    if(notification) {
+      const timer = setTimeout(() => {
+        setNotification(false)
+      }, 3600)
+  
+      return () => {
+        clearTimeout(timer)
+      }
+    }
+  }, [notification])
+
   let handleNotification = ({ message = '', type = 'info' } = {}) => {
     setNotification(prevNotification => ! prevNotification);
     if (message && type) {

@@ -1,4 +1,3 @@
-import { Form, Button } from 'semantic-ui-react'
 import { useFormik } from 'formik'
 import { initialValues, validationSchema } from './add-layout-form-utils';
 import { useAuth } from '@/hooks';
@@ -34,44 +33,44 @@ export function AddLayoutForm () {
         Have a website layout to suggest? You can submit the URL to the website and a link to the image representing the layout. Our team will review your suggestion, and if approved, it will be added to the site. Thank you for your contribution!
       </p>
 
-      <Form onSubmit={ formik.handleSubmit }>
-        <Form.Field>
+      <form onSubmit={ formik.handleSubmit }>
+        <div>
           <label>Website URL</label>
-          <Form.Input
+          <input
             name="url"
             placeholder="https://..."
             value={formik.values.url}
             onChange={formik.handleChange}
             error={formik.errors.url}
           />
-        </Form.Field>
+        </div>
 
-        <Form.Field>
+        <div>
           <label>Website Title</label>
-          <Form.Input
+          <input
             name="title"
             placeholder="Title"
             value={formik.values.title}
             onChange={formik.handleChange}
             error={formik.errors.url}
           />
-        </Form.Field>
+        </div>
 
-        <Form.Field>
+        <div>
           <label>Image URL</label>
-          <Form.Input
+          <input
             name="image"
             placeholder="https://..."
-            value={formik.values.image}
-            onChange={formik.handleChange}
-            error={formik.errors.image}
+            value={ formik.values.image }
+            onChange={ formik.handleChange }
+            error={ formik.errors.image }
           />
-        </Form.Field>
+        </div>
 
-        <Button primary type="submit" loading={formik.isSubmitting}>
+        <button primary type="submit" loading={formik.isSubmitting}>
           Add Your Layout
-        </Button>
-      </Form>
+        </button>
+      </form>
     </>
   );
 }

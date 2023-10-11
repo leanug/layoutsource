@@ -21,7 +21,7 @@ export class Collection {
             }
           }
         },
-        filter: {
+        filters: {
           user: {
             id: userId
           }
@@ -44,7 +44,8 @@ export class Collection {
     
       return { data: result.data }; // Return the response data or status
     } catch (error) {
-      console.error(error);
+      if(ENV.IS_DEV)
+        console.error(error);
 
       // Return an error object if there's an exception
       return { 
@@ -75,18 +76,47 @@ export class Collection {
       }
 
       const response = await authFetch(url, params)
+      const result = await response.json()
 
       if (response.status !== 200) {
-        return {
-          data: null,
-          error: 'Failed to create collection. Please try again later.'
+        if(ENV.IS_DEV) {
+          console.error('Error creating collection: ', result)
         }
       }
-    } catch {
-        return {
-          data: null,
-          error: 'Error creating collection.'
+      
+      return result
+    } catch(error) {
+      if(ENV.IS_DEV) {
+        console.error('Error creating collection: ',error)
+      }
+    }
+  }
+
+  async add(collectionId, data) {
+    try {
+      const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.COLLECTIONS }/${ collectionId }`
+      const params = {
+        method: 'PUT',
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ data })
+      }
+
+      const response = await authFetch(url, params)
+      const result = await response.json()
+
+      if (response.status !== 200) {
+        if(ENV.IS_DEV) {
+          console.error('Error while adding design: ', result)
         }
+      }
+      
+      return result
+    } catch(error) {
+      if(ENV.IS_DEV) {
+        console.error('Error while adding design: ', error)
+      }
     }
   }
 

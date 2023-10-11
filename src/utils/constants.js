@@ -15,5 +15,6 @@ export const ENV = {
     USER_LAYOUTS: "user-layouts",
     LIKED_LAYOUTS: "liked-layouts",
   },
-  TOKEN: 'token'
+  TOKEN: 'token',
+  IS_DEV: process.env.NODE_ENV === 'development'
 }

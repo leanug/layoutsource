@@ -1,9 +1,18 @@
 import Image from "next/image";
 
 export function CollectionItem(props) {
-  const { inCollection, addDesign, imageUrl, collectionTitle } = props
+  const { 
+    inCollection, 
+    addDesign, 
+    imageUrl, 
+    collectionTitle, 
+    designId,
+    collectionId,
+    designsIdAry,
+    deleteDesign
+  } = props
   const backgroundClass = inCollection ? 'bg-gray-200' : '';
-
+  
   return (
     <div className={`flex flex-row group gap-3 hover:bg-gray-100 items-center px-4 py-3 ${ backgroundClass }`}>
       <div className="h-12 overflow-y-hidden bg-gray-300 w-20">
@@ -25,14 +34,20 @@ export function CollectionItem(props) {
       {
         inCollection ? (
           <div className="flex items-center justify-end w-full">
-            <button className="py-1 px-3 rounded-md">
-              Y
+            <button 
+              className="py-1 px-3 rounded-md bg-slate-200"
+              onClick={() => addDesign(collectionId, designId, designsIdAry)}
+              >
+              -
             </button>
           </div>
         ) : (
           <div className="flex items-center w-full justify-end opacity-0 group-hover:opacity-100 transition-opacity">
-            <button className="py-1 px-3 rounded-md">
-              A
+            <button 
+              className="py-1 px-3 rounded-md bg-slate-200"
+              onClick={() => addDesign(collectionId, designId, designsIdAry)}
+            >
+              +
             </button>
           </div>
         )

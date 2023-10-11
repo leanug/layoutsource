@@ -1,8 +1,7 @@
 import { useRouter } from 'next/router';
-import { AuthContext } from '@/contexts';
-import { useAuth } from '@/hooks';
+import { useAside, useAuth } from '@/hooks'; 
 
-const Account = () => {
+const Account = ({ toggleMenu }) => {
   const { user } = useAuth()
   const router = useRouter()
 
@@ -10,13 +9,14 @@ const Account = () => {
   const goToAccount = () => router.push('/account')
 
   return (
-    <div>
+    <div className='flex flex-row gap-2'>
       <button 
         className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
         onClick={ user ? goToAccount : goToLogin }  
       >
         User
       </button>
+      <button onClick={ toggleMenu }>O</button>
     </div>
   )
 }

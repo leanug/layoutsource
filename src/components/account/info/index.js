@@ -1,17 +1,18 @@
+import { LoadingIndicator } from "@/components/loading-indicator"
 import { useAuth } from "@/hooks"
 import { DateTime } from "luxon"
 
 export function Info() {
   const { user } = useAuth()
   
-  if (! user) return <h1>Loading data...</h1>
+  if (! user) return <LoadingIndicator />
 
   return (
     <div className="flex flex-col items-center justify-center">
     {/* Avatar */}
     <div className="w-32 h-32 rounded-full overflow-hidden mb-4">
     <img
-      src={user.avatar.url || '/default-avatar.png'} // Replace with user's avatar URL or default image
+      src={user.avatar.url || '/default-avatar.png'}
       alt="User Avatar"
       className="w-full h-full object-cover"
     />

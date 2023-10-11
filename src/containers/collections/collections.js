@@ -1,33 +1,23 @@
-import { useEffect, useState, useMemo } from "react"
-import { Collection } from "@/api"
+import { useState } from "react"
 import { CollectionList, AddCollection, CollectionButtons } from './'
-import { useLoading } from "@/hooks"
+import { UseCollection } from "@/hooks"
 import { LoadingIndicator } from '@/components'
 
-const collectionCtrl = new Collection()
-
 export function Collections({ designId, userId, handleModal }) {
-  const [collections, setCollections] = useState([])
-  const [isAddCollectionVisible, setIsAddCollectionVisible] = useState(false);
-  const { startLoading, loading, stopLoading } = useLoading()
- 
-  //const memoizedCollections = useMemo(() => collections, [collections]);
+  const [
+    isAddCollectionVisible, 
+    setIsAddCollectionVisible
+  ] = useState(false)
+
+  const { 
+    addDesign, 
+    deleteDesign, 
+    collections, 
+    loading 
+  } = UseCollection(userId)
 
   const toggleComponents = () => {
     setIsAddCollectionVisible(! isAddCollectionVisible)
-  }
-
-  useEffect(() => {
-    (async () => {
-      startLoading()
-      const response = await collectionCtrl.getAll(userId)
-      response?.data && setCollections(response.data)
-      stopLoading()
-    })()
-  }, [])  
-
-  const addDesign = designId => {
-    console.log('add design - designId=', designId)
   }
 
   return (
@@ -47,11 +37,17 @@ export function Collections({ designId, userId, handleModal }) {
               loading ? (
                 <LoadingIndicator />
               ) : (
-                <CollectionList
-                  collections={ collections }
-                  designId={ designId }
-                  userId={ userId }
-                />
+                collections?.length > 0 ? (
+                  <CollectionList
+                    collections={ collections }
+                    designId={ designId }
+                    userId={ userId }
+                    addDesign={ addDesign }
+                    deleteDesign={ deleteDesign }
+                  />
+                ) : (
+                  <p>No collections yet.</p>
+                )
               )
             }
             </>

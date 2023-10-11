@@ -1,4 +1,3 @@
-import { Form, Button } from 'semantic-ui-react'
 import { useFormik } from 'formik'
 import { initialValues, validationSchema } from './change-password-form.form';
 import { useAuth } from '@/hooks';
@@ -26,8 +25,8 @@ export function ChangePasswordForm() {
   })
 
   return (
-    <Form onSubmit={ formik.handleSubmit }>
-      <Form.Input
+    <form onSubmit={ formik.handleSubmit }>
+      <input
         name="password"
         label="New Password"
         placeholder="Enter new password..."
@@ -36,7 +35,7 @@ export function ChangePasswordForm() {
         error={ formik.errors.password }
         type="password"
       />
-      <Form.Input
+      <input
         name="repeatPassword"
         label="Repeat Password"
         placeholder="Repeat your new password..."
@@ -45,9 +44,9 @@ export function ChangePasswordForm() {
         error={ formik.errors.repeatPassword }
       />
 
-      <Button primary type="submit" loading={ formik.isSubmitting }>
+      <button primary type="submit" loading={ formik.isSubmitting }>
         Change Password
-      </Button>
-    </Form>
+      </button>
+    </form>
   );
 }

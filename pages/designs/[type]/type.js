@@ -3,10 +3,6 @@ import { DisplayDesigns } from "@/containers"
 import { DisplayCategories  } from "@/components"
 import PropTypes from 'prop-types'
 
-/* TESTING */
-import { useContext } from "react"
-import { NotificationContext } from "@/contexts"
-
 const layoutCtrl = new Layout()
 
 /**
@@ -30,9 +26,6 @@ const DesignsByTypePage = (props) => {
     pagination 
   } = data || {}
 
-  /* TESTING */
-  let { handleNotification } = useContext(NotificationContext)
-
   // Check if there are layouts. If not, display a message.
   if (! layouts ) {
     return (
@@ -55,7 +48,6 @@ const DesignsByTypePage = (props) => {
         pagination={ pagination }
         fetchDesigns={ ({ slug, page }) => layoutCtrl.getLayoutsByType({ slug, page }) }
       />
-      <button onClick={() => handleNotification({message: 'Message test', type: 'success'})}>Open notifications</button>
     </>
   )
 }

@@ -1,4 +1,5 @@
 import { ENV, authFetch } from '@/utils';
+import QueryString from 'qs'
 
 export class Layout {
   async getFeaturedLayouts({ limit = 8, categoryId = null }) {
@@ -79,7 +80,7 @@ export class Layout {
     try {
       const filters = [];
       const categoryType = `filters[categories][type][$eq]=${ slug }`
-      const pagination = `pagination[page]=${ page }&pagination[pageSize]=4`;
+      const pagination = `pagination[page]=${ page }&pagination[pageSize]=2`;
       const populate = 'populate=*';
 
       const urlParams = filters.concat(
@@ -101,15 +102,27 @@ export class Layout {
     }
   }
 
-  async searchLayouts(text, page) {
+  async searchDesigns({text, page}) {
     try {
-      const params = new URLSearchParams();
-      params.append('filters[title][$contains]', text);
-      params.append('pagination[page]', page);
-      params.append('pagination[pageSize]', 30);
-      params.append('populate', '*');
+      const query = QueryString.stringify({
+        populate: {
+          image: {
+            fields: ['formats', 'height', 'name', 'url', 'width']
+          },
+        },
+        filters: {
+          title: {
+            $contains: text
+          }
+        },
+        sort: ['title:asc'],
+        pagination: {
+          page: page,
+          pageSize: 30,
+        },
+      })
 
-      const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.LAYOUTS }?${ params.toString() }`;
+      const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.LAYOUTS }?${ query }`;
       const response = await fetch(url);
       const result = await response.json();
 
@@ -120,31 +133,51 @@ export class Layout {
       return result;
     } catch (error) {
       console.error(error);
-      throw new Error('An error occurred while searching layouts');
+      throw new Error('An error occurred while searching layouts', error);
     }
   }
 
-  async getLayoutBySlug( layout ) {
+  /**
+   * Get a layout by its slug from the API.
+   *
+   * @param {string} designSlug - The slug of the design to retrieve.
+   * @returns {Promise<object|null>} - A Promise that resolves to the retrieved layout object or null if an error occurs.
+   */
+  async getLayoutBySlug(designSlug) {
     try {
-      const filters = [];
-      const slugFilter = `filters[slug][$eq]=${ layout }`
-      const populate = 'populate=*';
+      const query = QueryString.stringify({
+        populate: {
+          categories: {
+            fields: ['*']
+          },
+          image: {
+            fields: ['formats', 'height', 'name', 'url', 'width']
+          }
+        },
+        filters: {
+          slug: {
+            $eq: designSlug
+          }
+        }
+      })
 
-      const urlParams = filters.concat(
-        slugFilter,
-        populate
-      )
-      .join('&');
-
-      const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.LAYOUTS }?${ urlParams }`;
+      const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.LAYOUTS }?${ query }`
       const response = await fetch(url);
       const result = await response.json();
       
-      if (response.status !== 200) throw result
+      if (response.status !== 200) {
+        if(ENV.IS_DEV) {
+          console.error('API request failed', result)
+        }
+        return null
+      }
 
       return result
     } catch (error) {
-      console.error(error);
+      if(ENV.IS_DEV) {
+        console.error('Error while fetching design: ', error)
+      }
+      return null
     }
   }
 

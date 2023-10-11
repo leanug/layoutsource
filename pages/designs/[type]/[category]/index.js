@@ -1,4 +1,5 @@
 import { Layout, Category } from '@/api'
+import { ENV } from '@/utils';
 import { isValidSlug, isValidType } from '@/utils/validation'
 
 export { default } from './category'
@@ -22,7 +23,7 @@ export async function getServerSideProps (context) {
       slug,
       page: 1
     })
-    
+  
     // Gets category list by type (home-pages, landing-pages, ...)
     const categoriesResponse = await categoryCtrl.getCategoriesByType(type)
     

@@ -14,9 +14,15 @@
  * @param {string} slug - The string to be validated as a slug.
  * @returns {boolean} True if the string is a valid slug, false otherwise.
  */
-function isValidSlug(slug) {
-  const slugPattern = /^[a-z0-9]+(?:-[a-z0-9]+)*$/;
-  return slugPattern.test(slug);
+function isValidSlug(input) {
+  // Remove non-alphanumeric characters except hyphens and underscores
+  const sanitized = input.replace(/[^\w\s-]/g, '');
+
+  // Replace spaces with hyphens
+  const slug = sanitized.replace(/\s+/g, '-');
+
+  // Convert to lowercase and trim
+  return slug.toLowerCase().trim();
 }
 
 /**

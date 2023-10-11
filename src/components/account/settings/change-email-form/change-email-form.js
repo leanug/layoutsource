@@ -1,4 +1,3 @@
-import { Form, Button } from 'semantic-ui-react'
 import { useFormik } from 'formik'
 import { initialValues, validationSchema } from './change-email-form.form';
 import { useAuth } from '@/hooks';
@@ -24,8 +23,8 @@ export function ChangeEmailForm() {
   })
 
   return (
-    <Form onSubmit={ formik.handleSubmit }>
-      <Form.Input
+    <form onSubmit={ formik.handleSubmit }>
+      <input
         name="email"
         label="New Email"
         placeholder="Enter new email..."
@@ -33,7 +32,7 @@ export function ChangeEmailForm() {
         onChange={ formik.handleChange }
         error={ formik.errors.email }
       />
-      <Form.Input
+      <input
         name="repeatEmail"
         label="Repeat Email"
         placeholder="Repeat your new email..."
@@ -42,9 +41,9 @@ export function ChangeEmailForm() {
         error={ formik.errors.repeatEmail }
       />
 
-      <Button primary type="submit" loading={ formik.isSubmitting }>
+      <button primary type="submit" loading={ formik.isSubmitting }>
         Change Email
-      </Button>
-    </Form>
+      </button>
+    </form>
   );
 }

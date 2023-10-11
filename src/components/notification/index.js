@@ -13,7 +13,7 @@ export const Notification = () => {
     const { message = '', type = 'info' } = notificationData || {};
 
     return ReactDOM.createPortal(
-        <div className="bg-white border absolute z-50 right-10 bottom-10 p-5 shadow-lg rounded flex flex-col items-start text-lg text-gray-800">
+        <div className="bg-white border absolute z-50 left-1/2 transform -translate-x-1/2 bottom-10 p-5 shadow-lg rounded flex flex-col items-start text-lg text-gray-800 transition-transform duration-500 ease-in-out">
           <button
             className="font-bold self-end rounded-full  mb-3 bg-white text-red-700 w-8 h-8"
             onClick={() => handleNotification()}

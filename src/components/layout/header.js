@@ -1,28 +1,20 @@
 import Link from 'next/link';
 import Account from './account';
-import Menu from './menu';
-import { useAuth } from '@/hooks'
+import { Navigation, SearchBar } from './';
 
-export const Header = () => {  
-  const { user, logout } = useAuth()
-
+export const Header = ({ toggleMenu }) => {  
   return (
     <header>
-      <div className='flex flex-row justify-between mb-16 px-3 md:px-10 py-6 max-w-screen-2xl mx-auto'>
+      <div className='section-full flex flex-row gap-3 justify-between mb-16 py-6'>
         <div className="flex items-center gap-4">
           <Link href="/">
             LOGO
           </Link>
-          <Menu isOpenSearch={ false } />
+          <Navigation isOpenSearch={ false } />
         </div>
+        <SearchBar />
         <div className='flex flex-row gap-4'>
-        {user ?
-          <div>
-            {/* <p>{ user.firstname } { user.lastname }</p> */}
-            <button onClick={ logout }>Logout</button>
-          </div>
-        : null}
-          <Account />
+          <Account toggleMenu={ toggleMenu } />
         </div>
       </div>
     </header>
