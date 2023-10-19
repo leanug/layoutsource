@@ -16,12 +16,13 @@ export function GridLayouts ({ layouts }) {
     />
     handleModal(modalContent)
   }
-
+  
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-9">
       {
         layouts.map((layout) => (
           <GridItem 
+            user={ user }
             key={ layout.id } 
             layout={ layout } 
             openCollectionsModal={ openCollectionsModal }

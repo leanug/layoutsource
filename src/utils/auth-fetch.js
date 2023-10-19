@@ -6,7 +6,6 @@
  */
 
 import { Token } from "@/api"
-import Router, { useRouter } from "next/router"
 
 export async function authFetch(url, params) {
   // Get the JWT token from storage

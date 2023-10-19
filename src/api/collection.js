@@ -91,8 +91,10 @@ export class Collection {
       }
     }
   }
-
-  async add(collectionId, data) {
+  /* 
+   * Add or remove designs from a given collection
+   */
+  async update(collectionId, data) {
     try {
       const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.COLLECTIONS }/${ collectionId }`
       const params = {
@@ -117,39 +119,6 @@ export class Collection {
       if(ENV.IS_DEV) {
         console.error('Error while adding design: ', error)
       }
-    }
-  }
-
-  async update(collectionId, data) {
-    try {
-      const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.COLLECTIONS }/${ collectionId }`
-      const params = {
-        method: 'PUT',
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(data)
-      }
-      const response = await authFetch(url, params)
-      const result = await response.json()
-
-      if (response.status !== 200 ) {
-        console.error('Error retrieving collection list:', result);
-
-        return {
-          data: null,
-          error: 'Error updating collection list'
-        }
-      }
-
-      return result
-    } catch (error) {
-      console.error(error)
-       
-       return { 
-        data: null, 
-        error: 'An error occurred while fetching data' 
-      };
     }
   }
 }

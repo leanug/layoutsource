@@ -1,8 +1,11 @@
 import { Layout } from "@/api"
-import { DisplayCategories } from "@/components"
-import { DisplayDesigns } from "@/containers"
-
-const layoutCtrl = new Layout()
+import { 
+  PageMenu, 
+  PaginatedDesigns  
+} from "@/components"
+import { useDesigns } from "@/hooks"
+import { useFirstRender } from "@/hooks/use-first-render"
+import { useEffect } from "react"
 
 /**
  * PageTypePage component displays a page with categories and designs based on the provided data.
@@ -18,34 +21,43 @@ const layoutCtrl = new Layout()
 const DesignsByCategoryPage = (props) => {
   const { data } = props
   const { 
-    layouts, 
+    designData, 
     type,
     categorySlug,
     categories, 
     pagination 
   } = data || {}
-  
+  const { loading, fetchDesignsByCategory, designs } = useDesigns(designData)
+  const { firstRender } = useFirstRender()
+
+  // Load designs on category page change
+  useEffect(() => {
+    if(firstRender === false)
+      fetchDesignsByCategory(categorySlug, 1)
+  }, [categorySlug])
+
   // Check if there are layouts. If not, display a message.
-  if (! layouts ) {
+  if (! designs ) {
     return (
-      <>
+      <section className="section-full">
         <p>No data available.</p>
-      </>
+      </section>
     );
   }
 
   return (
     <>
-      <DisplayCategories 
+      <PageMenu 
         type={ type }
         categorySlug={ categorySlug }
         categories={ categories }
+        designCount={ pagination.total }
       />
-      <DisplayDesigns 
-        layouts={ layouts } 
-        slug={ categorySlug }
-        pagination={ pagination }
-        fetchDesigns={ ({ slug, page }) => layoutCtrl.getLayoutsByCategory({ slug, page }) }
+      <PaginatedDesigns 
+        designs={ designs } 
+        loading={ loading }
+        totalPages={ pagination.total }
+        fetchDesigns={ () => fetchDesignsByCategory(categorySlug) }
       />
     </>
   )

@@ -7,7 +7,6 @@ function SignIn() {
   const router = useRouter()
   const { user } = useAuth()
   
-  console.log('user', user);
   if (user) {
     router.push('/')
     return null // No flicker after push

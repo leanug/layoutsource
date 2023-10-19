@@ -1,5 +1,4 @@
 import { useFormik } from "formik";
-import { Form } from "semantic-ui-react";
 import { initialValues, validationSchema } from "./register-form.form";
 import { Auth } from "@/api";
 import { useRouter } from "next/router";
@@ -27,10 +26,10 @@ function RegisterForm() {
   return (
     <section className='flex flex-grow h-full items-center'>
       <div className='w-full max-w-[460px] mx-auto mb-10 container'>
-        <Form onSubmit={ formik.handleSubmit }>
+        <form onSubmit={ formik.handleSubmit }>
           <div className="mb-2.5">
             <label htmlFor="email">Email:</label>
-            <Form.Input 
+            <input 
               type="email" 
               error={ formik.errors.email }
               id="email" 
@@ -42,7 +41,7 @@ function RegisterForm() {
           </div>
           <div className="mb-2.5">
             <label htmlFor="password">Password:</label>
-            <Form.Input
+            <input
               type="password"
               error={ formik.errors.password }
               id="password" 
@@ -52,15 +51,15 @@ function RegisterForm() {
               value={ formik.values.password }
             />
           </div>
-          <Form.Button
+          <button
            className="uppercase px-3 text-white bg-black py-1 w-24 text-center cursor-pointer"
            type="submit"
            fluid
            loading={ formik.isSubmitting }
           >
             Sign In
-          </Form.Button>
-        </Form>
+          </button>
+        </form>
       </div>
     </section>
   );

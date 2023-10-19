@@ -3,7 +3,7 @@ import Link from 'next/link';
 export const Footer = () => {
   return (
     <footer>
-      <div className="mx-auto flex justify-between items-center p-6">
+      <div className="section-full flex justify-between items-center py-3">
         <Link href="/">
             Your Logo
         </Link>

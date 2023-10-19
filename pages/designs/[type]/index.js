@@ -27,8 +27,8 @@ export async function getServerSideProps (context) {
   }
 
   try {
-    const layoutsResponse = await layoutCtrl.getLayoutsByType({ 
-      slug: type,
+    const layoutsResponse = await layoutCtrl.getDesignsByType({ 
+      type: type,
       page: 1
     })
 

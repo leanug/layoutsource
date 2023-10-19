@@ -1,9 +1,7 @@
 import { LoadingIndicator } from "@/components/loading-indicator"
-import { useAuth } from "@/hooks"
 import { DateTime } from "luxon"
 
-export function Info() {
-  const { user } = useAuth()
+export function Info({ user }) {
   
   if (! user) return <LoadingIndicator />
 

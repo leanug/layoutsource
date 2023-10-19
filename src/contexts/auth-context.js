@@ -10,7 +10,6 @@ export function AuthProvider(props) {
   const { children } = props;
   const [user, setUser] = useState(null);
   const [token, setToken] = useState(null);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const initializeAuth = async () => {
@@ -19,7 +18,6 @@ export function AuthProvider(props) {
 
         if (!storedToken) {
           logout();
-          setLoading(false);
           return;
         }
 
@@ -31,7 +29,7 @@ export function AuthProvider(props) {
       } catch (error) {
         console.error("Error initializing auth:", error);
       } finally {
-        setLoading(false);
+        //setLoading(false);
       }
     };
 
@@ -55,7 +53,7 @@ export function AuthProvider(props) {
       console.error("Error during login:", error);
       throw new Error(error);
     } finally {
-      setLoading(false);
+      //setLoading(false);
     }
   };
 

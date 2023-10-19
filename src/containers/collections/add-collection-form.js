@@ -41,7 +41,7 @@ export function AddCollectionForm({ designId, userId, handleModal }) {
 
         // Notify the user of successful collection creation
         handleNotification({ 
-          message: 'New collection created.',
+          message: `Saved in ${ data.title }`,
           type: 'success'
         })
       } catch {

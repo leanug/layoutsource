@@ -1,46 +1,49 @@
-import { ENV } from '@/utils';
-import { Layout } from '@/api';
+import { sanitizeQueryString } from "@/utils";
+import { PaginatedDesigns, NoResults } from "@/components"
+import { useDesigns } from "@/hooks"
+import { useEffect } from 'react';
+import { useRouter } from 'next/router'
 
-export { default } from './search'
+export default function SearchPage () {
+  const router = useRouter()
+  const { 
+    loading, 
+    fetchDesignsByQuery, 
+    designs, 
+    pagination 
+  } = useDesigns([])
+  const { s } = router.query; // Access the query parameters from the URL
+  const safeQuery = sanitizeQueryString(s)
 
-export async function getServerSideProps (context) {
-  const {
-    query: { s, page = 1 },
-  } = context
-
-  const layoutCtrl = new Layout()
-
-  try {
-    const response = await layoutCtrl.searchDesigns({ s, page })
-
-    if(! response?.data) {
-      if(ENV.IS_DEV) {
-        console.error(`No data found for: ${ s }, ${ response }`)
-      }
-      return {
-        props: {
-          data: null
-        }
-      }
+  useEffect(() => {
+    if(safeQuery) {
+      fetchDesignsByQuery(safeQuery, 1)
     }
+  }, [router.query]);
 
-    return {
-      props: {
-        data: {
-          designs: response?.data,
-          pagination: response?.meta.pagination,
-          searchText: s
-        }
+  return (
+    <section>
+     {
+        designs?.length ? (
+          <>
+            <div className="flex flex-row justify-between section-full mb-3">
+              <h1 className="text-center">Query: { safeQuery }</h1>
+              <div>
+                2020 results
+                <button className="border rounded-full p-3 bg-slate-100">Filter</button>
+              </div>
+            </div>
+            <PaginatedDesigns 
+              designs={ designs } 
+              loading={ loading }
+              totalPages={ pagination.total }
+              fetchDesigns={ () => fetchDesignsByQuery(safeQuery) }
+            />
+          </>
+        ) : (
+          <NoResults text="No results" />
+        )
       }
-    }
-  } catch (error) {
-    if(ENV.IS_DEV) {
-      console.error('Error fetching searched design. ',error)
-    }
-    return {
-      props: {
-        data: null
-      }
-    }
-  }
+    </section>
+  )
 }

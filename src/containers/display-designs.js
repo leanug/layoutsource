@@ -1,7 +1,5 @@
 import { GridLayouts } from "@/containers"
-import Button from "../components/button"
 import { LoadingIndicator, NoResults } from "@/components"
-import { useDesigns } from "@/hooks"
 
 /**
  * DisplayDesigns component displays a list of layouts based on the provided type.
@@ -14,8 +12,7 @@ import { useDesigns } from "@/hooks"
  * @returns {JSX.Element} React component.
  */
 export function DisplayDesigns (props) {
-  const { pagination, fetchDesigns, layouts, slug } = props
-  const { loading, loadDesigns, designs } = useDesigns(layouts, fetchDesigns)
+  const { loading, designs } = props
 
   return (
     <section className="section-full">
@@ -33,25 +30,6 @@ export function DisplayDesigns (props) {
           </>
         ) : (
           <NoResults text="No layouts found." />
-        )
-      }
-  
-      {
-        designs?.length < pagination?.total ? (
-          <div className="flex justify-center my-12">
-            <Button
-              type="secondary-gray"
-              onClick={ () => loadDesigns({ slug }) }
-            >
-              Load More
-            </Button>
-          </div>
-        ) : (
-          designs?.length ? (
-            <div className="flex justify-center my-12">
-              <p className="text-center">You've seen all the designs.</p>
-            </div>
-          ) : null
         )
       }
     </section>

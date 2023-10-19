@@ -1,9 +1,11 @@
-import { Layout } from "@/api"
-import { DisplayDesigns } from "@/containers"
-import { DisplayCategories  } from "@/components"
+import { 
+  PageMenu, 
+  PaginatedDesigns  
+} from "@/components"
 import PropTypes from 'prop-types'
-
-const layoutCtrl = new Layout()
+import { useDesigns } from "@/hooks"
+import { useEffect, useState } from 'react'
+import { useFirstRender } from "@/hooks/use-first-render"
 
 /**
  * PageTypePage component displays a page with categories and designs based on the provided data.
@@ -20,14 +22,23 @@ const DesignsByTypePage = (props) => {
   const { data } = props
   const { 
     layouts, 
-    type: slug, 
+    type, 
     categories, 
     categorySlug,
     pagination 
   } = data || {}
+  const { loading, fetchDesignsByType, designs } = useDesigns(layouts)
+  const { firstRender } = useFirstRender()
+  
+  // Load designs on type page change
+  useEffect(() => {
+    if(firstRender === false) {
+      fetchDesignsByType(type, 1)
+    }
+  }, [type])
 
   // Check if there are layouts. If not, display a message.
-  if (! layouts ) {
+  if (! designs ) {
     return (
       <>
         <p>No designs available.</p>
@@ -37,16 +48,17 @@ const DesignsByTypePage = (props) => {
 
   return (
     <>
-      <DisplayCategories 
+      <PageMenu 
         categorySlug={ categorySlug }
-        type={ slug }
+        type={ type }
         categories={ categories }
+        designCount={ pagination.total }
       />
-      <DisplayDesigns 
-        layouts={ layouts } 
-        slug={ slug }
-        pagination={ pagination }
-        fetchDesigns={ ({ slug, page }) => layoutCtrl.getLayoutsByType({ slug, page }) }
+      <PaginatedDesigns 
+        designs={ designs } 
+        loading={ loading }
+        totalPages={ pagination.total }
+        fetchDesigns={ () => fetchDesignsByType(type) }
       />
     </>
   )

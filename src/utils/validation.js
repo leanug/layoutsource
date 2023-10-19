@@ -41,4 +41,14 @@ function isValidType(type) {
   return validTypes.includes(type)
 }
 
-export { isValidSlug, isValidType }
+function sanitizeQueryString(queryString) {
+  // Remove leading and trailing whitespace
+  queryString = queryString?.trim() || '';
+
+  // Remove all characters except letters, numbers, and spaces
+  queryString = queryString?.replace(/[^a-zA-Z0-9\s]/g, '') || '';
+
+  return queryString;
+}
+
+export { isValidSlug, isValidType, sanitizeQueryString }

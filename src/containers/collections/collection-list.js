@@ -1,6 +1,14 @@
 import { CollectionItem } from './collection-item'
 
-export function CollectionList({ designId, collections, addDesign, deleteDesign }) {
+export function CollectionList (props) {
+  const { 
+    designId, 
+    collections, 
+    addDesign, 
+    deleteDesign, 
+    handleModal
+  } = props
+
   return (
     <div className="grid grid-cols-1 gap-4 p-4">
       {
@@ -23,6 +31,7 @@ export function CollectionList({ designId, collections, addDesign, deleteDesign 
               designId={ designId }
               designsIdAry={ designsIdAry }
               deleteDesign={ deleteDesign }
+              handleModal={ handleModal }
               inCollection={ inCollection }
               imageUrl={ imageUrl }
               key={ collection.id }

@@ -1,4 +1,4 @@
-const Button = ({ children, type, onClick }) => {
+export const Button = ({ children, type, onClick }) => {
   return (
     type === 'secondary-gray' && (
       <button
@@ -13,6 +13,4 @@ const Button = ({ children, type, onClick }) => {
       </button>
     )
   );
-};
-
-export default Button;
+}

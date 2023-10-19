@@ -37,13 +37,14 @@ export function Collections({ designId, userId, handleModal }) {
               loading ? (
                 <LoadingIndicator />
               ) : (
-                collections?.length > 0 ? (
+                collections?.length ? (
                   <CollectionList
-                    collections={ collections }
-                    designId={ designId }
-                    userId={ userId }
                     addDesign={ addDesign }
+                    collections={ collections }
                     deleteDesign={ deleteDesign }
+                    designId={ designId }
+                    handleModal={ handleModal }
+                    userId={ userId }
                   />
                 ) : (
                   <p>No collections yet.</p>

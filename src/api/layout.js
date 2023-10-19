@@ -40,21 +40,29 @@ export class Layout {
    * @throws {Error} If an error occurs during the fetch or if the response status is not 200.
    * @returns {Promise<Object>} A promise that resolves to the fetched layouts.
    */
-  async getLayoutsByCategory({ slug = null, page = 1 }) {
+  async getDesignsByCategory({ slug = null, page = 1 }) {
     try {
-      const filters = [];
-      const category = `filters[categories][slug][$eq]=${ slug }`
-      const pagination = `pagination[page]=${ page }&pagination[pageSize]=4`;
-      const populate = 'populate=*';
+      const query = QueryString.stringify({
+        populate: {
+          image: {
+            fields: ['formats', 'height', 'name', 'url', 'width']
+          },
+        },
+        filters: {
+          categories: {
+            slug: {
+              $eq: slug
+            }
+          }
+        },
+        sort: ['updatedAt:desc'],
+        pagination: {
+          page: page,
+          pageSize: 1,
+        },
+      })
 
-      const urlParams = filters.concat(
-        category,
-        pagination,
-        populate
-      )
-      .join('&');
-
-      const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.LAYOUTS }?${ urlParams }`;
+      const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.LAYOUTS }?${ query }`;
       const response = await fetch(url);
       const result = await response.json();
 
@@ -76,26 +84,34 @@ export class Layout {
    * @throws {Error} If an error occurs during the fetch.
    * @returns {Promise<Object>} A promise that resolves to the fetched layouts.
    */
-  async getLayoutsByType({ slug = null, page = 1 }) {
+  async getDesignsByType({ type = '', page = 1 }) {
     try {
-      const filters = [];
-      const categoryType = `filters[categories][type][$eq]=${ slug }`
-      const pagination = `pagination[page]=${ page }&pagination[pageSize]=2`;
-      const populate = 'populate=*';
+      const query = QueryString.stringify({
+        populate: {
+          image: {
+            fields: ['formats', 'height', 'name', 'url', 'width']
+          },
+        },
+        filters: {
+          categories: {
+            type: {
+              $eq: type
+            }
+          }
+        },
+        sort: ['updatedAt:desc'],
+        pagination: {
+          page: page,
+          pageSize: 1,
+        },
+      })
 
-      const urlParams = filters.concat(
-        categoryType,
-        pagination,
-        populate
-      )
-      .join('&');
-
-      const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.LAYOUTS }?${ urlParams }`;
+      const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.LAYOUTS }?${ query }`;
       const response = await fetch(url);
       const result = await response.json();
-
+      
       if (response.status !== 200) throw result
-
+      console.log('results from layouts: ', result);
       return result
     } catch (error) {
       console.error(error);
@@ -118,7 +134,7 @@ export class Layout {
         sort: ['title:asc'],
         pagination: {
           page: page,
-          pageSize: 30,
+          pageSize: 1,
         },
       })
 
