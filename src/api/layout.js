@@ -87,11 +87,7 @@ export class Layout {
   async getDesignsByType({ type = '', page = 1 }) {
     try {
       const query = QueryString.stringify({
-        populate: {
-          image: {
-            fields: ['formats', 'height', 'name', 'url', 'width']
-          },
-        },
+        populate: '*',
         filters: {
           categories: {
             type: {
@@ -102,7 +98,7 @@ export class Layout {
         sort: ['updatedAt:desc'],
         pagination: {
           page: page,
-          pageSize: 1,
+          pageSize: 40,
         },
       })
 
@@ -122,7 +118,7 @@ export class Layout {
     try {
       const query = QueryString.stringify({
         populate: {
-          image: {
+          cover: {
             fields: ['formats', 'height', 'name', 'url', 'width']
           },
         },
@@ -159,7 +155,7 @@ export class Layout {
    * @param {string} designSlug - The slug of the design to retrieve.
    * @returns {Promise<object|null>} - A Promise that resolves to the retrieved layout object or null if an error occurs.
    */
-  async getLayoutBySlug(designSlug) {
+  async getDesignBySlug(designSlug) {
     try {
       const query = QueryString.stringify({
         populate: {

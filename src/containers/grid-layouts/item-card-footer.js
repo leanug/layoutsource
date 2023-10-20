@@ -9,7 +9,7 @@ export function ItemCardFooter (props) {
   
   return (
     <div className="flex flex-row items-center justify-between gap-3">
-      <Link href={`/design/${ slug }` }>
+      <Link href={`/showcase/${ slug }` }>
         <h2 className="text-gray-900">
           { title }
         </h2>

@@ -1,7 +1,8 @@
-import Categories from './categories'; // Adjust the path
-import { DesignLikerBtn } from '@/containers/design-liker-btn';
-import Image from 'next/image';
-import { NoResults } from '@/components';
+import Categories from './categories' // Adjust the path
+import { DesignLikerBtn } from '@/containers/design-liker-btn'
+import Image from 'next/image'
+import { NoResults } from '@/components'
+import { useRouter } from 'next/router'
 
 /**
  * LayoutPage component displays information about a design layout.
@@ -11,6 +12,10 @@ import { NoResults } from '@/components';
  * @returns {JSX.Element} - Returns the JSX element to render the layout page.
  */
 export default function LayoutPage ({ data }) {
+  const router = useRouter();
+
+  console.log('router: ', router)
+  console.log('data: ', data)
   if(! data) {
     return (
       <NoResults text="No designs found." />
@@ -24,13 +29,14 @@ export default function LayoutPage ({ data }) {
   const imageName = layoutData.attributes.image.data.attributes.formats.large.name || ''
   const largeImageWidth = layoutData.attributes.image.data.attributes.formats.large.width || ''
   const largeImageHeight = layoutData.attributes.image.data.attributes.formats.large.height || ''
-  console.log(layoutData.attributes.image.data);
+
   return (
     <div className="text-center p-4">
     <h1 className="text-xl font-bold">Layout</h1>
     <p className="mt-2">Likes: { layoutData.likes || 0}</p>
+    <button onClick={ () => router.back() }>Back</button>
     <p>Fonts: { layoutData.fonts || 'N/A'}</p>
-    <div className="mt-4">Categories: <CategoryList categories={ categories } /></div>
+    {/* <div className="mt-4">Categories: <CategoryList categories={ categories } /></div> */}
     <DesignLikerBtn layoutId={ layoutId } />
     <div className="mt-4">
       {

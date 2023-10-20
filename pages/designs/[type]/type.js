@@ -4,7 +4,7 @@ import {
 } from "@/components"
 import PropTypes from 'prop-types'
 import { useDesigns } from "@/hooks"
-import { useEffect, useState } from 'react'
+import { useEffect } from 'react'
 import { useFirstRender } from "@/hooks/use-first-render"
 
 /**
@@ -29,7 +29,7 @@ const DesignsByTypePage = (props) => {
   } = data || {}
   const { loading, fetchDesignsByType, designs } = useDesigns(layouts)
   const { firstRender } = useFirstRender()
-  
+  console.log(layouts);
   // Load designs on type page change
   useEffect(() => {
     if(firstRender === false) {
@@ -52,12 +52,12 @@ const DesignsByTypePage = (props) => {
         categorySlug={ categorySlug }
         type={ type }
         categories={ categories }
-        designCount={ pagination.total }
+        designCount={ pagination?.total || 0 }
       />
       <PaginatedDesigns 
         designs={ designs } 
         loading={ loading }
-        totalPages={ pagination.total }
+        totalPages={ pagination?.total || 0 }
         fetchDesigns={ () => fetchDesignsByType(type) }
       />
     </>
