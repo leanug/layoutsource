@@ -6,6 +6,7 @@ import PropTypes from 'prop-types'
 import { useDesigns } from "@/hooks"
 import { useEffect } from 'react'
 import { useFirstRender } from "@/hooks/use-first-render"
+import { useDesignsStore } from "@/store"
 
 /**
  * PageTypePage component displays a page with categories and designs based on the provided data.
@@ -19,8 +20,8 @@ import { useFirstRender } from "@/hooks/use-first-render"
  * @returns {JSX.Element} React component.
  */
 const DesignsByTypePage = (props) => {
-  console.log(props);
-  /* return <div>No data yet</div> */
+  const { getByType } = useDesignsStore()
+  /* console.log(props); */
 
   const { data } = props
   const { 
@@ -32,9 +33,11 @@ const DesignsByTypePage = (props) => {
   } = data || {}
   const { loading, fetchDesignsByType, designs } = useDesigns(layouts)
   const { firstRender } = useFirstRender()
-  console.log(props);
+  
   // Load designs on type page change
   useEffect(() => {
+    getByType()
+
     if(firstRender === false) {
       fetchDesignsByType(type, 1)
     }

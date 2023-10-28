@@ -1,5 +1,9 @@
-import React, { useState } from 'react';
-import { ColorSelector } from '.';
+import React, { useState } from 'react'
+import { ColorSelector } from '.'
+
+import { Layout } from '@/api'
+
+const layoutCtrl = new Layout()
 
 export function DropdownMenu () {
   const [dropdownVisible, setDropdownVisible] = useState(false);
@@ -22,13 +26,13 @@ export function DropdownMenu () {
         <div className="absolute z-40 mt-10 p-2 bg-gray-100 rounded-lg shadow-lg mr-0">
           {/* Additional content goes here */}
           <a href="#" className="block hover:bg-gray-200 py-2 px-4">
-            Item 1
+            Latest
           </a>
           <a href="#" className="block hover:bg-gray-200 py-2 px-4">
-            Item 2
+            Views
           </a>
           <a href="#" className="block hover-bg-gray-200 py-2 px-4">
-            Item 3
+            Likes
           </a>
           <ColorSelector />
         </div>
