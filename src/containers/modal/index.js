@@ -18,7 +18,7 @@ export const Modal = () => {
       >
         <div className="bg-white relative p-5 shadow-lg rounded flex flex-col items-start text-lg text-gray-800">
           <button
-            className="absolute top-0 right-0 -mt-12 font-bold self-end rounded-full  mb-3 bg-white text-red-700 w-8 h-8"
+            className="absolute top-0 right-0 font-bold self-end rounded-full  mb-3 bg-white text-red-700 w-8 h-8"
             onClick={() => handleModal()}
           >
             &times;

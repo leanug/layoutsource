@@ -1,46 +1,33 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import Image from "next/image"
 import { DesignLikerBtn } from "@/containers"
 import { BookmarkRegular } from '@/components'
-import Link from "next/link"
 import { ItemCardFooter } from "./item-card-footer"
-import {useRouter} from "next/router"
+import fallbackImg from '@/assets/images/default.png'
 
 export default function GridItem(props) {
+  const { layout, openCollectionsModal, user, showcaseDesign } = props
   console.log(props);
-  const { layout, openCollectionsModal, user } = props
-  const [likes, setLikes] = useState(layout.attributes.likes)
-  const imgData = layout?.attributes?.cover?.data
-  const dataURL = imgData?.attributes.formats?.small.url || imgData?.attributes.url;
-  const altImg = imgData?.attributes.name || ''
-  const designSlug = layout.attributes.slug
-  const router = useRouter()
-
-  const handleRouter = (designSlug) => {
-    // Navigate to the card details page
-    router.push(`/showcase/${designSlug}`, undefined, { shallow: true });
-  };
+  const [likes, setLikes] = useState(layout.likes)
 
   return (
     <div key={ layout.id }>
       <div className="transition h-full flex flex-col justify-between">
         <div className="w-full mb-4 relative group flex-grow overflow-hidden">
           <div 
-            className="h-full max-h-[420px] overflow-hidden w-full bg-slate-200 origin-top"
-            onClick={ () => handleRouter(designSlug) }
+            className="h-full max-h-[420px] overflow-hidden w-full bg-slate-200 origin-top cursor-pointer"
+            onClick={ () => showcaseDesign(designSlug) }
           >
             {
-              imgData ? (
+              layout?.cover ? (
                 <Image
-                  src={ dataURL }
-                  alt={ altImg }
+                  src={ layout?.cover && layout.cover?.url ? layout.cover.url : fallbackImg }
+                  alt={ layout.title }
                   className="w-full h-full object-cover rounded-md mx-auto origin-top"
                   width="0"
                   height="0"
                   sizes="100vw"
-                  /* blurDataURL={ dataURL } */
-                  /* placeholder="blur" */
-                  priority={false}
+                  priority={ false }
                 />
               ) : null
             }
@@ -67,10 +54,10 @@ export default function GridItem(props) {
         </div>
         <div className="row-span-1">
           <ItemCardFooter
-            slug={ layout.attributes.slug }
-            title={ layout.attributes.title }
-            likes={ likes }
-            views={ layout.attributes.views }
+            slug={ layout.slug }
+            title={ layout.title }
+            likes={ layout.likes }
+            views={ layout.views }
           />
         </div>
       </div>

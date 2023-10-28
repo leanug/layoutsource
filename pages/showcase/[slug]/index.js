@@ -13,9 +13,7 @@ export { default } from './slug'
  * @returns {object} - An object containing props for the design page.
  */
 export async function getServerSideProps(context) {
-  console.log('hola');
   const layoutCtrl = new Layout()
-  console.log('context', context);
   const { params: { slug: designSlug } } = context
 
   if(! isValidSlug(designSlug)) {
@@ -28,7 +26,7 @@ export async function getServerSideProps(context) {
 
   try {
     const response = await layoutCtrl.getDesignBySlug(designSlug)
-    console.log('response', response);
+   
     if(! response?.data) {
       if(ENV.IS_DEV) {
         console.error(`No data found for designSlug: ${ designSlug }, ${ response }`)

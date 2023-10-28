@@ -2,7 +2,6 @@ import Categories from './categories' // Adjust the path
 import { DesignLikerBtn } from '@/containers/design-liker-btn'
 import Image from 'next/image'
 import { NoResults } from '@/components'
-import { useRouter } from 'next/router'
 
 /**
  * LayoutPage component displays information about a design layout.
@@ -12,10 +11,7 @@ import { useRouter } from 'next/router'
  * @returns {JSX.Element} - Returns the JSX element to render the layout page.
  */
 export default function LayoutPage ({ data }) {
-  const router = useRouter();
-
-  console.log('router: ', router)
-  console.log('data: ', data)
+  
   if(! data) {
     return (
       <NoResults text="No designs found." />

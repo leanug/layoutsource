@@ -1,5 +1,11 @@
-import { ENV, authFetch } from '@/utils';
+import { ENV, authFetch, mapDesigns, mapPagination } from '@/utils';
 import QueryString from 'qs'
+
+const VALID_SORT_OPTIONS = {
+  updatedAt: 'updatedAt:desc',
+  views: 'views:desc',
+  likes: 'likes:desc',
+}
 
 export class Layout {
   async getFeaturedLayouts({ limit = 8, categoryId = null }) {
@@ -84,10 +90,22 @@ export class Layout {
    * @throws {Error} If an error occurs during the fetch.
    * @returns {Promise<Object>} A promise that resolves to the fetched layouts.
    */
-  async getDesignsByType({ type = '', page = 1 }) {
+  async getDesignsByType({ type = '', page = 1, sortBy = 'updatedAt' }) {
     try {
+      // Define a map of valid sort options to avoid potential security risks.
+      
+
+      // Check if the provided sortBy value is a valid option; default to 'updatedAt' if not.
+      const sortParam = VALID_SORT_OPTIONS[sortBy] || VALID_SORT_OPTIONS.updatedAt;
+
       const query = QueryString.stringify({
-        populate: '*',
+        fields: ['title', 'views', 'likes', 'slug'],
+        // Use the populate parameter to fetch additional data
+        populate: {
+          cover: {
+            fields: ['height', 'name', 'url', 'width']
+          },
+        },
         filters: {
           categories: {
             type: {
@@ -95,22 +113,39 @@ export class Layout {
             }
           }
         },
-        sort: ['updatedAt:desc'],
+        sort: [sortParam],
         pagination: {
           page: page,
-          pageSize: 40,
+          pageSize: 4,
         },
       })
 
-      const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.LAYOUTS }?${ query }`;
-      const response = await fetch(url);
-      const result = await response.json();
+      const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.LAYOUTS }?${ query }`
+      const response = await fetch(url)
+      const result = await response.json()
       
-      if (response.status !== 200) throw result
-      console.log('results from layouts: ', result);
-      return result
+      if (response.status !== 200) {
+        // This throw statement will stop the execution
+        throw new Error('HTTP Error: ' + response.status);
+      }
+      
+      const { data, meta } = result
+
+      // Map design data
+      const mappedDesigns = mapDesigns(data)
+      const mappedPagination = mapPagination(meta)
+
+      return {
+        designs: mappedDesigns,
+        pagination: result.meta,
+      }
     } catch (error) {
-      console.error(error);
+      if(ENV.IS_DEV) {
+        console.error(error)
+      }
+      return {
+        error: "An error occurred while fetching the data.",
+      };
     }
   }
 

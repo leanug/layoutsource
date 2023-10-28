@@ -27,20 +27,20 @@ export async function getServerSideProps (context) {
   }
 
   try {
-    const layoutsResponse = await layoutCtrl.getDesignsByType({ 
+    const dataResponse = await layoutCtrl.getDesignsByType({ 
       type: type,
       page: 1
     })
 
     const categoriesResponse = await categoryCtrl.getCategoriesByType(type)
     
-    if (layoutsResponse && categoriesResponse)
+    if (dataResponse && categoriesResponse)
       return {
         props: {
           data: {
-            layouts: layoutsResponse.data,
-            type: type,
-            pagination: layoutsResponse.meta.pagination,
+            designs: dataResponse.designs,
+            type,
+            ...dataResponse.pagination,
             categories: categoriesResponse.data,
             categorySlug: 'all'
           },

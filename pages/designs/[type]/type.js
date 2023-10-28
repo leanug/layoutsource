@@ -19,9 +19,12 @@ import { useFirstRender } from "@/hooks/use-first-render"
  * @returns {JSX.Element} React component.
  */
 const DesignsByTypePage = (props) => {
+  console.log(props);
+  /* return <div>No data yet</div> */
+
   const { data } = props
   const { 
-    layouts, 
+    designs: layouts, 
     type, 
     categories, 
     categorySlug,
@@ -29,14 +32,14 @@ const DesignsByTypePage = (props) => {
   } = data || {}
   const { loading, fetchDesignsByType, designs } = useDesigns(layouts)
   const { firstRender } = useFirstRender()
-  console.log(layouts);
+  console.log(props);
   // Load designs on type page change
   useEffect(() => {
     if(firstRender === false) {
       fetchDesignsByType(type, 1)
     }
   }, [type])
-
+  
   // Check if there are layouts. If not, display a message.
   if (! designs ) {
     return (

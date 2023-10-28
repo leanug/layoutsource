@@ -19,7 +19,7 @@ export function DropdownMenu () {
         Click me
       </button>
       {dropdownVisible && (
-        <div className="absolute mt-10 p-2 bg-gray-100 rounded-lg shadow-lg mr-0">
+        <div className="absolute z-40 mt-10 p-2 bg-gray-100 rounded-lg shadow-lg mr-0">
           {/* Additional content goes here */}
           <a href="#" className="block hover:bg-gray-200 py-2 px-4">
             Item 1

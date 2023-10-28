@@ -1,13 +1,16 @@
 import GridItem from "./grid-item"
-import { useContext } from "react"
+import { useContext, useEffect } from "react"
 import { ModalContext } from "@/contexts"
 import { Collections } from "@/containers"
 import { useAuth } from "@/hooks"
+import { ShowcaseDesign } from "@/components"
+import { useRouter } from "next/router"
 
 export function GridLayouts ({ layouts }) {
-  let { handleModal } = useContext(ModalContext);
+  let { handleModal, modal } = useContext(ModalContext);
   const { user } = useAuth()
-  
+  const router = useRouter()
+
   const openCollectionsModal = (designId) => {
     const modalContent = <Collections 
       userId={ user.id } 
@@ -16,7 +19,21 @@ export function GridLayouts ({ layouts }) {
     />
     handleModal(modalContent)
   }
-  console.log(layouts);
+
+  // Restore the URL to its previous state, when showcase design modal is closed
+  useEffect(() => {
+    if(! modal) {
+    window.history.pushState(null, null, router.asPath);
+    }
+  }, [modal])
+
+  const showcaseDesign = (designSlug) => {
+    // Use JavaScript history to navigate without page reload
+    window.history.pushState(null, null, `/showcase/${ designSlug }`);
+    const modalContent = <ShowcaseDesign />
+    handleModal(modalContent)
+  }
+  
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-9">
       {
@@ -26,6 +43,7 @@ export function GridLayouts ({ layouts }) {
             key={ layout.id } 
             layout={ layout } 
             openCollectionsModal={ openCollectionsModal }
+            showcaseDesign={ showcaseDesign }
           />
         ))
       }
