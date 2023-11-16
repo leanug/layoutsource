@@ -1,4 +1,5 @@
 import { ENV } from "@/utils";
+import QueryString from 'qs'
 
 export class Category {
   async getAll () {
@@ -14,18 +15,40 @@ export class Category {
     }
   }
 
-  async getCategoriesByType (type = 'home-pages') {
+  async getCategoriesByType (type = 'homepages') {
     try {
-      const sort = 'sort=order:asc'
-      const filters = `filters[type][$eq]=${ type }`
-      const urlParams = `${ sort }&${ filters }`
-      const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.CATEGORY }?${ urlParams }` //?populate=icon to get all the icons
+      const query = QueryString.stringify({
+        // Use the populate parameter to fetch additional data
+        populate: ['title', 'slug'],
+        filters: {
+          type: {
+            slug: {
+              $eq: type
+            }
+            
+          }
+          /* slug: { $eq: 'blog'} */
+        },
+        sort: ['order:asc'],
+      })
+
+      const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.CATEGORY }?${ query }`
       const response = await fetch(url)
       const result = await response.json()
-      if (response.status !== 200) throw result
+      
+      if (response.status !== 200) {
+        if(ENV.IS_DEV) {
+          console.error('API request failed', result)
+        }
+        return null
+      }
+
       return result
     } catch (error) {
-      console.error(error)
+      if(ENV.IS_DEV) {
+        console.error('Error while fetching categories by type: ', error)
+      }
+      return null
     }
   }
 

@@ -5,13 +5,13 @@ export function Navigation() {
     <nav>
       <ul className="flex space-x-4">
         <li>
-          <Link href="/designs/home-pages">Homepages</Link>
+          <Link href="/designs/homepages">Homepages</Link>
         </li>
         <li>
-          <Link href="/designs/inner-pages">Subpages</Link>
+          <Link href="/designs/subpages">Subpages</Link>
         </li>
         <li>
-          <Link href="/designs/landing-pages">Landingpages</Link>
+          <Link href="/designs/landingpages">Landingpages</Link>
         </li>
         <li>
           <Link href="/designs/components">Components</Link>

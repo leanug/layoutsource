@@ -33,9 +33,9 @@ function isValidSlug(input) {
  */
 function isValidType(type) {
   const validTypes = [
-    'home-pages', 
-    'inner-pages', 
-    'landing-pages', 
+    'homepages', 
+    'innerpages', 
+    'landingpages', 
     'components'
   ];
   return validTypes.includes(type)

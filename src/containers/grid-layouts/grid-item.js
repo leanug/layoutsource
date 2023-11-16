@@ -7,15 +7,14 @@ import fallbackImg from '@/assets/images/default.png'
 
 export default function GridItem(props) {
   const { layout, openCollectionsModal, user, showcaseDesign } = props
-  console.log(props);
   const [likes, setLikes] = useState(layout.likes)
 
   return (
     <div key={ layout.id }>
-      <div className="transition h-full flex flex-col justify-between">
+      <div className="transition h-full flex flex-col justify-between dark:text-white">
         <div className="w-full mb-4 relative group flex-grow overflow-hidden">
           <div 
-            className="h-full max-h-[420px] overflow-hidden w-full bg-slate-200 origin-top cursor-pointer"
+            className="h-full max-h-[420px] overflow-hidden w-full bg-slate-200 origin-top cursor-pointer rounded-lg"
             onClick={ () => showcaseDesign(designSlug) }
           >
             {
@@ -23,7 +22,7 @@ export default function GridItem(props) {
                 <Image
                   src={ layout?.cover && layout.cover?.url ? layout.cover.url : fallbackImg }
                   alt={ layout.title }
-                  className="w-full h-full object-cover rounded-md mx-auto origin-top"
+                  className="w-full h-full object-cover mx-auto origin-top"
                   width="0"
                   height="0"
                   sizes="100vw"
@@ -58,6 +57,7 @@ export default function GridItem(props) {
             title={ layout.title }
             likes={ layout.likes }
             views={ layout.views }
+            showcaseDesign={ showcaseDesign }
           />
         </div>
       </div>

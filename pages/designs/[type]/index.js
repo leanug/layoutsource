@@ -1,4 +1,4 @@
-import { Layout, Category } from '@/api'
+import { Category } from '@/api'
 import { isValidType } from '@/utils/validation';
 import { ENV } from '@/utils';
 
@@ -14,9 +14,8 @@ export { default } from './type'
  */
 export async function getServerSideProps (context) {
   const { params: { type } } = context;
-  const layoutCtrl = new Layout()
   const categoryCtrl = new Category()
-  
+
   // Validate the 'type' parameter
   if (! isValidType(type)) {
     return {
@@ -27,38 +26,29 @@ export async function getServerSideProps (context) {
   }
 
   try {
-    const dataResponse = await layoutCtrl.getDesignsByType({ 
-      type: type,
-      page: 1
-    })
-
     const categoriesResponse = await categoryCtrl.getCategoriesByType(type)
     
-    if (dataResponse && categoriesResponse)
+    if (categoriesResponse)
       return {
         props: {
           data: {
-            designs: dataResponse.designs,
-            type,
-            ...dataResponse.pagination,
             categories: categoriesResponse.data,
-            categorySlug: 'all'
           },
         }
       }
 
-    if (! layoutsResponse) 
-      throw new Error('Error fetching layouts data');
-
-    if (! categoriesResponse) 
-      throw new Error('Error fetching categories data');
+    if (! categoriesResponse) {
+      throw new Error('Error fetching categories data')
+    }
   } catch (error) {
-    console.error(error)
+    if(ENV.IS_DEV) {
+      console.error(error)
+    }
   }
 
   return {
     props: {
       data: null
-    },
-  };
+    }
+  }
 }

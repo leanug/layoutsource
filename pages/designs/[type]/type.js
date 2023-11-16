@@ -1,12 +1,17 @@
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/router'
+import PropTypes from 'prop-types'
+
+import { Layout } from "@/api"
+
+import { useDesigns, useFirstRender } from "@/hooks"
+
 import { 
   PageMenu, 
   PaginatedDesigns  
 } from "@/components"
-import PropTypes from 'prop-types'
-import { useDesigns } from "@/hooks"
-import { useEffect } from 'react'
-import { useFirstRender } from "@/hooks/use-first-render"
-import { useDesignsStore } from "@/store"
+
+const layoutCtrl = new Layout()
 
 /**
  * PageTypePage component displays a page with categories and designs based on the provided data.
@@ -20,51 +25,75 @@ import { useDesignsStore } from "@/store"
  * @returns {JSX.Element} React component.
  */
 const DesignsByTypePage = (props) => {
-  const { getByType } = useDesignsStore()
-  /* console.log(props); */
-
   const { data } = props
-  const { 
-    designs: layouts, 
-    type, 
-    categories, 
-    categorySlug,
-    pagination 
-  } = data || {}
-  const { loading, fetchDesignsByType, designs } = useDesigns(layouts)
+  const { categories } = data || {}
+
+  /* const { loading, fetchDesignsByType, designs } = useDesigns(layouts) */
   const { firstRender } = useFirstRender()
-  
+  const [page, setPage] = useState(1)
+  const [designs, setDesigns] = useState([])
+  const [loading, setLoading] = useState(false)
+  const [sortBy, setSortBy] = useState('updatedAt')
+  const [pagination, setPagination] = useState({})
+  const router = useRouter()
+
+  const category = 'all'
+  const { type } = router.query
+
   // Load designs on type page change
   useEffect(() => {
-    getByType()
-
-    if(firstRender === false) {
-      fetchDesignsByType(type, 1)
-    }
+    (async () => {
+      const newData = await layoutCtrl.getDesigns({ type, page: 1, sortBy: 'updatedAt' })
+      setPage(1)
+      setSortBy('updatedAt')
+      setDesigns(newData.designs)
+      setPagination(newData.pagination)
+    })()
   }, [type])
-  
-  // Check if there are layouts. If not, display a message.
-  if (! designs ) {
-    return (
-      <>
-        <p>No designs available.</p>
-      </>
-    );
+
+  // Load designs on type page change
+  useEffect(() => {
+    if(firstRender === false) {
+      (async () => {
+        const newData = await layoutCtrl.getDesigns({ type, page: 1, sortBy })
+        setPage(1)
+        setDesigns(newData.designs)
+        setPagination(newData.pagination)
+      })()
+    }
+  }, [sortBy])
+
+  useEffect(() => {
+    if(firstRender === false && page !== 1) {
+      (async () => {
+        const newData = await layoutCtrl.getDesigns({ type, page, sortBy })
+        setDesigns([...designs, ...newData.designs])
+      })()
+    }
+  }, [page])
+
+  const handlePage = () => {
+    setPage(prevPage => prevPage + 1)
+  }
+
+  const handleSorting = (sortBy) => {
+    setSortBy(sortBy)
   }
 
   return (
     <>
       <PageMenu 
-        categorySlug={ categorySlug }
+        categorySlug={ category }
         type={ type }
         categories={ categories }
-        designCount={ pagination?.total || 0 }
+        designCount={ pagination?.totalPages || 0 }
+        handleSorting={ handleSorting }
       />
       <PaginatedDesigns 
         designs={ designs } 
         loading={ loading }
-        totalPages={ pagination?.total || 0 }
-        fetchDesigns={ () => fetchDesignsByType(type) }
+        totalPages={ pagination?.totalPages || 0 }
+        handlePage={ handlePage }
       />
     </>
   )
@@ -73,11 +102,7 @@ const DesignsByTypePage = (props) => {
 // Define PropTypes for your component
 DesignsByTypePage.propTypes = {
   data: PropTypes.shape({
-    layouts: PropTypes.array,
-    type: PropTypes.string.isRequired,
     categories: PropTypes.array,
-    categorySlug: PropTypes.string,
-    pagination: PropTypes.object,
   }),
 };
 

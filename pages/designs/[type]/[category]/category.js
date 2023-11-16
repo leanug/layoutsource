@@ -1,66 +1,108 @@
+import { useEffect, useState } from 'react'
+import { useRouter } from 'next/router'
+import PropTypes from 'prop-types'
+
 import { Layout } from "@/api"
+
+import { useDesigns, useFirstRender } from "@/hooks"
+
 import { 
   PageMenu, 
   PaginatedDesigns  
 } from "@/components"
-import { useDesigns } from "@/hooks"
-import { useFirstRender } from "@/hooks/use-first-render"
-import { useEffect } from "react"
+
+const layoutCtrl = new Layout()
 
 /**
  * PageTypePage component displays a page with categories and designs based on the provided data.
  *
  * @param {Object} props - Component props.
  * @param {Object} props.data - The data containing layouts, type, categories, and pagination.
- * @param {Array} props.data.layouts - An array of layout data to display.
+ * @param {Array} [props.data.layouts] - An array of layout data to display.
  * @param {string} props.data.type - The type of layouts to display.
- * @param {Array} props.data.categories - An array of category data to display.
- * @param {Object} props.data.pagination - Pagination data for layouts.
+ * @param {Array} [props.data.categories] - An array of category data to display.
+ * @param {Object} [props.data.pagination] - Pagination data for layouts.
  * @returns {JSX.Element} React component.
  */
 const DesignsByCategoryPage = (props) => {
   const { data } = props
-  const { 
-    designData, 
-    type,
-    categorySlug,
-    categories, 
-    pagination 
-  } = data || {}
-  const { loading, fetchDesignsByCategory, designs } = useDesigns(designData)
+  const { categories } = data || {}
+
+  /* const { loading, fetchDesignsByType, designs } = useDesigns(layouts) */
   const { firstRender } = useFirstRender()
+  const [page, setPage] = useState(1)
+  const [designs, setDesigns] = useState([])
+  const [loading, setLoading] = useState(false)
+  const [sortBy, setSortBy] = useState('updatedAt')
+  const [pagination, setPagination] = useState({})
+  const router = useRouter()
 
-  // Load designs on category page change
+  const { type, category } = router.query
+
+  // Load designs on type page change
   useEffect(() => {
-    if(firstRender === false)
-      fetchDesignsByCategory(categorySlug, 1)
-  }, [categorySlug])
+    (async () => {
+      const newData = await layoutCtrl.getDesigns({ type, page: 1, sortBy: 'updatedAt', category })
+      setPage(1)
+      setSortBy('updatedAt')
+      setDesigns(newData.designs)
+      setPagination(newData.pagination)
+    })()
+  }, [category, type])
 
-  // Check if there are layouts. If not, display a message.
-  if (! designs ) {
-    return (
-      <section className="section-full">
-        <p>No data available.</p>
-      </section>
-    );
+  // Load designs on type page change
+  useEffect(() => {
+    if(firstRender === false) {
+      (async () => {
+        const newData = await layoutCtrl.getDesigns({ type, page: 1, sortBy, category })
+        setPage(1)
+        setDesigns(newData.designs)
+        setPagination(newData.pagination)
+      })()
+    }
+  }, [sortBy])
+
+  useEffect(() => {
+    if(firstRender === false && page !== 1) {
+      (async () => {
+        const newData = await layoutCtrl.getDesigns({ type, page, sortBy, category })
+        setDesigns([...designs, ...newData.designs])
+      })()
+    }
+  }, [page])
+
+  const handlePage = () => {
+    setPage(prevPage => prevPage + 1)
+  }
+
+  const handleSorting = (sortBy) => {
+    setSortBy(sortBy)
   }
 
   return (
     <>
       <PageMenu 
+        categorySlug={ category }
         type={ type }
-        categorySlug={ categorySlug }
         categories={ categories }
-        designCount={ pagination.total }
+        designCount={ pagination?.totalPages || 0 }
+        handleSorting={ handleSorting }
       />
       <PaginatedDesigns 
         designs={ designs } 
         loading={ loading }
-        totalPages={ pagination.total }
-        fetchDesigns={ () => fetchDesignsByCategory(categorySlug) }
+        totalPages={ pagination?.totalPages || 0 }
+        handlePage={ handlePage }
       />
     </>
   )
 }
+
+// Define PropTypes for your component
+DesignsByCategoryPage.propTypes = {
+  data: PropTypes.shape({
+    categories: PropTypes.array,
+  }),
+};
 
 export default DesignsByCategoryPage

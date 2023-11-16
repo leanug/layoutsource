@@ -1,13 +1,13 @@
 import { Button } from '@/components'
 
-export function MoreDesigns ({ totalDesigns, totalPages, fetchDesigns }) {
+export function MoreDesigns ({ totalDesigns, totalPages, handlePage }) {
 
   return (
     (totalDesigns || 0) < (totalPages || 0) ? (
       <div className="flex justify-center my-12">
         <Button
           type="secondary-gray"
-          onClick={ () => fetchDesigns() }
+          onClick={ () => handlePage() }
         >
           Load More
         </Button>

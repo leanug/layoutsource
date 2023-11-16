@@ -1,16 +1,13 @@
 import React, { useState } from 'react'
 import { ColorSelector } from '.'
 
-import { Layout } from '@/api'
 
-const layoutCtrl = new Layout()
-
-export function DropdownMenu () {
+export function DropdownMenu ({ handleSorting }) {
   const [dropdownVisible, setDropdownVisible] = useState(false);
 
   const toggleDropdown = () => {
     setDropdownVisible(!dropdownVisible);
-  };
+  }
 
   return (
     <div className="relative flex justify-end">
@@ -22,21 +19,32 @@ export function DropdownMenu () {
       >
         Click me
       </button>
-      {dropdownVisible && (
-        <div className="absolute z-40 mt-10 p-2 bg-gray-100 rounded-lg shadow-lg mr-0">
-          {/* Additional content goes here */}
-          <a href="#" className="block hover:bg-gray-200 py-2 px-4">
-            Latest
-          </a>
-          <a href="#" className="block hover:bg-gray-200 py-2 px-4">
-            Views
-          </a>
-          <a href="#" className="block hover-bg-gray-200 py-2 px-4">
-            Likes
-          </a>
-          <ColorSelector />
-        </div>
-      )}
+      {
+        dropdownVisible && (
+          <div className="absolute z-40 mt-10 p-2 bg-gray-100 rounded-lg shadow-lg mr-0">
+            {/* Additional content goes here */}
+            <button 
+              onClick={ () => handleSorting('updatedAt') } 
+              className="block hover:bg-gray-200 py-2 px-4 dark:text-gray-800"
+            >
+              Latest
+            </button>
+            <button 
+              onClick={ () => handleSorting('views') } 
+              className="block hover:bg-gray-200 py-2 px-4 dark:text-gray-800"
+            >
+              Views
+            </button>
+            <button 
+              onClick={ () => handleSorting('likes') } 
+              className="block hover:bg-gray-200 py-2 px-4 dark:text-gray-800"
+            >
+              Likes
+            </button>
+            <ColorSelector />
+          </div>
+        )
+      }
     </div>
   );
 }

@@ -13,7 +13,7 @@ import { MoreDesigns } from './more-designs'
  * @returns {JSX.Element} React component.
  */
 export function PaginatedDesigns (props) {
-  const { loading, designs, totalPages, fetchDesigns } = props
+  const { loading, designs, totalPages, handlePage } = props
   
   return (
     <section className="section-full">
@@ -36,7 +36,7 @@ export function PaginatedDesigns (props) {
       <MoreDesigns 
         totalDesigns={ designs?.length }
         totalPages={ totalPages }
-        fetchDesigns={ fetchDesigns }
+        handlePage={ handlePage }
       />
     </section>
   );

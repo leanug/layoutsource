@@ -37,50 +37,6 @@ export class Layout {
   }
 
   /**
-   * Fetch layouts by category slug and page.
-   *
-   * @async
-   * @param {Object} options - The options for fetching layouts.
-   * @param {string} options.slug - The category slug to filter layouts.
-   * @param {number} options.page - The page number for pagination.
-   * @throws {Error} If an error occurs during the fetch or if the response status is not 200.
-   * @returns {Promise<Object>} A promise that resolves to the fetched layouts.
-   */
-  async getDesignsByCategory({ slug = null, page = 1 }) {
-    try {
-      const query = QueryString.stringify({
-        populate: {
-          image: {
-            fields: ['formats', 'height', 'name', 'url', 'width']
-          },
-        },
-        filters: {
-          categories: {
-            slug: {
-              $eq: slug
-            }
-          }
-        },
-        sort: ['updatedAt:desc'],
-        pagination: {
-          page: page,
-          pageSize: 1,
-        },
-      })
-
-      const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.LAYOUTS }?${ query }`;
-      const response = await fetch(url);
-      const result = await response.json();
-
-      if (response.status !== 200) throw result
-
-      return result
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
-  /**
    * Fetch designs by category type and page.
    *
    * @async
@@ -90,13 +46,28 @@ export class Layout {
    * @throws {Error} If an error occurs during the fetch.
    * @returns {Promise<Object>} A promise that resolves to the fetched layouts.
    */
-  async getDesignsByType({ type = '', page = 1, sortBy = 'updatedAt' }) {
+  async getDesigns({ type = 'homepages', page = 1, sortBy = 'updatedAt:desc', category = 'all' }) {
     try {
-      // Define a map of valid sort options to avoid potential security risks.
-      
-
       // Check if the provided sortBy value is a valid option; default to 'updatedAt' if not.
       const sortParam = VALID_SORT_OPTIONS[sortBy] || VALID_SORT_OPTIONS.updatedAt;
+      
+      // Define the base filters object
+      const filters = {
+        categories: {
+          type: {
+              slug: {
+                  $eq: type
+              }
+          },
+        }
+      }
+
+      // Add the additional filter for 'slug' if category is not 'all'
+      if (category !== 'all') {
+        filters.categories.slug = {
+            $eq: category
+        }
+      }
 
       const query = QueryString.stringify({
         fields: ['title', 'views', 'likes', 'slug'],
@@ -106,20 +77,14 @@ export class Layout {
             fields: ['height', 'name', 'url', 'width']
           },
         },
-        filters: {
-          categories: {
-            type: {
-              $eq: type
-            }
-          }
-        },
+        filters,
         sort: [sortParam],
         pagination: {
           page: page,
-          pageSize: 4,
+          pageSize: 1,
         },
       })
-
+      
       const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.LAYOUTS }?${ query }`
       const response = await fetch(url)
       const result = await response.json()
@@ -130,14 +95,12 @@ export class Layout {
       }
       
       const { data, meta } = result
-
-      // Map design data
       const mappedDesigns = mapDesigns(data)
-      const mappedPagination = mapPagination(meta)
+      const mappedPagination = mapPagination(meta.pagination)
 
       return {
         designs: mappedDesigns,
-        pagination: result.meta,
+        pagination: mappedPagination,
       }
     } catch (error) {
       if(ENV.IS_DEV) {
