@@ -1,10 +1,7 @@
 import { ENV } from "@/utils"
-import { Layout, LikedLayouts } from "@/api"
+import { Layout } from "@/api"
 import { useLoading } from "@/hooks"
 import { useState } from "react"
-
-const layoutCtrl = new Layout()
-const likedLayoutCtrl = new LikedLayouts()
 
 /**
  * Custom hook for managing designs data and fetching new designs.
@@ -12,7 +9,7 @@ const likedLayoutCtrl = new LikedLayouts()
  * @param {Function} fetchFunction - Function to fetch new designs data.
  * @returns {Object} An object containing designs data, loading state, and a function to load more designs.
  */
-export function useDesigns(layoutCtrl, router) {
+export function useSearchDesigns(layoutCtrl, router) {
   /**
    * State to manage loading state.
    * @type {Object}

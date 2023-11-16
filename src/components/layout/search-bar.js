@@ -17,7 +17,7 @@ export function SearchBar() {
   return (
     <input
       id="search-layouts"
-      className="p-2 rounded-lg w-full border border-gray-300 placeholder-gray-400 focus:outline-none focus:border-purple-500"
+      className="p-2 rounded-lg w-full border border-gray-300 placeholder-gray-400 dark:text-gray-800 focus:outline-none focus:border-purple-500 dark:focus:border-purple-100"
       type="text"
       placeholder="Search"
       value={searchText}

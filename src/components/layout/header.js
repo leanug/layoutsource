@@ -20,6 +20,7 @@ export const Header = ({ toggleMenu }) => {
         </Link>
         <Navigation isOpenSearch={ false } />
       </div>
+      
       <SearchBar />
       
       <div className='flex flex-row gap-4'>
