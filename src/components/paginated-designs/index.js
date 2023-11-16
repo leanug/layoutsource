@@ -33,11 +33,17 @@ export function PaginatedDesigns (props) {
           <NoResults text="No layouts found." />
         )
       }
-      <MoreDesigns 
-        totalDesigns={ designs?.length }
-        totalPages={ totalPages }
-        handlePage={ handlePage }
-      />
+      {
+        loading ? (
+          null
+        ) : (
+          <MoreDesigns 
+            totalDesigns={ designs?.length }
+            totalPages={ totalPages }
+            handlePage={ handlePage }
+          />
+        )
+      }
     </section>
   );
 }

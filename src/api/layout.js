@@ -1,4 +1,11 @@
-import { ENV, authFetch, mapDesigns, mapPagination } from '@/utils';
+import { 
+  ENV, 
+  authFetch, 
+  mapDesigns, 
+  mapPagination, 
+  isValidSlug 
+} from '@/utils';
+
 import QueryString from 'qs'
 
 const VALID_SORT_OPTIONS = {
@@ -8,34 +15,6 @@ const VALID_SORT_OPTIONS = {
 }
 
 export class Layout {
-  async getFeaturedLayouts({ limit = 8, categoryId = null }) {
-    try {
-      const filters = [];
-      if (categoryId) filters.push(`filters[categories][id][$eq]=${ categoryId }`);
-      const featured = `filters[featured][$eq]=true`
-      const paginationLimit = `pagination[limit]=${ limit }`;
-      const sort = 'sort=publishedAt:desc';
-      const populate = 'populate=*';
-
-      const urlParams = filters.concat(
-        featured, 
-        paginationLimit, 
-        sort, 
-        populate)
-      .join('&');
-      const url = `${ENV.API_URL}/${ENV.ENDPOINTS.LAYOUTS}?${ urlParams }`;
-
-      const response = await fetch(url);
-      const result = await response.json();
-
-      if (response.status !== 200) throw result
-
-      return result
-    } catch (error) {
-      console.error(error);
-    }
-  }
-
   /**
    * Fetch designs by category type and page.
    *
@@ -46,10 +25,13 @@ export class Layout {
    * @throws {Error} If an error occurs during the fetch.
    * @returns {Promise<Object>} A promise that resolves to the fetched layouts.
    */
-  async getDesigns({ type = 'homepages', page = 1, sortBy = 'updatedAt:desc', category = 'all' }) {
+  async getDesigns({ type = 'homepages', page = 1, sortBy = 'updatedAt', category = 'all' }) {
     try {
       // Check if the provided sortBy value is a valid option; default to 'updatedAt' if not.
-      const sortParam = VALID_SORT_OPTIONS[sortBy] || VALID_SORT_OPTIONS.updatedAt;
+      const sortParam = VALID_SORT_OPTIONS[sortBy] || VALID_SORT_OPTIONS.updatedAt
+
+      // Sanitize category
+      const safeCat = category === 'all' ? 'all' : isValidSlug(category)
       
       // Define the base filters object
       const filters = {
@@ -65,7 +47,7 @@ export class Layout {
       // Add the additional filter for 'slug' if category is not 'all'
       if (category !== 'all') {
         filters.categories.slug = {
-            $eq: category
+            $eq: safeCat
         }
       }
 
