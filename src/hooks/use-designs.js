@@ -1,13 +1,14 @@
 import { useLoading, useFirstRender } from "@/hooks"
+import { Layout } from "@/api"
 import { useState, useEffect } from "react"
+
+const layoutCtrl = new Layout()
 
 /**
  * Custom hook for managing designs data and fetching new designs.
- * @param {Array} initialDesigns - Initial designs data, if available.
- * @param {Function} fetchFunction - Function to fetch new designs data.
  * @returns {Object} An object containing designs data, loading state, and a function to load more designs.
  */
-export function useDesigns(layoutCtrl, router) {
+export function useDesigns(router) {
   const { loading, startLoading, stopLoading } = useLoading()
   const { firstRender } = useFirstRender()
 

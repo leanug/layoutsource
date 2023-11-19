@@ -12,6 +12,7 @@ const VALID_SORT_OPTIONS = {
   updatedAt: 'updatedAt:desc',
   views: 'views:desc',
   likes: 'likes:desc',
+  title: 'title:asc',
 }
 
 export class Layout {
@@ -94,7 +95,10 @@ export class Layout {
     }
   }
 
-  async searchDesigns({text, page}) {
+  async searchDesigns({ queryString, page, sortBy = 'updatedAt' }) {
+     // Check if the provided sortBy value is a valid option; default to 'updatedAt' if not.
+     const sortParam = VALID_SORT_OPTIONS[sortBy] || VALID_SORT_OPTIONS.updatedAt
+
     try {
       const query = QueryString.stringify({
         populate: {
@@ -104,28 +108,40 @@ export class Layout {
         },
         filters: {
           title: {
-            $contains: text
+            $contains: queryString
           }
         },
-        sort: ['title:asc'],
+        sort: [sortParam],
         pagination: {
           page: page,
           pageSize: 1,
         },
       })
 
-      const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.LAYOUTS }?${ query }`;
-      const response = await fetch(url);
-      const result = await response.json();
-
+      const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.LAYOUTS }?${ query }`
+      const response = await fetch(url)
+      const result = await response.json()
+      
       if (response.status !== 200) {
-        throw new Error('Error fetching layouts');
+        // This throw statement will stop the execution
+        throw new Error('HTTP Error: ' + response.status);
       }
+      
+      const { data, meta } = result
+      const mappedDesigns = mapDesigns(data)
+      const mappedPagination = mapPagination(meta.pagination)
 
-      return result;
+      return {
+        designs: mappedDesigns,
+        pagination: mappedPagination,
+      }
     } catch (error) {
-      console.error(error);
-      throw new Error('An error occurred while searching layouts', error);
+      if(ENV.IS_DEV) {
+        console.error(error)
+      }
+      return {
+        error: "An error occurred while fetching the data.",
+      };
     }
   }
 

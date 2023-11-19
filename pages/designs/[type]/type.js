@@ -1,16 +1,10 @@
 import { useRouter } from 'next/router'
 import PropTypes from 'prop-types'
 
-import { Layout } from "@/api"
-
 import { useDesigns } from "@/hooks"
 
-import { 
-  PageMenu, 
-  PaginatedDesigns  
-} from "@/components"
-
-const layoutCtrl = new Layout()
+import { PaginatedDesigns } from "@/components"
+import { PageMenu } from '@/containers'
 
 /**
  * PageTypePage component displays a page with categories and designs 
@@ -34,7 +28,7 @@ const DesignsByTypePage = (props) => {
     handleSorting, 
     handlePage, 
     loading 
-  } = useDesigns(layoutCtrl, router)
+  } = useDesigns(router)
 
   return (
     <>
@@ -42,8 +36,9 @@ const DesignsByTypePage = (props) => {
         categorySlug={ category }
         type={ type }
         categories={ categories }
-        designCount={ pagination?.totalPages || 0 }
+        designCount={ pagination?.totalItems || 0 }
         handleSorting={ handleSorting }
+        displayCategories={ true }
       />
       <PaginatedDesigns 
         designs={ designs } 

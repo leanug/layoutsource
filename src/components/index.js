@@ -1,4 +1,3 @@
-export * from './page-menu'
 export * from './loading-indicator'
 export * from './paginated-designs'
 export * from './notification'

@@ -1,118 +1,95 @@
-import { ENV } from "@/utils"
+import { useState, useEffect } from "react"
 import { Layout } from "@/api"
-import { useLoading } from "@/hooks"
-import { useState } from "react"
+import { useLoading, useFirstRender } from "@/hooks"
+
+const layoutCtrl = new Layout()
 
 /**
  * Custom hook for managing designs data and fetching new designs.
- * @param {Array} initialDesigns - Initial designs data, if available.
- * @param {Function} fetchFunction - Function to fetch new designs data.
  * @returns {Object} An object containing designs data, loading state, and a function to load more designs.
  */
-export function useSearchDesigns(layoutCtrl, router) {
-  /**
-   * State to manage loading state.
-   * @type {Object}
-   * @property {boolean} loading - Indicates whether data is currently being loaded.
-   * @property {Function} startLoading - Function to start loading state.
-   * @property {Function} stopLoading - Function to stop loading state.
-   */
+export function useSearchDesigns(query = '') {
   const { loading, startLoading, stopLoading } = useLoading()
+  const { firstRender } = useFirstRender()
+
   const [designs, setDesigns] = useState([])
   const [page, setPage] = useState(1)
   const [pagination, setPagination] = useState({})
   const [sortBy, setSortBy] = useState('updatedAt')
-  const { type, category } = router.query
-
-  console.log('useDesigns type, cat', type, category);
   
-  /* Fetch designs by type */
-  /* const fetchDesignsByQuery = async (query = '', pageNum) => {
-    try {
-      startLoading()
-      const response = await layoutCtrl.searchDesigns({ 
-        text: query, 
-        page: pageNum ? pageNum : page + 1
-      })
-      
-      setPagination(response?.meta?.pagination || {})
+  // Load designs on type or category page change
+  useEffect(() => {
+    (async () => {
+      try {
+        startLoading()
+        const newData = await layoutCtrl.searchDesigns({ 
+          queryString: query, 
+          page: 1, 
+        })
+        setPage(1)
+        setSortBy('updatedAt') // No search by Title, do not implement
+        setDesigns(newData.designs)
+        setPagination(newData.pagination)
+      } finally {
+        stopLoading()
+      }
+    })()
+  }, [query])
 
-      // User entered page number
-      if(pageNum) {
-        const fetchedDesigns = response?.data || []
-        setDesigns(fetchedDesigns)
-        setPage(pageNum)
-        return
-      } 
-
-      handleFetchResponse(response)
-
-    } catch (error) {
-      handleFetchError(error)
-    } finally {
-      stopLoading()
+  // Load designs on type page change
+  useEffect(() => {
+    if(firstRender === false) {
+      (async () => {
+        try {
+          startLoading()
+          const newData = await layoutCtrl.searchDesigns({ 
+            queryString: query, 
+            page: 1, 
+            sortBy, 
+          })
+          setPage(1)
+          setDesigns(newData.designs)
+          setPagination(newData.pagination)
+        } finally {
+          stopLoading()
+        }
+      })()
     }
-  } */
+  }, [sortBy])
 
-  /* Fetch designs by type */
-  const fetchLikedDesigns = async (userId = '', pageNum) => {
-    try {
-      startLoading()
-      const response = await likedLayoutCtrl.get({ 
-        userId, 
-        page: pageNum ? pageNum : page + 1
-      })
-      
-      setPagination(response?.meta?.pagination || {})
-
-      const mappedResponse = response.data.map(item => {
-        return item.attributes.layout.data
-      })
-      console.log('page=', page);
-
-      console.log('mappedResponse=', mappedResponse);
-      // User entered page number
-      if(pageNum) {
-        const fetchedDesigns = mappedResponse || []
-        setDesigns(fetchedDesigns)
-        setPage(pageNum)
-        return
-      } 
-
-      handleFetchResponse(mappedResponse)
-
-    } catch (error) {
-      handleFetchError(error)
-    } finally {
-      stopLoading()
+  // Load more designs on page change
+  useEffect(() => {
+    if(firstRender === false && page !== 1) {
+      (async () => {
+        try {
+          startLoading()
+          const newData = await layoutCtrl.searchDesigns({ 
+            queryString: query, 
+            page, 
+            sortBy, 
+          })
+          setDesigns([...designs, ...newData.designs])
+        } finally {
+          stopLoading()
+        }
+      })()
     }
+  }, [page])
+
+  const handlePage = () => {
+    setPage(prevPage => prevPage + 1)
   }
 
-  /* Common logic for handling fetch response */
-  const handleFetchResponse = (response) => {
-    const fetchedDesigns = response?.data || [];
-    console.log('handleFetchResponse response= ', response);
-    if (! response?.data) {
-      if (ENV.IS_DEV) {
-        console.error(`No data found: `, response);
-      }
-      return;
-    }
-    setDesigns((prevDesigns) => [...prevDesigns, ...fetchedDesigns]);
-    setPage(page + 1);
-  };
-
-  /* Common logic for handling fetch errors */
-  const handleFetchError = (error) => {
-    if (ENV.IS_DEV) {
-      console.error(`Error fetching designs: `, error);
-    }
-  };
+  const handleSorting = (sortBy) => {
+    setSortBy(sortBy)
+  }
 
   return {
     designs,
+    page,
     loading,
     pagination,
-    fetchLikedDesigns
+    handlePage,
+    handleSorting
   }
 }
