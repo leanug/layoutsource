@@ -1,13 +1,26 @@
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import Image from "next/image"
 import { DesignLikerBtn } from "@/containers"
 import { BookmarkRegular } from '@/components'
 import { ItemCardFooter } from "./item-card-footer"
 import fallbackImg from '@/assets/images/default.png'
 
+/**
+ * Displays a design card with its buttons for logged users
+ *
+ * @returns {JSX.Element} React component.
+ */
 export default function GridItem(props) {
   const { layout, openCollectionsModal, user, showcaseDesign } = props
   const [likes, setLikes] = useState(layout.likes)
+
+  const likeHandler = () => {
+    setLikes(prevLikes => prevLikes + 1)
+  }
+
+  const dislikeHandler = () => {
+    setLikes(prevLikes => likes ? prevLikes - 1 : 0)
+  }
 
   return (
     <div key={ layout.id }>
@@ -43,7 +56,8 @@ export default function GridItem(props) {
                   </button>
                   <DesignLikerBtn 
                     layoutId={ layout.id }
-                    setLikes={ setLikes }
+                    likeHandler={ likeHandler }
+                    dislikeHandler={ dislikeHandler }
                     likes={ likes }
                   />
                 </div>
@@ -55,7 +69,7 @@ export default function GridItem(props) {
           <ItemCardFooter
             slug={ layout.slug }
             title={ layout.title }
-            likes={ layout.likes }
+            likes={ likes } // likes state
             views={ layout.views }
             showcaseDesign={ showcaseDesign }
           />

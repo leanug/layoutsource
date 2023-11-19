@@ -11,6 +11,11 @@ import { PageMenu } from '@/containers'
 
 import { useSearchDesigns } from "@/hooks"
 
+import { Layout } from '@/api';
+
+const layoutCtrl = new Layout()
+
+
 /**
  * SearchPage component for displaying search results.
  * @component
@@ -27,7 +32,7 @@ export default function SearchPage () {
     handleSorting, 
     handlePage, 
     loading 
-  } = useSearchDesigns(safeQuery)
+  } = useSearchDesigns(safeQuery, layoutCtrl)
   
   return (
     <section>

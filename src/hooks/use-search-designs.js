@@ -1,14 +1,11 @@
 import { useState, useEffect } from "react"
-import { Layout } from "@/api"
 import { useLoading, useFirstRender } from "@/hooks"
-
-const layoutCtrl = new Layout()
 
 /**
  * Custom hook for managing designs data and fetching new designs.
  * @returns {Object} An object containing designs data, loading state, and a function to load more designs.
  */
-export function useSearchDesigns(query = '') {
+export function useSearchDesigns(query = '', layoutCtrl) {
   const { loading, startLoading, stopLoading } = useLoading()
   const { firstRender } = useFirstRender()
 
@@ -17,7 +14,7 @@ export function useSearchDesigns(query = '') {
   const [pagination, setPagination] = useState({})
   const [sortBy, setSortBy] = useState('updatedAt')
   
-  // Load designs on type or category page change
+  // Load designs on user input search query change
   useEffect(() => {
     (async () => {
       try {
@@ -36,7 +33,7 @@ export function useSearchDesigns(query = '') {
     })()
   }, [query])
 
-  // Load designs on type page change
+  // Load designs on sortBy parameter change
   useEffect(() => {
     if(firstRender === false) {
       (async () => {

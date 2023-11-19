@@ -6,6 +6,10 @@ import { useDesigns } from "@/hooks"
 import { PaginatedDesigns } from "@/components"
 import { PageMenu } from '@/containers'
 
+import { Layout } from '@/api'
+
+const layoutCtrl = new Layout()
+
 /**
  * DesignsByCategoryPage component displays a page with categories 
  * and designs based on the provided data.
@@ -26,7 +30,7 @@ const DesignsByCategoryPage = (props) => {
     handleSorting, 
     handlePage, 
     loading 
-  } = useDesigns(router)
+  } = useDesigns(router, layoutCtrl)
 
   return (
     <>
