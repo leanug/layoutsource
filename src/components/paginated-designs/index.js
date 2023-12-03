@@ -9,35 +9,33 @@ import { MoreDesigns } from './more-designs'
  * @returns {JSX.Element} React component.
  */
 export function PaginatedDesigns (props) {
-  const { loading, designs, totalPages, handlePage } = props
+  const { loading, designs, totalPages, totalItems, handlePage } = props
   
+  loading && <LoadingIndicator />
+
   return (
     <section className="section-full">
       {
-        designs?.length ? (
+        totalItems ? (
           <>
-            <GridLayouts layouts={ designs } />
+            <GridLayouts layouts={designs} />
+
             {
               loading ? (
                 <div className="flex text-center justify-items-center my-12">
                   <LoadingIndicator />
                 </div>
-              ) : null
+              ) : (
+                <MoreDesigns
+                  totalDesigns={designs?.length}
+                  totalPages={totalPages}
+                  handlePage={handlePage}
+                />
+              )
             }
           </>
         ) : (
-          <NoResults text="No designs found." />
-        )
-      }
-      {
-        loading ? (
-          null
-        ) : (
-          <MoreDesigns 
-            totalDesigns={ designs?.length }
-            totalPages={ totalPages }
-            handlePage={ handlePage }
-          />
+          <NoResults text={ 'No results found' } />
         )
       }
     </section>

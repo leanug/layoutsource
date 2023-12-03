@@ -1,6 +1,6 @@
 export const validTypes = [
   'homepages', 
-  'innerpages', 
+  'subpages', 
   'landingpages', 
   'components'
 ];

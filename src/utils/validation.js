@@ -33,6 +33,7 @@ function isValidSlug(input) {
  */
 function isValidType(type) {
   const validTypes = [
+    'all',
     'homepages', 
     'innerpages', 
     'landingpages', 

@@ -51,6 +51,7 @@ export default function SearchPage () {
               designs={ designs } 
               loading={ loading }
               totalPages={ pagination?.totalPages || 0 }
+              totalItems={ pagination?.totalItems || 0 }
               handlePage={ handlePage }
             />
           </>

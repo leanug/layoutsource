@@ -14,7 +14,7 @@ export function CollectionList (props) {
       {
         collections.map((collection) => {
           const curDesignAry = collection.attributes.designs.data;
-          const imageUrl = curDesignAry[0]?.attributes.image.data.attributes.url || '';
+          const imageUrl = curDesignAry[0]?.attributes.cover.data.attributes.url || '';
           const collectionTitle = collection.attributes?.title || '';
           const collectionId = collection.id
           const inCollection = curDesignAry.some(

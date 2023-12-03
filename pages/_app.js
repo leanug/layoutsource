@@ -1,17 +1,13 @@
-import { AuthProvider, ModalProvider, NotificationProvider } from '@/contexts'
+import { AuthProvider } from '@/contexts'
 import '../src/app/globals.css'
 import { BasicLayout } from '@/components/layout/'
 
 function MyApp({ Component, pageProps }) {
   return (
     <AuthProvider>
-      <NotificationProvider>
-        <ModalProvider>
-          <BasicLayout>
-            <Component { ...pageProps } />
-          </BasicLayout>
-        </ModalProvider>
-      </NotificationProvider>
+      <BasicLayout>
+        <Component { ...pageProps } />
+      </BasicLayout>
     </AuthProvider>
   )
 }

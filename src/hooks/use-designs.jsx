@@ -3,7 +3,8 @@ import { useState, useEffect } from "react"
 
 /**
  * Custom hook for managing designs data and fetching new designs.
- * @returns {Object} An object containing designs data, loading state, and a function to load more designs.
+ * @returns {Object} An object containing designs data, loading state, 
+ * and a function to load more designs.
  */
 export function useDesigns(router, layoutCtrl) {
   const { loading, startLoading, stopLoading } = useLoading()
@@ -13,6 +14,7 @@ export function useDesigns(router, layoutCtrl) {
   const [page, setPage] = useState(1)
   const [pagination, setPagination] = useState({})
   const [sortBy, setSortBy] = useState('updatedAt')
+  const [error, setError] = useState(null)
   
   const { type, category } = router.query
 
@@ -27,10 +29,19 @@ export function useDesigns(router, layoutCtrl) {
           sortBy: 'updatedAt', 
           category 
         })
-        setPage(1)
-        setSortBy('updatedAt')
-        setDesigns(newData.designs)
-        setPagination(newData.pagination)
+        
+        if(newData.error) {
+          setError(newData.error)
+          setPage(1)
+          setDesigns([])
+          setPagination([])
+        } else {
+          setError(null)
+          setPage(1)
+          setSortBy('updatedAt')
+          setDesigns(newData?.designs || [])
+          setPagination(newData?.pagination || [])
+        }
       } finally {
         stopLoading()
       }
@@ -43,15 +54,23 @@ export function useDesigns(router, layoutCtrl) {
       (async () => {
         try {
           startLoading()
-          const newData = await layoutCtrl.getDesigns({ 
-            type, 
+          const newData = await layoutCtrl.getDesigns({
+            type,
             page: 1, 
             sortBy, 
             category 
           })
-          setPage(1)
-          setDesigns(newData.designs)
-          setPagination(newData.pagination)
+          if(newData.error) {
+            setError(newData.error)
+            setPage(1)
+            setDesigns([])
+            setPagination([])
+          } else {
+            setError(null)
+            setPage(1)
+            setDesigns(newData?.designs || [])
+            setPagination(newData?.pagination || [])
+          }
         } finally {
           stopLoading()
         }
@@ -71,7 +90,16 @@ export function useDesigns(router, layoutCtrl) {
             sortBy, 
             category 
           })
-          setDesigns([...designs, ...newData.designs])
+
+          if(newData.error) {
+            setError(newData.error)
+            setPage(1)
+            setDesigns([])
+            setPagination([])
+          } else {
+            setError(null)
+            setDesigns([...designs, ...newData?.designs || []])
+          }
         } finally {
           stopLoading()
         }
@@ -88,6 +116,7 @@ export function useDesigns(router, layoutCtrl) {
   }
   
   return {
+    error,
     designs,
     page,
     loading,

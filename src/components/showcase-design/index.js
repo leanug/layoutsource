@@ -9,13 +9,13 @@ export function ShowcaseDesign () {
   let designCategories = [];
   let designColors = [];
   let imgUrl, imgHeight, imgWidth, fonts;
-
+  console.log(design);
   if (design?.slug) {
     const img = design.image.data.attributes
     console.log(design);
     designCategories = design.categories.data || [];
-    designColors = design.colors || [];
-    fonts = design.fonts
+    designColors = design.colors || []
+    fonts = design?.fonts || []
     imgUrl = img.url;
     imgHeight = img.height;
     imgWidth = img.width;
@@ -28,7 +28,7 @@ export function ShowcaseDesign () {
       <LoadingIndicator />
     ) : (
       design?.slug ? (
-      <div className=" bg-slate-950 text-white">
+      <div className="">
         <h1>{ design.title }</h1>
         {
           designCategories.map(cat => (
@@ -51,7 +51,7 @@ export function ShowcaseDesign () {
         </p>
         <p>Views: { design.views }</p>
 
-        {/* <Image
+        <Image
           src={ imgUrl } // Path to your image in the public folder
           alt={ design.title }
           width={ imgWidth } // The width of the image in pixels
@@ -60,7 +60,7 @@ export function ShowcaseDesign () {
           blurDataURL={ imgUrl }
           placeholder="blur"
           priority={ false }
-          /> */}
+          />
       </div>
       ) : null
     )

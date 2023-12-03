@@ -1,32 +1,44 @@
-import { useEffect } from "react"
-import { useAuth, useDesigns } from "@/hooks"
-import { PaginatedDesigns, NoResults } from "@/components"
+import { useLikedDesigns } from "@/hooks"
 
-export function LikedDesigns() {
-  const { user } = useAuth()
-  const {  } = useDesigns([])
+import { 
+  LoadingIndicator, 
+  NoResults, 
+  PaginatedDesigns 
+} from "@/components"
+
+import { LikedDesigns as LikedDesignsService } from "@/api"
+
+const likedDesignsCtrl = new LikedDesignsService()
+
+export function LikedDesigns({ userId }) {
+ 
   const { 
     loading, 
-    fetchLikedDesigns, 
     designs, 
-    pagination 
-  } = useDesigns([])
+    pagination,
+    handlePage
+  } = useLikedDesigns(userId, likedDesignsCtrl)
 
-  useEffect(() => {
-    fetchLikedDesigns(user.id, 1)
-  }, [user.id])
+  console.log('LikedDesigns rendered')
 
   return (
     <div className="mt-10">
       {
-        designs?.length ? (
-          <PaginatedDesigns 
-            designs={ designs } 
-            loading={ loading }
-            totalPages={ pagination.total }
-            fetchDesigns={ () => fetchLikedDesigns(user.id) }
-          />
-        ) : null
+        loading ? (
+          <LoadingIndicator />
+        ) : (
+          designs?.length ? (
+            <PaginatedDesigns 
+              designs={ designs } 
+              loading={ loading }
+              totalPages={ pagination?.totalPages || 0 }
+              totalItems={ pagination?.totalItems || 0 }
+              handlePage={ handlePage }
+            />
+          ) : (
+            <NoResults text="You don't have any favourite designs yet." />
+          )
+        )
       }
     </div>
   )

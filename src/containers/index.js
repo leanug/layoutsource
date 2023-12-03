@@ -1,5 +1,4 @@
 export { DesignLikerBtn } from './design-liker-btn'
-export { Modal } from './modal'
 export { PageMenu } from './page-menu'
 
 export * from './design-liker-btn'

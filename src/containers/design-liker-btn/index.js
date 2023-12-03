@@ -3,9 +3,9 @@ import { HeartRegular, HeartSolid } from "@/components/icons"
 
 import { useLikeDesign } from "@/hooks"
 
-import { LikedLayouts, Layout } from "@/api"
+import { LikedDesigns, Layout } from "@/api"
 
-const likedLayoutCtrl = new LikedLayouts()
+const likedDesignCtrl = new LikedDesigns()
 const layoutCtrl = new Layout()
 
 /**
@@ -14,15 +14,16 @@ const layoutCtrl = new Layout()
  * @returns {JSX.Element} React component.
  */
 export function DesignLikerBtn(props) {
-  const { layoutId, likes, likeHandler, dislikeHandler } = props
+  const { designId, likes, likeHandler, dislikeHandler, userId } = props
 
   const useLikeDesignProps = {
-    layoutId, 
+    designId, 
     likes, 
     likeHandler, 
     dislikeHandler, 
-    likedLayoutCtrl, 
-    layoutCtrl 
+    likedDesignCtrl, 
+    layoutCtrl,
+    userId
   }
 
   const { 

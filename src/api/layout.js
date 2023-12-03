@@ -3,16 +3,57 @@ import {
   authFetch, 
   mapDesigns, 
   mapPagination, 
-  isValidSlug 
-} from '@/utils';
+  isValidSlug,
+  isValidType
+} from '@/utils'
 
 import QueryString from 'qs'
+
+import { Log } from '@/api'
+
+const logCtrl = new Log()
 
 const VALID_SORT_OPTIONS = {
   updatedAt: 'updatedAt:desc',
   views: 'views:desc',
   likes: 'likes:desc',
   title: 'title:asc',
+}
+
+// Helper function
+function createApiError(result) {
+  const error = new Error(result.error.message);
+  error.status = result.error.status;
+  error.details = result;
+  error.name = result.error.name;
+  
+  return error;
+}
+
+// Helper function
+async function handleError(error) {
+  if (ENV.IS_DEV) {
+    console.error(error);
+  }
+
+  // Log error
+  await logCtrl.create({
+    message: error.message,
+    eventLevel: 'ERROR',
+    data: {
+      name: error.name,
+      status: error.status,
+    },
+  });
+
+  return {
+    error: {
+      status: error.status,
+      message: 'Oops! Something went wrong. Please try again later.',
+    },
+    designs: [],
+    pagination: {},
+  };
 }
 
 export class Layout {
@@ -33,13 +74,16 @@ export class Layout {
 
       // Sanitize category
       const safeCat = category === 'all' ? 'all' : isValidSlug(category)
+
+      // Sanitize type
+      const safeType = isValidType(type) ? type : ''
       
       // Define the base filters object
       const filters = {
         categories: {
           type: {
               slug: {
-                  $eq: type
+                  $eq: safeType
               }
           },
         }
@@ -67,31 +111,27 @@ export class Layout {
           pageSize: 1,
         },
       })
-      
+
       const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.LAYOUTS }?${ query }`
       const response = await fetch(url)
       const result = await response.json()
-      
+    
       if (response.status !== 200) {
-        // This throw statement will stop the execution
-        throw new Error('HTTP Error: ' + response.status);
+        throw createApiError(result)
       }
-      
+
       const { data, meta } = result
+
       const mappedDesigns = mapDesigns(data)
       const mappedPagination = mapPagination(meta.pagination)
-
+      
       return {
+        error: null,
         designs: mappedDesigns,
         pagination: mappedPagination,
       }
     } catch (error) {
-      if(ENV.IS_DEV) {
-        console.error(error)
-      }
-      return {
-        error: "An error occurred while fetching the data.",
-      };
+      return handleError(error)
     }
   }
 

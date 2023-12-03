@@ -6,8 +6,8 @@ import { UserDesigns } from "@/components/account/user-designs";
 import { sanitizeQueryString } from '@/utils'
 
 function AccountPage() {
-  const [activeTab, setActiveTab] = useState('user-layouts');
-  const { user, logout } = useAuth();
+  const [activeTab, setActiveTab] = useState('user-designs');
+  const { user } = useAuth();
   const router = useRouter();
   const { user: username } = router.query;
   const safeUsername = sanitizeQueryString(username)
@@ -23,7 +23,7 @@ function AccountPage() {
   const changeTab = (tab) => {
     setActiveTab(tab);
   };
-
+  
   return (
     <section className="section-full">
       <Info user={ user } />
@@ -31,8 +31,8 @@ function AccountPage() {
       <div className="py-10">
         <div className="space-x-4 flex flex-row justify-center">
           <button
-            onClick={() => changeTab('user-layouts')}
-            className={`px-4 py-2 ${activeTab === 'user-layouts' ? 'bg-blue-500 text-white' : 'bg-gray-300 hover:bg-gray-400 text-gray-700'} rounded`}
+            onClick={() => changeTab('user-designs')}
+            className={`px-4 py-2 ${activeTab === 'user-designs' ? 'bg-blue-500 text-white' : 'bg-gray-300 hover:bg-gray-400 text-gray-700'} rounded`}
           >
             My layouts
           </button>
@@ -50,8 +50,8 @@ function AccountPage() {
           </button>
         </div>
         <div className="mt-10">
-          {activeTab === 'user-layouts' && <UserDesigns />}
-          {activeTab === 'favoritos' && <LikedDesigns />}
+          {activeTab === 'user-designs' && <UserDesigns userId={ user.id } />}
+          {activeTab === 'favoritos' && <LikedDesigns userId={ user.id } />}
           {activeTab === 'collections' && <Collections />}
         </div>
       </div>

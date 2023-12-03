@@ -1,20 +1,25 @@
-import { ENV, authFetch } from '@/utils'
+import { 
+  ENV, 
+  authFetch,
+  mapDesigns, 
+  mapPagination
+} from '@/utils'
 import QueryString from 'qs'
 
-export class LikedLayouts {
+export class LikedDesigns {
   /**
    * Checks if the specified design is liked by the user.
    *
    * @param {string} userId - The ID of the user.
-   * @param {string} layoutId - The ID of the layout to be checked.
+   * @param {string} designId - The ID of the layout to be checked.
    *
    * @returns {Promise<boolean>} A promise that resolves to `true` if the layout is liked, or `false` if it is not liked.
    * @throws {Error} If an error occurs during the check process.
    */
-  async check (userId, layoutId) {
+  async check (userId, designId) {
     try {
       const filterUser = `filters[user][id][$eq][0]=${ userId }`
-      const filterLayout = `filters[layout][id][$eq][1]=${ layoutId }`
+      const filterLayout = `filters[layout][id][$eq][1]=${ designId }`
       const urlParams = `${ filterUser }&${ filterLayout }`
       const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.LIKED_LAYOUTS }?${ urlParams }`
 
@@ -31,7 +36,7 @@ export class LikedLayouts {
     }
   }  
 
-  async add (userId, layoutId) {
+  async add (userId, designId) {
     try {
       const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.LIKED_LAYOUTS }`
       const params = {
@@ -42,7 +47,7 @@ export class LikedLayouts {
         body: JSON.stringify({
           data: {
             user: userId,
-            layout: layoutId,
+            layout: designId,
           }
         })
       }
@@ -93,14 +98,14 @@ export class LikedLayouts {
    * @param {string} userId - The ID of the user to be updated.
    * @returns {Promise<Object>} A promise that resolves to the updated user information.
    */
-  async get ({userId, page}) {
+  async get ({ userId, page }) {
     try {
       const query = QueryString.stringify({
         populate: {
           layout: {
-            fields: ['title', 'likes', 'views', 'id', 'slug', 'pagination'],
+            fields: ['title', 'likes', 'views', 'id', 'slug'],
             populate: {
-              image: {
+              cover: {
                 fields: ['formats', 'height', 'name', 'url', 'width']
               }
             }
@@ -116,27 +121,40 @@ export class LikedLayouts {
         sort: ['updatedAt:desc'],
         pagination: {
           page: page,
-          pageSize: 2,
+          pageSize: 1,
         }
       })
-
+      
       const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.LIKED_LAYOUTS }?${ query }`
 
       const response = await authFetch(url)
       const result = await response.json()
-      
+
       if (response.status !== 200) {
         if(ENV.IS_DEV) {
           console.error('API request failed', result)
         }
         return null
       }
-      console.log('result liked-design: ', result);
-      return result
+
+      const { data, meta } = result
+      
+      // Extract designs
+      const designs = data.map(item => item.attributes.layout.data)
+      
+      const mappedDesigns = mapDesigns(designs)
+      const mappedPagination = mapPagination(meta.pagination)
+      return {
+        designs: mappedDesigns,
+        pagination: mappedPagination,
+      }
     } catch (error) {
       if(ENV.IS_DEV) {
-        console.error('Error while fetching data: ', error)
+        console.error(error)
       }
+      return {
+        error: "An error occurred while fetching the data.",
+      };
     }
   }  
 }

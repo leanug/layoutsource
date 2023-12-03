@@ -11,35 +11,35 @@ import fallbackImg from '@/assets/images/default.png'
  * @returns {JSX.Element} React component.
  */
 export default function GridItem(props) {
-  const { layout, openCollectionsModal, user, showcaseDesign } = props
-  const [likes, setLikes] = useState(layout.likes)
-
+  const { design, openCollectionsModal, user, showcaseDesign } = props
+  const [likes, setLikes] = useState(design.likes)
+ 
   const likeHandler = () => {
     setLikes(prevLikes => prevLikes + 1)
   }
-
+  
   const dislikeHandler = () => {
     setLikes(prevLikes => likes ? prevLikes - 1 : 0)
   }
 
   return (
-    <div key={ layout.id }>
+    <div key={ design.id }>
       <div className="transition h-full flex flex-col justify-between dark:text-white">
         <div className="w-full mb-4 relative group flex-grow overflow-hidden">
           <div 
-            className="h-full max-h-[420px] overflow-hidden w-full bg-slate-200 origin-top cursor-pointer rounded-lg"
-            onClick={ () => showcaseDesign(designSlug) }
+            className="h-48 md:h-[420px] overflow-hidden w-full bg-slate-500 origin-top cursor-pointer rounded-lg"
+            onClick={ () => showcaseDesign(design.slug) }
           >
             {
-              layout?.cover ? (
+              design?.cover ? (
                 <Image
-                  src={ layout?.cover && layout.cover?.url ? layout.cover.url : fallbackImg }
-                  alt={ layout.title }
+                  src={ design?.cover && design.cover?.url ? design.cover.url : fallbackImg }
+                  alt={ design.title }
                   className="w-full h-full object-cover mx-auto origin-top"
                   width="0"
                   height="0"
-                  sizes="100vw"
-                  priority={ false }
+                  sizes="100%"
+                  priority={ true }
                 />
               ) : null
             }
@@ -50,15 +50,16 @@ export default function GridItem(props) {
                 <div className="flex gap-3">
                   <button
                     className="bg-blue-500 text-white px-4 py-2 rounded"
-                    onClick={ () => openCollectionsModal(layout.id) }
+                    onClick={ () => openCollectionsModal(design.id) }
                   >
                     <BookmarkRegular />
                   </button>
                   <DesignLikerBtn 
-                    layoutId={ layout.id }
+                    designId={ design.id }
                     likeHandler={ likeHandler }
                     dislikeHandler={ dislikeHandler }
                     likes={ likes }
+                    userId={ user.id }
                   />
                 </div>
               </div>
@@ -67,10 +68,10 @@ export default function GridItem(props) {
         </div>
         <div className="row-span-1">
           <ItemCardFooter
-            slug={ layout.slug }
-            title={ layout.title }
+            slug={ design.slug }
+            title={ design.title }
             likes={ likes } // likes state
-            views={ layout.views }
+            views={ design.views }
             showcaseDesign={ showcaseDesign }
           />
         </div>

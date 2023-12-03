@@ -1,7 +1,12 @@
 import Head from 'next/head'
+
 import { Header, Footer, AsideMenu } from './'
+
 import { useAside } from '@/hooks'
+
 import { useDarkModeStore } from '@/store'
+
+import { Modal, ShowcaseModal, Notification } from '@/components'
 
 export const BasicLayout = ({ children }) => {
   const { toggleMenu, closeMenu, isOpen } = useAside()
@@ -25,8 +30,9 @@ export const BasicLayout = ({ children }) => {
           closeMenu={ closeMenu }
         />
       </div>
-      <div id="modal-root"></div>
-      <div id="notification-root"></div>
+      <Modal />
+      <ShowcaseModal />
+      <Notification />
     </div>
   );
 };

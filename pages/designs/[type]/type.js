@@ -1,9 +1,10 @@
 import { useRouter } from 'next/router'
 import PropTypes from 'prop-types'
 
+import { validTypes } from '@/utils'
 import { useDesigns } from "@/hooks"
 
-import { PaginatedDesigns } from "@/components"
+import { Error, PaginatedDesigns } from "@/components"
 import { PageMenu } from '@/containers'
 
 import { Layout } from '@/api'
@@ -26,13 +27,28 @@ const DesignsByTypePage = (props) => {
   const router = useRouter()
   const { type } = router.query
 
-  const { 
+  const {
+    error,
     designs, 
     pagination, 
     handleSorting, 
     handlePage, 
     loading 
   } = useDesigns(router, layoutCtrl)
+  
+  // Check if the type is valid
+  const isValidType = validTypes.includes(type);
+
+  if (!isValidType) {
+    //router.push('/404')
+    console.log(router);
+    //return {notFound: true} // No flicker after push
+    return null; // Optional: Return null to avoid rendering the component
+  }
+
+  if(error) {
+    return <Error message={ error.message } />
+  }
 
   return (
     <>
@@ -48,6 +64,7 @@ const DesignsByTypePage = (props) => {
         designs={ designs } 
         loading={ loading }
         totalPages={ pagination?.totalPages || 0 }
+        totalItems={ pagination?.totalItems || 0 }
         handlePage={ handlePage }
       />
     </>

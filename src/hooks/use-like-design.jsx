@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react"
-import { useAuth, useLoading } from "@/hooks"
+import { useLoading } from "@/hooks"
 
 /**
  * Custom hook for handling a design's likes counter and button logic
@@ -8,48 +8,47 @@ import { useAuth, useLoading } from "@/hooks"
  */
 export function useLikeDesign(useLikeDesignProps) {
   const { 
-    layoutId, 
+    designId, 
     likes, 
     likeHandler, 
     dislikeHandler, 
-    likedLayoutCtrl, 
-    layoutCtrl 
+    likedDesignCtrl, 
+    layoutCtrl,
+    userId
   } = useLikeDesignProps
 
   const { loading, startLoading, stopLoading } = useLoading()
   const [likedLayout, setLikedLayout] = useState(null)
 
-  const { user } = useAuth()
-
    // Check if a design has been liked
    useEffect(() => {
-    if ( user ) {
+    if (typeof userId === 'number') {
       (async () => {
         try {
           startLoading()
           // Check if the design has been liked by the user
-          const response = await likedLayoutCtrl.check(user.id, layoutId)
+          const response = await likedDesignCtrl.check(userId, designId)
           setLikedLayout(response)
         } catch(error) {
           setLikedLayout(false)
-          console.error(error);
+          console.error(error)
         } finally {
           stopLoading(); // Stop loading after data is fetched
         }
     })()
     }
-  }, [layoutId, user])
+  }, [designId, userId])
 
   // Function to handle liking a design
   const handleLikeLayout = async () => {
-    if (user) {
+    if (typeof userId === 'number') {
       try {
         startLoading()
         /* await new Promise(resolve => setTimeout(resolve, 2000)); */
 
         // Send a request to like the layout
-        const likeDesignResponse = await likedLayoutCtrl.add(user.id, layoutId);
-        await layoutCtrl.like(likes, layoutId);
+        const likeDesignResponse = await likedDesignCtrl.add(userId, designId)
+        await layoutCtrl.like(likes, designId);
         setLikedLayout(likeDesignResponse);
         // Update likes inside parent (grid-items)
         likeHandler()
@@ -63,20 +62,20 @@ export function useLikeDesign(useLikeDesignProps) {
 
   // Function to handle disliking a design
   const handleDislikeLayout = async () => {
-    if (user) {
+    if (typeof userId === 'number') {
       try {
         startLoading()
         // Send a request to dislike the layout
-        await likedLayoutCtrl.delete(likedLayout.id);
-        await layoutCtrl.dislike(likes, layoutId);
+        await likedDesignCtrl.delete(likedLayout.id)
+        await layoutCtrl.dislike(likes, designId)
         // Handle the response (e.g., update UI or state)
         setLikedLayout(false);
         // Update likes inside parent (grid-items)
         dislikeHandler()
       } catch (error) {
-        console.error('Error disliking layout:', error);
+        console.error('Error disliking layout:', error)
       } finally {
-        stopLoading(); // Stop loading after data is fetched
+        stopLoading() // Stop loading after data is fetched
       }
     }
   }

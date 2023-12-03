@@ -41,18 +41,11 @@ export class UserLayout {
 
   async get (userId, page = 1) {
     try {
-      /* const filters = `filters[user][id][$eq]=${ userId, page = 1 }` */
       const query = QueryString.stringify({
-        populate: {
-          image: {
-            fields: ['formats', 'height', 'name', 'url', 'width']
-          },
-        },
+        fields: ['url', 'status', 'title'],
         filters: {
           id: {
-            
-              $eq: userId
-            
+            $eq: userId
           }
         },
         sort: ['updatedAt:desc'],
