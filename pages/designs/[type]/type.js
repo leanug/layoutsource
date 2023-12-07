@@ -32,14 +32,15 @@ const DesignsByTypePage = (props) => {
     designs, 
     pagination, 
     handleSorting, 
-    handlePage, 
+    handlePage,
+    page,
     loading 
   } = useDesigns(router, layoutCtrl)
   
   // Check if the type is valid
   const isValidType = validTypes.includes(type);
 
-  if (!isValidType) {
+  if (! isValidType) {
     //router.push('/404')
     console.log(router);
     //return {notFound: true} // No flicker after push
@@ -65,6 +66,7 @@ const DesignsByTypePage = (props) => {
         loading={ loading }
         totalPages={ pagination?.totalPages || 0 }
         totalItems={ pagination?.totalItems || 0 }
+        page={ page }
         handlePage={ handlePage }
       />
     </>

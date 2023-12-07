@@ -1,13 +1,16 @@
 import Link from "next/link"
 import Image from "next/image"
+import { useRouter } from "next/router"
 
 export function CollectionItem ({ item }) {
   const dataURL = item?.attributes.designs
   const imgData0 = dataURL.data[0]?.attributes.cover.data.attributes.url
   const imgData1 = dataURL.data[1]?.attributes.cover.data.attributes.url
- 
+
+  const router = useRouter()
+  
   return (
-    <Link href={`collection/${ item.attributes.slug }`}>
+    <Link href={`${ router.asPath }/${ item.attributes.slug }`}>
       <div className="h-32 overflow-hidden mb-1 bg-slate-500 rounded-md ">
         {
           imgData1 ? (
@@ -18,7 +21,7 @@ export function CollectionItem ({ item }) {
               width="0"
               height="0"
               sizes="100%"
-              priority={false}
+              priority={ false }
             /> 
           ) : null
         }
@@ -55,7 +58,8 @@ export function CollectionItem ({ item }) {
           }
         </div>
       </div>
-      <div className="mt-3">{ item.attributes.title }</div>
+      <div className="mt-3 text-lg">{ item.attributes.title }</div>
+      <div className="mt-1">Items: { item.attributes.totalDesigns }</div>
     </Link>
   )
 }

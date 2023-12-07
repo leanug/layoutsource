@@ -9,7 +9,14 @@ import { MoreDesigns } from './more-designs'
  * @returns {JSX.Element} React component.
  */
 export function PaginatedDesigns (props) {
-  const { loading, designs, totalPages, totalItems, handlePage } = props
+  const { 
+    loading, 
+    designs, 
+    totalPages, 
+    totalItems,
+    page,
+    handlePage 
+  } = props
   
   loading && <LoadingIndicator />
 
@@ -18,8 +25,7 @@ export function PaginatedDesigns (props) {
       {
         totalItems ? (
           <>
-            <GridLayouts layouts={designs} />
-
+            <GridLayouts designs={ designs } />
             {
               loading ? (
                 <div className="flex text-center justify-items-center my-12">
@@ -27,9 +33,10 @@ export function PaginatedDesigns (props) {
                 </div>
               ) : (
                 <MoreDesigns
-                  totalDesigns={designs?.length}
-                  totalPages={totalPages}
-                  handlePage={handlePage}
+                  totalItems={ totalItems }
+                  totalPages={ totalPages }
+                  handlePage={ handlePage }
+                  page={ page }
                 />
               )
             }

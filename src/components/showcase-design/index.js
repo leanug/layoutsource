@@ -9,10 +9,9 @@ export function ShowcaseDesign () {
   let designCategories = [];
   let designColors = [];
   let imgUrl, imgHeight, imgWidth, fonts;
-  console.log(design);
+ 
   if (design?.slug) {
     const img = design.image.data.attributes
-    console.log(design);
     designCategories = design.categories.data || [];
     designColors = design.colors || []
     fonts = design?.fonts || []
@@ -21,35 +20,19 @@ export function ShowcaseDesign () {
     imgWidth = img.width;
   }
 
-  /* console.log('design=', design); */
-
   return (
     loading ? (
       <LoadingIndicator />
     ) : (
       design?.slug ? (
       <div className="">
-        <h1>{ design.title }</h1>
-        {
-          designCategories.map(cat => (
-            <span key={ cat.id }>{ cat.attributes.title }</span>
-          ))
-        }
-        {
-          designColors.map((color, index) => (
-            <span key={index}>{color}</span>
-          ))
-        }
-        <p>Updated at: { design.updatedAt }</p>
-        <p><a href={ design.link }>Visit { design.link }</a></p>
-        <p>
-          {
-            fonts.map((font, index) => (
-              <span key={ index }>{ font }</span>
-            ))
-          }
-        </p>
-        <p>Views: { design.views }</p>
+        <div className="flex flex-row justify-between px-8 mb-3.5">
+          <h1>{ design.title }</h1>
+          <div>
+            <span>Likes: { design.likes }</span>
+            <span>Views: { design.views }</span>
+          </div>
+        </div>
 
         <Image
           src={ imgUrl } // Path to your image in the public folder
@@ -60,7 +43,28 @@ export function ShowcaseDesign () {
           blurDataURL={ imgUrl }
           placeholder="blur"
           priority={ false }
-          />
+        />
+
+        {
+          designCategories.map(cat => (
+            <span key={ cat.id }>{ cat.attributes.title }</span>
+          ))
+        }
+        {
+          designColors.map((color, index) => (
+            <span key={index}>{color}</span>
+          ))
+        }
+
+        <p>Updated at: { design.updatedAt }</p>
+        <p><a href={ design.link }>Visit { design.link }</a></p>
+        <p>
+          {
+            fonts.map((font, index) => (
+              <span key={ index }>{ font }</span>
+            ))
+          }
+        </p>
       </div>
       ) : null
     )

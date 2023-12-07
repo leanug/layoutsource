@@ -117,7 +117,7 @@ export class Layout {
       const result = await response.json()
     
       if (response.status !== 200) {
-        throw createApiError(result)
+        throw new Error(result)
       }
 
       const { data, meta } = result
@@ -260,7 +260,7 @@ export class Layout {
       return result.data; // Return the response data or status
     } catch (error) {
       console.error(error);
-      throw new Error('An error occurred while updating a liked layout');
+      // log error
     }
   }
 

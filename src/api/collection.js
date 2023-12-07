@@ -1,10 +1,15 @@
 import { 
-  ENV, 
   authFetch,
+  ENV,
+  handleError,
   mapDesigns, 
-  mapPagination
 } from '@/utils'
+
 import QueryString from 'qs'
+
+import { Log } from './log'
+
+const logCtrl = new Log()
 
 export class Collection {
   /**
@@ -15,7 +20,7 @@ export class Collection {
   async getAll (userId, page) {
     try {
       const query = QueryString.stringify({
-        fields: ['title', 'slug'],
+        fields: ['title', 'slug', 'totalDesigns'],
         sort: ['title:asc'],
         populate: {
           designs: {
@@ -66,9 +71,11 @@ export class Collection {
   }  
 
   async getBySlug ({ userId, slug, page }) {
+    const itemsPerPage = 3; // Set the number of items per page as needed
+
     try {
       const query = QueryString.stringify({
-        fields: ['designs', 'title'],
+        fields: ['designs', 'title', 'totalDesigns', 'description'],
         populate: {
           designs: {
             fields: ['title', 'views', 'likes', 'slug'],
@@ -78,8 +85,8 @@ export class Collection {
               },
             },
             sort: ['updatedAt:desc'],
-           limit: 1,
-           start: page,
+           limit: itemsPerPage,
+           start: (page - 1) * itemsPerPage,
           },
         },
         filters: {
@@ -111,13 +118,13 @@ export class Collection {
       const paramData = data[0]?.attributes.designs.data || []
 
       const mappedDesigns = mapDesigns(paramData)
-      const mappedPagination = mapPagination(meta.pagination)
       
       return {
         designs: mappedDesigns,
-        pagination: mappedPagination,
         collectionTitle: data[0]?.attributes.title || '',
-        collectionId: data[0]?.id || 0
+        collectionDescription: data[0]?.attributes.description || '',
+        collectionId: data[0]?.id || 0,
+        totalDesigns: data[0]?.attributes.totalDesigns || 0
       }
     } catch (error) {
       if(ENV.IS_DEV)
@@ -171,7 +178,7 @@ export class Collection {
   /* 
    * Add or remove designs from a given collection
    */
-  async update(collectionId, data) {
+  async update(userId, collectionId, data) {
     try {
       const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.COLLECTIONS }/${ collectionId }`
       const params = {
@@ -183,27 +190,25 @@ export class Collection {
       }
 
       const response = await authFetch(url, params)
-      const result = await response.json()
 
-      if (response.status !== 200) {
-        if(ENV.IS_DEV) {
-          console.error('Error while adding design: ', result)
-        }
-      }
+      if (response.status !== 200) throw response
       
-      return result
-    } catch(error) {
-      if(ENV.IS_DEV) {
-        console.error('Error while adding design: ', error)
+      return { 
+        success: true, 
+        message: 'Collection updated' 
       }
+    } catch(error) {
+      error.userAction = 'Update collection'
+      error.userId = userId
+      
+      return handleError(error, logCtrl)
     }
   }
 
   /* 
    * Add or remove designs from a given collection
    */
-  async delete(collectionId) {
-    console.log('collectionId', collectionId);
+  async delete(userId, collectionId) {
     try {
       const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.COLLECTIONS }/${ collectionId }`
       const params = {
@@ -214,19 +219,18 @@ export class Collection {
       }
 
       const response = await authFetch(url, params)
-      const result = await response.json()
-
-      if (response.status !== 200) {
-        if(ENV.IS_DEV) {
-          console.error('Error while adding design: ', result)
-        }
-      }
       
-      return result
-    } catch(error) {
-      if(ENV.IS_DEV) {
-        console.error('Error while adding design: ', error)
+      if (response.status !== 200) throw response
+
+      return { 
+        success: true, 
+        message: 'The collection was deleted' 
       }
+    } catch(error) {
+      error.userAction = 'Delete collection'
+      error.userId = userId
+      
+      return handleError(error, logCtrl)
     }
   }
 }

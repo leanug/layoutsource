@@ -1,8 +1,8 @@
 import { useFormik } from 'formik'
-import { initialValues, validationSchema } from './';
-import { Collection } from "@/api"
 
-const collectionCtrl = new Collection()
+import { initialValues, validationSchema } from '.';
+
+import { useNotificationStore } from '@/store';
 
 /**
  * AddCollectionForm component for creating a new collection.
@@ -13,9 +13,22 @@ const collectionCtrl = new Collection()
  * @param {function} props.handleModal - A function to handle modal state.
  * @returns {JSX.Element} - The rendered component.
  */
-export function AddCollectionForm({ designId, userId, handleModal }) {
+export function EditCollectionForm(props) {
+  const { 
+    userId, 
+    collectionId, 
+    description, 
+    title, 
+    collectionCtrl, 
+    handleModal,
+    setTitle,
+    setDescription
+  } = props
+
+  const { addNotification } = useNotificationStore()
+
   const formik = useFormik({
-    initialValues: initialValues(),
+    initialValues: initialValues(title, description),
     validationSchema: validationSchema(),
     validateOnChange: false, // prevent validation on input change
 
@@ -27,26 +40,18 @@ export function AddCollectionForm({ designId, userId, handleModal }) {
      */
     onSubmit: async (formValue) => {
       try {
-        const data = {
-          ...formValue,
-          user: userId,
-          designs: designId
-        }
-
+        const data = { ...formValue }
+        
         // Create a new collection using the collectionCtrl service
-        await collectionCtrl.create(data)
+        const response = await collectionCtrl.update(userId, collectionId, data)
 
-        // Notify the user of successful collection creation
-        handleNotification({ 
-          message: `Saved in ${ data.title }`,
-          type: 'success'
-        })
-      } catch {
-        // Notify the user of an error during collection creation
-        handleNotification({
-          message: 'Error creating collection. Try again later',
-          type: 'error'
-        })
+        if(response?.success) {
+          addNotification(response?.message || '', 'success')
+          setTitle(formValue.title)
+          setDescription(formValue.description)
+        } else {
+          addNotification(response?.error.message || '', 'error')
+        }
       } finally {
         // Reset the form and close the modal
         formik.handleReset()
@@ -94,7 +99,7 @@ export function AddCollectionForm({ designId, userId, handleModal }) {
         className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-lg mr-2"
         type="submit"
       >
-        Create collection
+        Update
       </button>
     </form>
   )

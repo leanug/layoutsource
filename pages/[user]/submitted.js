@@ -1,5 +1,9 @@
 import { useRouter } from "next/router"
-import { LikedDesigns, Nav, Info, Custom404 } from "@/components"
+import { 
+  Nav, 
+  Info, 
+  UserDesigns 
+} from "@/components"
 import { useAuth } from "@/hooks"
 import { sanitizeQueryString } from '@/utils'
 
@@ -15,7 +19,7 @@ function TestPage() {
   }
   
   if(safeUserSlug !== user.username) {
-    return <Custom404 />
+    router.push('/')
   }
 
   return (
@@ -24,11 +28,11 @@ function TestPage() {
       <div className="h-4 w-full"></div>
       <div className="py-10">
         <Nav 
-          activeTab={ 'liked' } 
+          activeTab={ 'submitted' } 
           slug={ safeUserSlug }
         />
         <div className="mt-10">
-          <LikedDesigns userId={ user.id } />
+          <UserDesigns />
         </div>
       </div>
     </section>

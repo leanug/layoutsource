@@ -1,11 +1,12 @@
-import { useModalStore } from '@/store'
+import { useShowcaseStore } from '@/store'
 
 /**
  * Modal component that renders a modal dialog.
- * @returns {JSX.Element|null} The JSX element representing the modal or null if the modal is not active.
+ * @returns {JSX.Element|null} The JSX element representing the 
+ * modal or null if the modal is not active.
  */
 export const ShowcaseModal = () => {
-  const { modalContent, handleModal, modal } = useModalStore();
+  const { modalContent, handleModal, modal } = useShowcaseStore();
 
   return modal ? (
     <div

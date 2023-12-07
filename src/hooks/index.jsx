@@ -1,6 +1,7 @@
 export * from './use-aside'
 export * from './use-auth'
 export * from './use-collection'
+export * from './use-collections'
 export * from './use-designs'
 export * from './use-liked-designs'
 export * from './use-like-design'

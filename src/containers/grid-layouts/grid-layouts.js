@@ -6,7 +6,7 @@ import { ShowcaseDesign } from "@/components"
 import { useRouter } from "next/router"
 import { useModalStore } from "@/store"
 
-export function GridLayouts ({ layouts }) {
+export function GridLayouts ({ designs }) {
   const { user } = useAuth()
   const router = useRouter()
   const { modal, handleModal } = useModalStore()
@@ -35,15 +35,16 @@ export function GridLayouts ({ layouts }) {
     
     handleModal(true, modalContent)
   }
-
+ 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-9">
       {
-        layouts.map((layout) => (
+        designs?.map((item) => (
           <GridItem 
             user={ user }
-            key={ layout.id } 
-            design={ layout } 
+            key={ item
+              .id } 
+            design={ item } 
             openCollectionsModal={ openCollectionsModal }
             showcaseDesign={ showcaseDesign }
           />

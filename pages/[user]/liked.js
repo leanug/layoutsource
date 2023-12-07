@@ -1,5 +1,5 @@
 import { useRouter } from "next/router"
-import { LikedDesigns, Nav, Info, Custom404 } from "@/components"
+import { LikedDesigns, Nav, Info } from "@/components"
 import { useAuth } from "@/hooks"
 import { sanitizeQueryString } from '@/utils'
 
@@ -15,7 +15,7 @@ function TestPage() {
   }
   
   if(safeUserSlug !== user.username) {
-    return <Custom404 />
+    router.push('/')
   }
 
   return (

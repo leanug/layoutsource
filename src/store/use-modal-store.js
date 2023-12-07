@@ -1,10 +1,12 @@
-import { create } from 'zustand';
+import { create } from 'zustand'
 
 export const useModalStore = create((set) => ({
   modal: false,
   modalContent: null,
-  handleModal: (isOpen, content = null) => set({ 
+  modalTitle: '',
+  handleModal: (isOpen, content = null, title= '') => set({ 
     modal: isOpen, 
-    modalContent: content 
+    modalContent: content,
+    modalTitle: title
   }),
 }));

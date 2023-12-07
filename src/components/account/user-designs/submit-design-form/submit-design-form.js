@@ -3,13 +3,11 @@ import { ENV } from '@/utils';
 import { initialValues, validationSchema } from './submit-design-form-utils';
 import { useAuth } from '@/hooks';
 import { UserLayout } from '@/api'
-import { NotificationContext } from '@/contexts';
-import { useContext } from 'react';
 
 export function SubmitDesignForm () {
   const { user } = useAuth()
+
   const userLayoutCtrl = new UserLayout()
-  const { handleNotification } = useContext(NotificationContext)
    
   const formik = useFormik({
     initialValues: initialValues(),
@@ -26,10 +24,10 @@ export function SubmitDesignForm () {
 
         if(response?.data) {
           // Notify the user of successful collection creation
-          handleNotification({ 
+          /* handleNotification({ 
             message: 'Your website was sent!',
             type: 'success'
-          })
+          }) */
         } else {
           ENV.IS_DEV && console.error('Bad Request ', error);
           handleNotification({ 
@@ -39,10 +37,10 @@ export function SubmitDesignForm () {
         }
       } catch (error) {
         ENV.IS_DEV && console.error('Something went wrong ', error);
-        handleNotification({ 
+        /* handleNotification({ 
           message: 'Oops! Something went wrong',
           type: 'error'
-        })
+        }) */
       } finally {
         formik.handleReset() // reinicia el formulario y lo deja vacio
       }

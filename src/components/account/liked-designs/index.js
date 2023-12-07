@@ -19,8 +19,6 @@ export function LikedDesigns({ userId }) {
     handlePage
   } = useLikedDesigns(userId, likedDesignsCtrl)
 
-  console.log('LikedDesigns rendered')
-
   return (
     <div className="mt-10">
       {

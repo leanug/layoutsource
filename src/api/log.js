@@ -1,6 +1,6 @@
-import { 
-  ENV, 
+import {
   authFetch,
+  ENV, 
 } from '@/utils'
 
 export class Log {

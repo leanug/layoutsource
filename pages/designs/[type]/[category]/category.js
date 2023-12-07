@@ -31,7 +31,8 @@ const DesignsByCategoryPage = (props) => {
     designs, 
     pagination, 
     handleSorting, 
-    handlePage, 
+    handlePage,
+    page,
     loading 
   } = useDesigns(router, layoutCtrl)
 
@@ -64,6 +65,7 @@ const DesignsByCategoryPage = (props) => {
         loading={ loading }
         totalPages={ pagination?.totalPages || 0 }
         totalItems={ pagination?.totalItems || 0 }
+        page={ page }
         handlePage={ handlePage }
       />
     </>

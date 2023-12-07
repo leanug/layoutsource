@@ -1,15 +1,15 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { ENV } from "@/utils";
 import { Collection } from "@/api";
 import { useLoading } from ".";
-import { NotificationContext } from "@/contexts";
+import { useNotificationStore } from "@/store";
 
 const collectionCtrl = new Collection()
 
 export function UseCollection (userId) {
   const [collections, setCollections] = useState([])
   const { startLoading, stopLoading, loading } = useLoading()
-  let { handleNotification } = useContext(NotificationContext)
+  const { addNotification } = useNotificationStore()
 
   // Fetch all collections
   useEffect(() => {
@@ -46,7 +46,7 @@ export function UseCollection (userId) {
         
         // Update collection state if collections was updated
         if(result?.data) {
-          handleNotification({
+          addNotification({
             message: `Saved in ${ collectionTitle }`,
             type: 'success'
           })
@@ -57,7 +57,7 @@ export function UseCollection (userId) {
             ${ collectionTitle }. ${ result }
           `);
           // Message modal for user
-          handleNotification({
+          addNotification({
             message: 'Oops! Something went wrong. Please try again later.',
             type: 'error'
           })
@@ -69,7 +69,7 @@ export function UseCollection (userId) {
           ${ collectionTitle }. ${ error }
         `);
         // Message modal for user
-        handleNotification({
+        addNotification({
           message: 'Oops! Something went wrong. Please try again later.',
           type: 'error'
         })
@@ -101,7 +101,7 @@ export function UseCollection (userId) {
         
         // Update collection state if collections was updated
         if(result?.data) {
-          handleNotification({
+          addNotification({
             message: `Removed from ${ collectionTitle }`,
             type: 'success'
           })
@@ -110,7 +110,7 @@ export function UseCollection (userId) {
             Error removing design id: ${ designId } in 
             ${ collectionTitle }. ${ result }
           `);
-          handleNotification({
+          addNotification({
             message: 'Oops! Something went wrong. Please try again later.',
             type: 'error'
           })
@@ -120,7 +120,7 @@ export function UseCollection (userId) {
           Error removing design id: ${ designId } from 
           ${ collectionTitle }. ${ error }
         `);
-        handleNotification({
+        addNotification({
           message: 'Oops! Something went wrong. Please try again later.',
           type: 'error'
         })

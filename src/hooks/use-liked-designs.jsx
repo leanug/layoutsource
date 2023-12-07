@@ -1,4 +1,4 @@
-import { useLoading } from "@/hooks"
+import { useLoading, useFirstRender } from "@/hooks"
 import { useState, useEffect } from "react"
 
 /**
@@ -10,24 +10,43 @@ export function useLikedDesigns(userId, likedDesignsCtrl) {
   const [page, setPage] = useState(1)
   const [pagination, setPagination] = useState({})
 
+  const { firstRender } = useFirstRender()
   const { loading, startLoading, stopLoading } = useLoading()
   
-  // Load more designs on page change
+  // Load designs on page load
   useEffect(() => {
-    console.log('useLikedDesigns effect triggered');
     (async () => {
       try {
         startLoading()
         const newData = await likedDesignsCtrl.get({ 
           userId,
-          page, 
+          page,  
         })
-        setDesigns([...designs, ...newData?.designs || []])
+        setDesigns(newData?.designs || []) 
         setPagination(newData?.pagination || {})
       } finally {
         stopLoading()
       }
     })()
+  }, [])
+
+  // Load more designs on page change
+  useEffect(() => {
+    if(! firstRender && page > 1) {
+      (async () => {
+        try {
+          startLoading()
+          const newData = await likedDesignsCtrl.get({ 
+            userId,
+            page, 
+          })
+          setDesigns([...designs, ...newData?.designs || []])
+          setPagination(newData?.pagination || {})
+        } finally {
+          stopLoading()
+        }
+      })()
+    }
   }, [page])
 
   const handlePage = () => {
