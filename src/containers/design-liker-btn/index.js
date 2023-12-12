@@ -6,6 +6,7 @@ import { useLikeDesign } from "@/hooks"
 import { LikedDesigns, Layout } from "@/api"
 
 const likedDesignCtrl = new LikedDesigns()
+
 const layoutCtrl = new Layout()
 
 /**
@@ -16,7 +17,7 @@ const layoutCtrl = new Layout()
 export function DesignLikerBtn(props) {
   const { designId, likes, likeHandler, dislikeHandler, userId } = props
 
-  const useLikeDesignProps = {
+  const likeDesignProps = {
     designId, 
     likes, 
     likeHandler, 
@@ -31,7 +32,7 @@ export function DesignLikerBtn(props) {
     handleDislikeLayout, 
     handleLikeLayout, 
     likedLayout
-  } = useLikeDesign(useLikeDesignProps)
+  } = useLikeDesign(likeDesignProps)
 
   if (likedLayout === null) return <LoadingIndicator  />
 

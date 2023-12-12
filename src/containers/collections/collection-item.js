@@ -9,7 +9,7 @@ export function CollectionItem(props) {
     deleteDesign,
     handleModal,
     inCollection, 
-    imageUrl, 
+    imageUrl,
   } = props
 
   const backgroundClass = inCollection ? 'bg-gray-200' : '';

@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { ENV } from "@/utils";
 import { Collection } from "@/api";
 import { useLoading } from ".";
 import { useNotificationStore } from "@/store";
@@ -8,6 +7,7 @@ const collectionCtrl = new Collection()
 
 export function UseCollection (userId) {
   const [collections, setCollections] = useState([])
+
   const { startLoading, stopLoading, loading } = useLoading()
   const { addNotification } = useNotificationStore()
 
@@ -23,7 +23,10 @@ export function UseCollection (userId) {
 
   // Get the target collection from the collections array
   const getCollectionById = (collectionId) => {
-    const collection = collections.find(collection => collection.id === collectionId)
+    const collection = collections.find(
+      collection => collection.id === collectionId
+    )
+
     return collection
   }
 
@@ -33,50 +36,23 @@ export function UseCollection (userId) {
     const collection = getCollectionById(collectionId) 
     // Get collection data
     const collectionData = collection.attributes.designs.data; 
-    const collectionTitle = collection.attributes.title
+    const collectionTitle = collection.attributes.title; 
+    
     // Make array of designs ids that belong to the target collection
     const designsIdAry = collectionData.map(design => design.id) 
 
     // Check if the design is in the collection
     if(collection) {
-      try {
-        const data = { designs: [...designsIdAry, designId] }
-        // Add design to target collection
-        const result = await collectionCtrl.update(collectionId, data)
-        
-        // Update collection state if collections was updated
-        if(result?.data) {
-          addNotification({
-            message: `Saved in ${ collectionTitle }`,
-            type: 'success'
-          })
-        } else {
-          // Message for dev
-          ENV.IS_DEV && console.error(`
-            Error saving design id: ${ designId } in 
-            ${ collectionTitle }. ${ result }
-          `);
-          // Message modal for user
-          addNotification({
-            message: 'Oops! Something went wrong. Please try again later.',
-            type: 'error'
-          })
-        }
-      } catch (error) {
-        // Message for dev
-        ENV.IS_DEV && console.error(`
-          Error saving design id: ${ designId } in 
-          ${ collectionTitle }. ${ error }
-        `);
-        // Message modal for user
-        addNotification({
-          message: 'Oops! Something went wrong. Please try again later.',
-          type: 'error'
-        })
-      } finally {
-        // Close collections modal
-        handleModal()
-      }
+      const data = { designs: [...designsIdAry, designId] }
+      // Add design to target collection
+      const response = await collectionCtrl.update(collectionId, data)
+
+      response?.success
+        ? addNotification(`Saved in ${ collectionTitle }`, 'success')
+        : addNotification(response?.error.message || '', 'error')
+
+      // Close collections modal - Pinterest style
+      handleModal()
     }
   }
 
@@ -90,43 +66,22 @@ export function UseCollection (userId) {
     // Make array of designs ids that belong to the target collection
     const designsIdAry = collectionData.map(design => design.id) 
     // Filter the design to be removed from a collection
-    const filteredDesignsIdAry = designsIdAry.filter(design => design.id === designId)
+    const filteredDesignsIdAry = designsIdAry.filter(
+      design => design.id === designId
+    )
     
     // Check if the design is in the collection
     if(collection) {
-      try {
-        const data = { designs: [...filteredDesignsIdAry] }
-        // Remove design from target collection
-        const result = await collectionCtrl.update(collectionId, data)
-        
-        // Update collection state if collections was updated
-        if(result?.data) {
-          addNotification({
-            message: `Removed from ${ collectionTitle }`,
-            type: 'success'
-          })
-        } else {
-          ENV.IS_DEV && console.error(`
-            Error removing design id: ${ designId } in 
-            ${ collectionTitle }. ${ result }
-          `);
-          addNotification({
-            message: 'Oops! Something went wrong. Please try again later.',
-            type: 'error'
-          })
-        }
-      } catch (error) {
-        ENV.IS_DEV && console.error(`
-          Error removing design id: ${ designId } from 
-          ${ collectionTitle }. ${ error }
-        `);
-        addNotification({
-          message: 'Oops! Something went wrong. Please try again later.',
-          type: 'error'
-        })
-      } finally {
-        handleModal()
-      }
+      const data = { designs: [...filteredDesignsIdAry] }
+      // Remove design from target collection
+      const response = await collectionCtrl.update(collectionId, data)
+      
+      response?.success
+        ? addNotification(`Removed from ${ collectionTitle }`, 'success')
+        : addNotification(response?.error.message || '', 'error')
+      
+      // Close collections modal - Pinterest style
+      handleModal()
     }
   }
 

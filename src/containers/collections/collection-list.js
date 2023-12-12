@@ -4,7 +4,7 @@ export function CollectionList (props) {
   const { 
     designId, 
     collections, 
-    addDesign, 
+    addDesign,
     deleteDesign, 
     handleModal
   } = props

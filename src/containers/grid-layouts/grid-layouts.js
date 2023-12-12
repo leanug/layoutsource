@@ -11,6 +11,7 @@ export function GridLayouts ({ designs }) {
   const router = useRouter()
   const { modal, handleModal } = useModalStore()
 
+  // Open collections modal for creating or updating a collection
   const openCollectionsModal = (designId) => {
     const content = <Collections 
       userId={ user.id } 
@@ -18,7 +19,7 @@ export function GridLayouts ({ designs }) {
       handleModal={ handleModal }
     />
     // Open modal
-    handleModal(true, content)
+    handleModal(true, content, 'Add this design to a collection')
   }
 
   // Restore the URL to its previous state, when showcase design modal is closed
@@ -28,6 +29,7 @@ export function GridLayouts ({ designs }) {
     }
   }, [modal])
 
+  // Open a big modal for showcasing a big design
   const showcaseDesign = (designSlug) => {
     // Use JavaScript history to navigate without page reload
     window.history.pushState(null, null, `/showcase/${ designSlug }`)
@@ -50,6 +52,8 @@ export function GridLayouts ({ designs }) {
           />
         ))
       }
+      { ! designs && <p>Loading...</p> }
+      { designs && designs.length === 0 && <p>No designs found.</p> }
     </div>
   )
 }

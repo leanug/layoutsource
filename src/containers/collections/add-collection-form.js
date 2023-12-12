@@ -2,6 +2,10 @@ import { useFormik } from 'formik'
 import { initialValues, validationSchema } from './';
 import { Collection } from "@/api"
 
+import { generateRandomSlug } from '@/utils'
+
+import { useNotificationStore } from '@/store';
+
 const collectionCtrl = new Collection()
 
 /**
@@ -14,6 +18,8 @@ const collectionCtrl = new Collection()
  * @returns {JSX.Element} - The rendered component.
  */
 export function AddCollectionForm({ designId, userId, handleModal }) {
+  const { addNotification } = useNotificationStore()
+
   const formik = useFormik({
     initialValues: initialValues(),
     validationSchema: validationSchema(),
@@ -29,24 +35,22 @@ export function AddCollectionForm({ designId, userId, handleModal }) {
       try {
         const data = {
           ...formValue,
-          user: userId,
-          designs: designId
+          designs: [designId],
+          slug: generateRandomSlug(),
+          totalDesigns: 1,
+          user: userId
         }
-
+        
         // Create a new collection using the collectionCtrl service
-        await collectionCtrl.create(data)
+        const response = await collectionCtrl.create(data)
 
-        // Notify the user of successful collection creation
-        handleNotification({ 
-          message: `Saved in ${ data.title }`,
-          type: 'success'
-        })
-      } catch {
-        // Notify the user of an error during collection creation
-        handleNotification({
-          message: 'Error creating collection. Try again later',
-          type: 'error'
-        })
+        if(response?.success) {
+          addNotification(response?.message || '', 'success')
+          setTitle(formValue.title)
+          setDescription(formValue.description)
+        } else {
+          addNotification(response?.error.message || '', 'error')
+        }
       } finally {
         // Reset the form and close the modal
         formik.handleReset()
@@ -62,6 +66,7 @@ export function AddCollectionForm({ designId, userId, handleModal }) {
         <label htmlFor="title" className="block text-gray-700">Title:</label>
         <input
           name="title"
+          id="title"
           label="Collection title"
           placeholder="Title..."
           value={ formik.values.title }

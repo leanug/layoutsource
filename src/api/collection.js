@@ -1,8 +1,9 @@
 import { 
   authFetch,
+  checkResponse,
   ENV,
   handleError,
-  mapDesigns, 
+  mapDesigns,
 } from '@/utils'
 
 import QueryString from 'qs'
@@ -45,28 +46,14 @@ export class Collection {
       const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.COLLECTIONS }?${ query }`
 
       const response = await authFetch(url)
+
+      await checkResponse(response)
+
       const result = await response.json()
-
-      if (response.status !== 200) {
-        console.error('Error retrieving collection list:', result);
-
-        // Return an error object if there's an exception
-        return { 
-          data: null, 
-          error: 'Failed to retrieve collection list' 
-        };
-      }
     
       return { data: result.data }; // Return the response data or status
     } catch (error) {
-      if(ENV.IS_DEV)
-        console.error(error);
-
-      // Return an error object if there's an exception
-      return { 
-        data: null, 
-        error: 'An error occurred while fetching data' 
-      };
+      return handleError(error, logCtrl)
     }
   }  
 
@@ -101,14 +88,11 @@ export class Collection {
       const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.COLLECTIONS }?${ query }`
 
       const response = await authFetch(url)
-      const result = await response.json()
+     
+      await checkResponse(response)
 
-      if (response.status !== 200) {
-        // This throw statement will stop the execution
-        throw new Error('HTTP Error: ' + response.status);
-      }
-      
-      const { data, meta } = result
+      const result = await response.json()
+      const { data } = result
       
       // Return false if collection does not exist
       if (! data[0]?.id) {
@@ -127,14 +111,7 @@ export class Collection {
         totalDesigns: data[0]?.attributes.totalDesigns || 0
       }
     } catch (error) {
-      if(ENV.IS_DEV)
-        console.error(error);
-
-      // Return an error object if there's an exception
-      return { 
-        data: null, 
-        error: 'An error occurred while fetching data' 
-      };
+      return handleError(error, logCtrl)
     }
   }  
 
@@ -157,28 +134,24 @@ export class Collection {
         },
         body: JSON.stringify({ data })
       }
-
-      const response = await authFetch(url, params)
-      const result = await response.json()
-
-      if (response.status !== 200) {
-        if(ENV.IS_DEV) {
-          console.error('Error creating collection: ', result)
-        }
-      }
       
-      return result
-    } catch(error) {
-      if(ENV.IS_DEV) {
-        console.error('Error creating collection: ',error)
+      const response = await authFetch(url, params)
+      
+      await checkResponse(response)
+      
+      return { 
+        success: true, 
+        message: 'Collection created' 
       }
+    } catch(error) {
+      return handleError(error, logCtrl)
     }
   }
 
   /* 
    * Add or remove designs from a given collection
    */
-  async update(userId, collectionId, data) {
+  async update(collectionId, data, userId) {
     try {
       const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.COLLECTIONS }/${ collectionId }`
       const params = {
@@ -191,16 +164,13 @@ export class Collection {
 
       const response = await authFetch(url, params)
 
-      if (response.status !== 200) throw response
+      await checkResponse(response, userId)
       
       return { 
         success: true, 
         message: 'Collection updated' 
       }
     } catch(error) {
-      error.userAction = 'Update collection'
-      error.userId = userId
-      
       return handleError(error, logCtrl)
     }
   }
@@ -220,16 +190,13 @@ export class Collection {
 
       const response = await authFetch(url, params)
       
-      if (response.status !== 200) throw response
-
+      await checkResponse(response, userId)
+      
       return { 
         success: true, 
-        message: 'The collection was deleted' 
+        message: 'The collection was deleted'
       }
     } catch(error) {
-      error.userAction = 'Delete collection'
-      error.userId = userId
-      
       return handleError(error, logCtrl)
     }
   }

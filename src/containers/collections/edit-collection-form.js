@@ -43,7 +43,7 @@ export function EditCollectionForm(props) {
         const data = { ...formValue }
         
         // Create a new collection using the collectionCtrl service
-        const response = await collectionCtrl.update(userId, collectionId, data)
+        const response = await collectionCtrl.update(collectionId, data, userId)
 
         if(response?.success) {
           addNotification(response?.message || '', 'success')

@@ -21,7 +21,7 @@ export default function GridItem(props) {
   const dislikeHandler = () => {
     setLikes(prevLikes => likes ? prevLikes - 1 : 0)
   }
-
+  
   return (
     <div key={ design.id }>
       <div className="transition h-full flex flex-col justify-between dark:text-white">
