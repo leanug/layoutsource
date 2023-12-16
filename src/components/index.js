@@ -1,6 +1,7 @@
 export * from './loading-indicator'
 export * from './paginated-designs'
 export * from './notification'
+export * from './design-like-button'
 export * from './no-results'
 export * from './custom-404'
 export * from './icons'

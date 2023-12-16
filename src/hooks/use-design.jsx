@@ -19,9 +19,9 @@ export function useDesign () {
       try {
         startLoading()
         const response = await layoutCtrl.getDesignBySlug(designSlug)
-
+        
         if(response?.data) {
-          setDesign(response.data[0].attributes)
+          setDesign({...response.data[0].attributes, id: response.data[0].id})
         }
       } catch (error) {
         ENV.IS_DEV && console.error(error)

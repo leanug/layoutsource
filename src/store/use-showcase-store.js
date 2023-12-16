@@ -1,10 +1,10 @@
-import { create } from 'zustand';
+import { create } from 'zustand'
 
 export const useShowcaseStore = create((set) => ({
-  modal: false,
-  modalContent: null,
-  handleModal: (isOpen, content = null) => set({ 
-    modal: isOpen, 
-    modalContent: content 
+  showcaseModal: false,
+  showcaseModalContent: null,
+  handleShowcaseModal: (isOpen, content = null) => set({ 
+    showcaseModal: isOpen, 
+    showcaseModalContent: content 
   }),
 }));

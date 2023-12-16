@@ -6,7 +6,7 @@ import { useLoading } from "@/hooks"
  *
  * @returns {JSX.Element} React component.
  */
-export function useLikeDesign(useLikeDesignProps) {
+export function useLikeDesign(props) {
   const { 
     designId, 
     likes, 
@@ -15,8 +15,8 @@ export function useLikeDesign(useLikeDesignProps) {
     likedDesignCtrl, 
     layoutCtrl,
     userId
-  } = useLikeDesignProps
-
+  } = props
+  console.log(props);
   const { loading, startLoading, stopLoading } = useLoading()
   const [likedLayout, setLikedLayout] = useState(null)
 

@@ -4,17 +4,18 @@ import { Collections } from "@/containers"
 import { useAuth } from "@/hooks"
 import { ShowcaseDesign } from "@/components"
 import { useRouter } from "next/router"
-import { useModalStore } from "@/store"
+import { useModalStore, useShowcaseStore } from "@/store"
 
 export function GridLayouts ({ designs }) {
   const { user } = useAuth()
   const router = useRouter()
   const { modal, handleModal } = useModalStore()
+  const { handleShowcaseModal } = useShowcaseStore()
 
   // Open collections modal for creating or updating a collection
   const openCollectionsModal = (designId) => {
     const content = <Collections 
-      userId={ user.id } 
+      userId={ user.id }
       designId={ designId }
       handleModal={ handleModal }
     />
@@ -33,9 +34,9 @@ export function GridLayouts ({ designs }) {
   const showcaseDesign = (designSlug) => {
     // Use JavaScript history to navigate without page reload
     window.history.pushState(null, null, `/showcase/${ designSlug }`)
-    const modalContent = <ShowcaseDesign />
+    const modalContent = <ShowcaseDesign userId={ user } />
     
-    handleModal(true, modalContent)
+    handleShowcaseModal(true, modalContent)
   }
  
   return (

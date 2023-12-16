@@ -1,8 +1,14 @@
 import { useState } from "react"
+
 import Image from "next/image"
-import { DesignLikerBtn } from "@/containers"
-import { BookmarkRegular } from '@/components'
+
+import { 
+  BookmarkRegular, 
+  DesignLikeButton 
+} from '@/components'
+
 import { ItemCardFooter } from "./item-card-footer"
+
 import fallbackImg from '@/assets/images/default.png'
 
 /**
@@ -54,12 +60,13 @@ export default function GridItem(props) {
                   >
                     <BookmarkRegular />
                   </button>
-                  <DesignLikerBtn 
+
+                  <DesignLikeButton 
                     designId={ design.id }
                     likeHandler={ likeHandler }
                     dislikeHandler={ dislikeHandler }
                     likes={ likes }
-                    userId={ user.id }
+                    userId={ user?.id }
                   />
                 </div>
               </div>

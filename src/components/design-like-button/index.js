@@ -14,12 +14,19 @@ const layoutCtrl = new Layout()
  *
  * @returns {JSX.Element} React component.
  */
-export function DesignLikerBtn(props) {
-  const { designId, likes, likeHandler, dislikeHandler, userId } = props
-
-  const likeDesignProps = {
+export function DesignLikeButton(props) {
+  const { 
     designId, 
     likes, 
+    likeHandler, 
+    dislikeHandler, 
+    userId 
+  } = props
+  console.log('DesignLikeButton props=', props);
+  const likeDesignProps = {
+    designId, 
+    //likes, // Likes no llega a use-like-design.jsx 
+    likes: likes,
     likeHandler, 
     dislikeHandler, 
     likedDesignCtrl, 
@@ -33,7 +40,7 @@ export function DesignLikerBtn(props) {
     handleLikeLayout, 
     likedLayout
   } = useLikeDesign(likeDesignProps)
-
+  
   if (likedLayout === null) return <LoadingIndicator  />
 
   // Show like / dislike buttons
