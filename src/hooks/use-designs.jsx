@@ -1,5 +1,6 @@
 import { useLoading, useFirstRender } from "@/hooks"
 import { useState, useEffect } from "react"
+import { useDesignsStore } from "@/store"
 
 /**
  * Custom hook for managing designs data and fetching new designs.
@@ -10,14 +11,16 @@ export function useDesigns(router, layoutCtrl) {
   const { loading, startLoading, stopLoading } = useLoading()
   const { firstRender } = useFirstRender()
 
-  const [designs, setDesigns] = useState([])
+  //const [designs, setDesigns] = useState([])
   const [page, setPage] = useState(1)
   const [pagination, setPagination] = useState({})
   const [sortBy, setSortBy] = useState('updatedAt')
   const [error, setError] = useState(null)
-  
-  const { type, category } = router.query
 
+  const { designs, setDesigns } = useDesignsStore()
+
+  const { type, category } = router.query
+  
   // Load designs on type or category page change
   useEffect(() => {
     (async () => {

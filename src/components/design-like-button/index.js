@@ -17,23 +17,18 @@ const layoutCtrl = new Layout()
 export function DesignLikeButton(props) {
   const { 
     designId, 
-    likes, 
-    likeHandler, 
-    dislikeHandler, 
-    userId 
+    userId,
+    likes,
   } = props
-  console.log('DesignLikeButton props=', props);
+  
   const likeDesignProps = {
-    designId, 
-    //likes, // Likes no llega a use-like-design.jsx 
-    likes: likes,
-    likeHandler, 
-    dislikeHandler, 
+    designId,
+    likes,
     likedDesignCtrl, 
     layoutCtrl,
     userId
   }
-
+  
   const { 
     loading, 
     handleDislikeLayout, 

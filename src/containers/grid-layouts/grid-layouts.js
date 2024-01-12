@@ -45,8 +45,7 @@ export function GridLayouts ({ designs }) {
         designs?.map((item) => (
           <GridItem 
             user={ user }
-            key={ item
-              .id } 
+            key={ item.id } 
             design={ item } 
             openCollectionsModal={ openCollectionsModal }
             showcaseDesign={ showcaseDesign }

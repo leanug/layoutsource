@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react"
 import { useLoading } from "@/hooks"
+import { useDesignsStore } from "@/store"
 
 /**
  * Custom hook for handling a design's likes counter and button logic
@@ -8,15 +9,16 @@ import { useLoading } from "@/hooks"
  */
 export function useLikeDesign(props) {
   const { 
-    designId, 
-    likes, 
-    likeHandler, 
-    dislikeHandler, 
+    designId,
+    likes,
     likedDesignCtrl, 
     layoutCtrl,
     userId
   } = props
-  console.log(props);
+  
+  const { incrementLikes, decrementLikes } = useDesignsStore()
+
+
   const { loading, startLoading, stopLoading } = useLoading()
   const [likedLayout, setLikedLayout] = useState(null)
 
@@ -51,7 +53,7 @@ export function useLikeDesign(props) {
         await layoutCtrl.like(likes, designId);
         setLikedLayout(likeDesignResponse);
         // Update likes inside parent (grid-items)
-        likeHandler()
+        incrementLikes(designId)
       } catch (error) {
         console.error('Error liking layout:', error);
       } finally {
@@ -71,7 +73,7 @@ export function useLikeDesign(props) {
         // Handle the response (e.g., update UI or state)
         setLikedLayout(false);
         // Update likes inside parent (grid-items)
-        dislikeHandler()
+        decrementLikes(designId)
       } catch (error) {
         console.error('Error disliking layout:', error)
       } finally {

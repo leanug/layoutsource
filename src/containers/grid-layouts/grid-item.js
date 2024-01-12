@@ -18,7 +18,6 @@ import fallbackImg from '@/assets/images/default.png'
  */
 export default function GridItem(props) {
   const { design, openCollectionsModal, user, showcaseDesign } = props
-  const [likes, setLikes] = useState(design.likes)
  
   const likeHandler = () => {
     setLikes(prevLikes => prevLikes + 1)
@@ -61,11 +60,11 @@ export default function GridItem(props) {
                     <BookmarkRegular />
                   </button>
 
-                  <DesignLikeButton 
+                  <DesignLikeButton
+                    likes={ design.likes }
                     designId={ design.id }
                     likeHandler={ likeHandler }
                     dislikeHandler={ dislikeHandler }
-                    likes={ likes }
                     userId={ user?.id }
                   />
                 </div>
@@ -77,7 +76,7 @@ export default function GridItem(props) {
           <ItemCardFooter
             slug={ design.slug }
             title={ design.title }
-            likes={ likes } // likes state
+            likes={ design.likes } 
             views={ design.views }
             showcaseDesign={ showcaseDesign }
           />
