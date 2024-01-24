@@ -57,9 +57,7 @@ export class Collection {
     }
   }  
 
-  async getBySlug ({ userId, slug, page }) {
-    const itemsPerPage = 3; // Set the number of items per page as needed
-
+  async getBySlug ({ userId, slug, page, itemsPerPage = 1 }) {
     try {
       const query = QueryString.stringify({
         fields: ['designs', 'title', 'totalDesigns', 'description'],

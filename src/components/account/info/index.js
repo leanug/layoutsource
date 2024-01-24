@@ -1,6 +1,8 @@
 import { LoadingIndicator } from "@/components/loading-indicator"
 import { DateTime } from "luxon"
 
+import fallbackImg from '@/assets/images/avatar.svg'
+
 export function Info({ user }) {
   
   if (! user) return <LoadingIndicator />
@@ -10,7 +12,7 @@ export function Info({ user }) {
     {/* Avatar */}
     <div className="w-32 h-32 rounded-full overflow-hidden mb-4">
     <img
-      src={user.avatar.url || '/default-avatar.png'}
+      src={user.avatar.url || fallbackImg}
       alt="User Avatar"
       className="w-full h-full object-cover"
     />

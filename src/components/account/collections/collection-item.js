@@ -2,10 +2,26 @@ import Link from "next/link"
 import Image from "next/image"
 import { useRouter } from "next/router"
 
+import fallbackImg from '@/assets/images/default.png'
+
 export function CollectionItem ({ item }) {
-  const dataURL = item?.attributes.designs
-  const imgData0 = dataURL.data[0]?.attributes.cover.data.attributes.url
-  const imgData1 = dataURL.data[1]?.attributes.cover.data.attributes.url
+  const dataURL = item?.attributes.designs.data
+
+  let imgData0
+  let imgData1
+  let imgData2
+
+  if (Array.isArray(dataURL)) {
+    // It's an array
+    imgData0 = dataURL[0]?.attributes.cover.data?.attributes.url || fallbackImg
+    imgData1 = dataURL[1]?.attributes.cover.data?.attributes.url || fallbackImg
+    imgData2 = dataURL[2]?.attributes.cover.data?.attributes.url || fallbackImg
+  } else {
+    // It's not an array
+    imgData0 = dataURL?.attributes.cover.data?.attributes.url || fallbackImg
+    imgData1 = ''
+    imgData2 = ''
+  }
 
   const router = useRouter()
   
@@ -13,7 +29,7 @@ export function CollectionItem ({ item }) {
     <Link href={`${ router.asPath }/${ item.attributes.slug }`}>
       <div className="h-32 overflow-hidden mb-1 bg-slate-500 rounded-md ">
         {
-          imgData1 ? (
+          imgData0 ? (
             <Image
               src={ imgData0 }
               alt={ item.attributes.title }
@@ -44,9 +60,9 @@ export function CollectionItem ({ item }) {
         </div>
         <div className=" bg-slate-500 w-full h-20 rounded-md overflow-hidden">
           {
-            imgData1 ? (
+            imgData2 ? (
               <Image
-                src={ imgData1 }
+                src={ imgData2 }
                 alt={ item.attributes.title }
                 className="w-full object-cover mx-auto origin-top"
                 width="0"

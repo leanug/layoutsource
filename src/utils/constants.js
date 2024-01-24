@@ -15,6 +15,7 @@ export const ENV = {
     CATEGORY: "categories",
     USER_LAYOUTS: "user-layouts",
     LIKED_LAYOUTS: "liked-layouts",
+    UPLOAD: "upload",
   },
   TOKEN: 'token',
   IS_DEV: process.env.NODE_ENV === 'development'

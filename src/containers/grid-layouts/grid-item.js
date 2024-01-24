@@ -1,5 +1,3 @@
-import { useState } from "react"
-
 import Image from "next/image"
 
 import { 
@@ -18,14 +16,6 @@ import fallbackImg from '@/assets/images/default.png'
  */
 export default function GridItem(props) {
   const { design, openCollectionsModal, user, showcaseDesign } = props
- 
-  const likeHandler = () => {
-    setLikes(prevLikes => prevLikes + 1)
-  }
-  
-  const dislikeHandler = () => {
-    setLikes(prevLikes => likes ? prevLikes - 1 : 0)
-  }
   
   return (
     <div key={ design.id }>
@@ -63,8 +53,6 @@ export default function GridItem(props) {
                   <DesignLikeButton
                     likes={ design.likes }
                     designId={ design.id }
-                    likeHandler={ likeHandler }
-                    dislikeHandler={ dislikeHandler }
                     userId={ user?.id }
                   />
                 </div>

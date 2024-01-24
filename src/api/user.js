@@ -1,4 +1,9 @@
-import { ENV, authFetch } from '@/utils'
+import {
+  authFetch,
+  checkResponse,
+  ENV,
+  handleError
+} from '@/utils'
 
 /**
  * Represents a User.
@@ -11,14 +16,17 @@ export class User {
   async getMe() {
     try {
       const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.USERS_ME }?${ 'populate=*' }`
-      const response = await authFetch(url) // uso authFetch porque es una peticion autenticada
+
+      const response = await authFetch(url) // Authenticated petition
+      await checkResponse(response)
       const result = await response.json()
-
-      if (response.status !== 200) throw result
-
-      return result
+      
+      return { 
+        success: true, 
+        data: result
+      }
     } catch (error) {
-      console.error(error);
+      return handleError(error, logCtrl)
     }
   }
 
@@ -38,20 +46,17 @@ export class User {
         },
         body: JSON.stringify(data)
       }
+
       const response = await authFetch(url, params)
+      await checkResponse(response)
       const result = await response.json()
-
-      if (response.status !== 200 ) {
-        if(ENV.IS_DEV) {
-          console.error(result)
-        }
-      }
-
-      return result
+      
+      return { 
+        success: true, 
+        data: result
+      } 
     } catch (error) {
-      if(ENV.IS_DEV) {
-        console.error(error)
-      }
+      return handleError(error, logCtrl)
     }
   }
 }

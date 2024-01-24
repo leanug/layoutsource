@@ -62,7 +62,7 @@ const DesignsByTypePage = (props) => {
         displayCategories={ true }
       />
       <PaginatedDesigns 
-        designs={ designs } 
+        designs={ designs || [] } 
         loading={ loading }
         totalPages={ pagination?.totalPages || 0 }
         totalItems={ pagination?.totalItems || 0 }

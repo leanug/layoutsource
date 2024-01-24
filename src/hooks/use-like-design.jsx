@@ -17,8 +17,6 @@ export function useLikeDesign(props) {
   } = props
   
   const { incrementLikes, decrementLikes } = useDesignsStore()
-
-
   const { loading, startLoading, stopLoading } = useLoading()
   const [likedLayout, setLikedLayout] = useState(null)
 

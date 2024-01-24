@@ -45,7 +45,7 @@ export function AuthProvider(props) {
       const response = await userCtrl.getMe();
 
       // Set user data in the state
-      setUser(response);
+      setUser(response.data);
 
       // Set the token in the state
       setToken(token);

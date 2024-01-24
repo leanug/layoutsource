@@ -16,7 +16,8 @@ export function LikedDesigns({ userId }) {
     loading, 
     designs, 
     pagination,
-    handlePage
+    handlePage,
+    page
   } = useLikedDesigns(userId, likedDesignsCtrl)
 
   return (
@@ -27,11 +28,12 @@ export function LikedDesigns({ userId }) {
         ) : (
           designs?.length ? (
             <PaginatedDesigns 
-              designs={ designs } 
+              designs={ designs || [] } 
               loading={ loading }
               totalPages={ pagination?.totalPages || 0 }
               totalItems={ pagination?.totalItems || 0 }
               handlePage={ handlePage }
+              page={ page }
             />
           ) : (
             <NoResults text="You don't have any favourite designs yet." />

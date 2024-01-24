@@ -4,6 +4,7 @@ export function initialValues(initialData = {}) {
   return {
     name: initialData.name || '',
     email: initialData.email || '',
+    //avatar: initialData.avatar || '',
     location: initialData.location || '',
     bio: initialData.bio || '',
     website: initialData.website || '',

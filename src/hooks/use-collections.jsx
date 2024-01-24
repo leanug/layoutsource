@@ -10,8 +10,15 @@ import {
 
 import { ConfirmationDialog } from '@/components'
 
-import { useModalStore, useNotificationStore } from "@/store"
+import { 
+  useModalStore, 
+  useNotificationStore, 
+  useDesignsStore 
+} from "@/store"
+
 import { EditCollectionForm } from "@/containers"
+
+const PAGE_SIZE = 2; // Set to your desired number of items per page
 
 /**
  * Fetch collection data by slug
@@ -21,11 +28,11 @@ export function useCollections(user, router, collectionCtrl) {
   const { firstRender } = useFirstRender()
   const { loading, startLoading, stopLoading } = useLoading()
   const { handleModal } = useModalStore()
+  const { designs, setDesigns } = useDesignsStore()
   const { addNotification } = useNotificationStore()
 
   const [totalItems, setTotalItems] = useState(0)
   const [totalPages, setTotalPages] = useState(0)
-  const [designs, setDesigns] = useState([])
   const [page, setPage] = useState(1)
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
@@ -45,13 +52,14 @@ export function useCollections(user, router, collectionCtrl) {
           const newData = await collectionCtrl.getBySlug({
             userId: user['id'], 
             slug,
-            page, 
+            page,
+            itemsPerPage: PAGE_SIZE
           })
           
           if(newData) {
             setDesigns([...newData?.designs] || []) 
             setTotalItems(newData.totalDesigns)
-            setTotalPages(2)
+            setTotalPages(Math.ceil(newData.totalDesigns / PAGE_SIZE))
             setTitle(newData.collectionTitle)
             setDescription(newData.collectionDescription)
             setCollectionId(newData.collectionId)
@@ -76,7 +84,8 @@ export function useCollections(user, router, collectionCtrl) {
           const newData = await collectionCtrl.getBySlug({
             userId: user['id'],  
             slug,
-            page, 
+            page,
+            itemsPerPage: PAGE_SIZE
           })
           
           if(newData) {

@@ -9,13 +9,15 @@ export function mapDesigns(data) {
       views: item.attributes.views,
       likes: item.attributes.likes,
       slug: item.attributes.slug,
-      cover: {
-        id: item.attributes.cover.data.id,
-        name: item.attributes.cover.data.attributes.name,
-        url: item.attributes.cover.data.attributes.url,
-        width: item.attributes.cover.data.attributes.width,
-        height: item.attributes.cover.data.attributes.height,
-      },
-    };
-  });
+      cover: item.attributes.cover
+        ? {
+            id: item.attributes.cover.data?.id || null,
+            name: item.attributes.cover.data?.attributes.name || null,
+            url: item.attributes.cover.data?.attributes.url || null,
+            width: item.attributes.cover.data?.attributes.width || null,
+            height: item.attributes.cover.data?.attributes.height || null,
+          }
+        : null,
+    }
+  })
 }
