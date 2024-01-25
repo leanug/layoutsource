@@ -1,5 +1,3 @@
-import { useState } from "react"
-
 import { useDesign } from "@/hooks"
 
 import { BookmarkSolid, DesignLikeButton } from '@/components'
@@ -10,20 +8,13 @@ import { useModalStore } from "@/store"
 
 import Image from "next/image"
 
+import fallbackImg from '@/assets/images/default.png'
+
 export function ShowcaseDesign ({ userId }) {
   // useDesign gets the design data by fetching it using the url
   const { design, loading } = useDesign()
-  console.log('ShowcaseDesign likes=', design.likes)
-  const [likes, setLikes] = useState(design.likes)
-  const { handleModal } = useModalStore()
- 
-  const likeHandler = () => {
-    setLikes(prevLikes => prevLikes + 1)
-  }
   
-  const dislikeHandler = () => {
-    setLikes(prevLikes => likes ? prevLikes - 1 : 0)
-  }
+  const { handleModal } = useModalStore()
 
   // Open collections modal for creating or updating a collection
   const openCollectionsModal = () => {
@@ -37,17 +28,15 @@ export function ShowcaseDesign ({ userId }) {
   }
 
   let designCategories = []
-  let designColors = []
   let imgUrl, imgHeight, imgWidth, fonts
   
   if (design?.slug) {
-    const img = design.image.data.attributes
+    const img = design.image.data?.attributes
     designCategories = design.categories.data || []
-    designColors = design.colors || []
     fonts = design?.fonts || []
-    imgUrl = img.url
-    imgHeight = img.height
-    imgWidth = img.width
+    imgUrl = img?.url || fallbackImg
+    imgHeight = img?.height || '300px'
+    imgWidth = img?.width || '300px'
   }
 
   return (
@@ -62,17 +51,15 @@ export function ShowcaseDesign ({ userId }) {
             
             <div className="flex flex-row gap-2">
               <button
-                      className="bg-blue-500 text-white px-4 py-2 rounded"
-                      onClick={ () => openCollectionsModal() }
-                    >
-                      <BookmarkSolid />
-                    </button>
+                className="bg-blue-500 text-white px-4 py-2 rounded"
+                onClick={ () => openCollectionsModal() }
+              >
+                <BookmarkSolid />
+              </button>
 
               <DesignLikeButton 
                 designId={ design.id }
-                likeHandler={ likeHandler }
-                dislikeHandler={ dislikeHandler }
-                likes={ likes }
+                likes={ design.likes }
                 userId={ userId }
               />
             </div>
@@ -97,15 +84,7 @@ export function ShowcaseDesign ({ userId }) {
                 {cat.attributes.title}
               </span>
             ))
-          }
-
-          {
-            designColors.map((color, index) => (
-              <span key={index} className="mr-2 mb-2 inline-block bg-{color}-500 rounded-full py-1 px-3 text-sm font-semibold text-white">
-                {color}
-              </span>
-            ))
-          }
+          }          
 
           <div className="my-4">
             <span className="mr-4 text-gray-600">Likes: {design.likes}</span>

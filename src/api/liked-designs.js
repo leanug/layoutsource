@@ -1,10 +1,17 @@
-import { 
+import {
+  checkResponse,
+  handleError,
   ENV, 
   authFetch,
   mapDesigns, 
   mapPagination
 } from '@/utils'
+
 import QueryString from 'qs'
+
+import { Log } from './log'
+
+const logCtrl = new Log()
 
 export class LikedDesigns {
   /**
@@ -36,6 +43,90 @@ export class LikedDesigns {
     }
   }  
 
+  /**
+   * Fetches all liked design IDs for a given user.
+   *
+   * @param {number} userId - The ID of the user for whom liked designs are to be fetched.
+   * @returns {Promise<{ success: boolean, data: number[] }>} A promise that resolves to an object
+   * with a `success` boolean indicating whether the operation was successful and a `data` array
+   * containing the IDs of liked designs for the user.
+   *
+   * @throws {Error} If there's an issue with the network request or the response is not as expected.
+   * @throws {CustomError} If there's a custom error during the process (handled by `handleError`).
+   *
+   * @example
+   * const userId = 123;
+   * const result = await likedDesignCtrl.getAll(userId);
+   * // Example result: { success: true, data: [1, 2, 3] }
+   */
+  async getAll (userId) {
+    try {
+      const query = QueryString.stringify({
+        populate: {
+          layout: {
+            fields: ['id'],
+          }
+        },
+        filters: {
+          user: {
+            id: {
+              $eq: userId
+            }
+          }
+        }
+      })
+      
+      const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.LIKED_LAYOUTS }?${ query }`
+
+      const response = await authFetch(url)
+      await checkResponse(response)
+      const result = await response.json()
+
+      /**
+       * Transform an array of liked design data into an object for quick lookups.
+       *
+       * The resulting object maps each design id (key) to its corresponding collection item id
+       * (value) containing information about the liked design and user.
+       *
+       * @param {Array} result.data - An array of liked design data obtained from the server.
+       * @returns {Object} likedDesignsObj - An object where each designId maps directly
+       *   to its associated likedDesignCollectionItemId.
+       */
+      const likedDesignsObj = result.data.reduce((acc, item) => {
+        // Extract designId from the current liked design item
+        const designId = item.attributes.layout.data.id;
+
+        // Map designId to its associated likedDesignCollectionItemId in the accumulator object
+        acc[designId] = item.id;
+
+        // Return the updated accumulator for the next iteration
+        return acc;
+      }, {})
+      
+      return {
+        data: likedDesignsObj,
+        success: true
+      } 
+    } catch (error) {
+      return handleError(error, logCtrl)
+    }
+  }
+
+  /**
+   * Asynchronously adds a liked design layout for a user.
+   * 
+   * It adds a pair of user and design elements to the Liked designs collection
+   *
+   * @async
+   * @function
+   * @param {number} userId - The ID of the user liking the design layout.
+   * @param {number} designId - The ID of the design layout to be liked.
+   * @returns {Promise<{ success: boolean, data: { likedLayoutsCollectionItemId: number } }>} A Promise that resolves to an object with the success status and data returned from the server.
+   *   @property {boolean} success - Indicates the success status of the operation.
+   *   @property {Object} data - Data returned from the server after liking the layout.
+   *     @property {number} likedLayoutsCollectionItemId - The ID related to the liked design layout in the Liked Layouts collection.
+   * @throws {Error} Throws an error if there is an issue with the request or server response.
+   */
   async add (userId, designId) {
     try {
       const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.LIKED_LAYOUTS }`
@@ -52,49 +143,53 @@ export class LikedDesigns {
         })
       }
       // Send a request to the server to like the layout
-      const response = await authFetch(url, params);
-      // Handle the response
+      const response = await authFetch(url, params)
+      await checkResponse(response)
       const result = await response.json()
+      const data = { likedLayoutsCollectionItemId: result.data.id }
 
-      if (response.status !== 200) {
-        // Handle the error here, for example, log it
-        console.error('Error deleting liked layout:', result);
-        throw new Error('Failed to delete liked layout');
-      }
-  
-      return result.data; // Return the response data or status
+      return {
+        data,
+        success: true
+      } 
     } catch (error) {
-      console.error(error);
-      throw new Error('An error occurred while deleting a liked layout');
+      return handleError(error, logCtrl)
     }
   }
 
-  async delete (id) {
+  /**
+   * Asynchronously deletes a liked design layout from the server.
+   *
+   * @async
+   * @function
+   * @param {number} likedDesignsCollectionItemId - The ID of the liked design layout in the Liked Layouts collection.
+   * @returns {Promise<{ success: boolean, data: Object }>} A Promise that resolves to an object with the success status and data returned from the server.
+   *   @property {boolean} success - Indicates the success status of the operation.
+   *   @property {Object} data - Data returned from the server after the deletion.
+   * @throws {Error} Throws an error if there is an issue with the request or server response.
+   */
+  async delete (likedDesignsCollectionItemId) {
     try {
-      const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.LIKED_LAYOUTS }/${ id }`
+      const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.LIKED_LAYOUTS }/${ likedDesignsCollectionItemId }`
       const params = {
         method: 'DELETE',
       }
       // Send a request to the server to delete the layout
       const response = await authFetch(url, params);
-      // Handle the response
+      await checkResponse(response)
       const result = await response.json()
-
-      if (response.status !== 200) {
-        // Handle the error here, for example, log it
-        console.error('Error deleting liked layout:', result);
-        throw new Error('Failed to delete liked layout');
-      }
-  
-      return result; // Return the response data or status
+      
+      return { 
+        success: true, 
+        data: result
+      } 
     } catch (error) {
-      console.error(error);
-      throw new Error('An error occurred while deleting a liked layout');
+      return handleError(error, logCtrl)
     }
   }
 
   /**
-   * Get all the liked layouts for a given userId.
+   * Get a paginated list of liked layouts for a given userId.
    * @param {string} userId - The ID of the user to be updated.
    * @returns {Promise<Object>} A promise that resolves to the updated user information.
    */

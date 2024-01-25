@@ -34,7 +34,7 @@ export function GridLayouts ({ designs }) {
   const showcaseDesign = (designSlug) => {
     // Use JavaScript history to navigate without page reload
     window.history.pushState(null, null, `/showcase/${ designSlug }`)
-    const modalContent = <ShowcaseDesign userId={ user } />
+    const modalContent = <ShowcaseDesign userId={ user.id } />
     
     handleShowcaseModal(true, modalContent)
   }

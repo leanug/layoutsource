@@ -1,10 +1,12 @@
-import { 
-  ENV, 
-  authFetch, 
-  mapDesigns, 
-  mapPagination, 
+import {
+  authFetch,
+  checkResponse,
+  ENV,
+  handleError,
   isValidSlug,
-  isValidType
+  isValidType,
+  mapDesigns, 
+  mapPagination
 } from '@/utils'
 
 import QueryString from 'qs'
@@ -13,47 +15,12 @@ import { Log } from '@/api'
 
 const logCtrl = new Log()
 
+const PAGE_SIZE = 4
 const VALID_SORT_OPTIONS = {
-  updatedAt: 'updatedAt:desc',
+  createdAt: 'createdAt:desc',
   views: 'views:desc',
   likes: 'likes:desc',
   title: 'title:asc',
-}
-
-// Helper function
-function createApiError(result) {
-  const error = new Error(result.error.message);
-  error.status = result.error.status;
-  error.details = result;
-  error.name = result.error.name;
-  
-  return error;
-}
-
-// Helper function
-async function handleError(error) {
-  if (ENV.IS_DEV) {
-    console.error(error);
-  }
-
-  // Log error
-  await logCtrl.create({
-    message: error.message,
-    eventLevel: 'ERROR',
-    data: {
-      name: error.name,
-      status: error.status,
-    },
-  });
-
-  return {
-    error: {
-      status: error.status,
-      message: 'Oops! Something went wrong. Please try again later.',
-    },
-    designs: [],
-    pagination: {},
-  };
 }
 
 export class Layout {
@@ -108,7 +75,7 @@ export class Layout {
         sort: [sortParam],
         pagination: {
           page: page,
-          pageSize: 1,
+          pageSize: PAGE_SIZE,
         },
       })
 
@@ -154,7 +121,7 @@ export class Layout {
         sort: [sortParam],
         pagination: {
           page: page,
-          pageSize: 1,
+          pageSize: PAGE_SIZE,
         },
       })
 
@@ -208,24 +175,18 @@ export class Layout {
           }
         }
       })
-
+ 
       const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.LAYOUTS }?${ query }`
       const response = await fetch(url);
-      const result = await response.json();
-      
-      if (response.status !== 200) {
-        if(ENV.IS_DEV) {
-          console.error('API request failed', result)
-        }
-        return null
-      }
+      await checkResponse(response)
+      const result = await response.json()
 
-      return result
+      return { 
+        success: true, 
+        data: result.data
+      } 
     } catch (error) {
-      if(ENV.IS_DEV) {
-        console.error('Error while fetching design: ', error)
-      }
-      return null
+     return handleError(error, logCtrl)
     }
   }
 

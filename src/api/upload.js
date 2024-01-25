@@ -28,6 +28,7 @@ export class Upload {
       const response = await authFetch(url, params)
       await checkResponse(response)
       const result = await response.json()
+      
       return { 
         success: true, 
         data: result

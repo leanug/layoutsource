@@ -20,11 +20,12 @@ export function useDesigns(router, layoutCtrl) {
   const { designs, setDesigns } = useDesignsStore()
 
   const { type, category } = router.query
-  
+   
   // Load designs on type or category page change
   useEffect(() => {
     (async () => {
       try {
+        console.log('#1 useEffect', page);
         startLoading()
         const newData = await layoutCtrl.getDesigns({ 
           type, 
@@ -56,6 +57,7 @@ export function useDesigns(router, layoutCtrl) {
     if(firstRender === false) {
       (async () => {
         try {
+          console.log('#2 useEffect', page)
           startLoading()
           const newData = await layoutCtrl.getDesigns({
             type,
@@ -86,6 +88,7 @@ export function useDesigns(router, layoutCtrl) {
     if(firstRender === false && page !== 1) {
       (async () => {
         try {
+          console.log('#3 useEffect', page)
           startLoading()
           const newData = await layoutCtrl.getDesigns({ 
             type, 

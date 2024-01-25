@@ -36,7 +36,7 @@ export function DesignLikeButton(props) {
     likedLayout
   } = useLikeDesign(likeDesignProps)
   
-  if (likedLayout === null) return <LoadingIndicator  />
+  if (likedLayout === null) return <LoadingIndicator />
 
   // Show like / dislike buttons
   return (
