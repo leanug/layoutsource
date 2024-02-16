@@ -1,20 +1,44 @@
-import Link from 'next/link';
+import Link from 'next/link'
 
-export function Navigation() {
+export function Navigation({ vertical }) {
+  const navClass = vertical
+    ? 'flex flex-col font-medium gap-3 p-2.5'
+    : 'flex flex-row space-x-4'
+
   return (
     <nav>
-      <ul className="flex space-x-4">
+      <ul className={navClass}>
         <li>
-          <Link href="/designs/homepages">Homepages</Link>
+          <Link
+            href="/designs/homepages"
+            className="hover:opacity-75 transition-opacity duration-300"
+          >
+            Homepages
+          </Link>
         </li>
         <li>
-          <Link href="/designs/subpages">Subpages</Link>
+          <Link
+            href="/designs/subpages"
+            className="hover:opacity-75 transition-opacity duration-300"
+          >
+            Subpages
+          </Link>
         </li>
         <li>
-          <Link href="/designs/landingpages">Landingpages</Link>
+          <Link
+            href="/designs/landingpages"
+            className="hover:opacity-75 transition-opacity duration-300"
+          >
+            Landingpages
+          </Link>
         </li>
         <li>
-          <Link href="/designs/components">Components</Link>
+          <Link
+            href="/designs/components"
+            className="hover:opacity-75 transition-opacity duration-300"
+          >
+            Components
+          </Link>
         </li>
       </ul>
     </nav>

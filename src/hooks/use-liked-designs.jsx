@@ -24,8 +24,8 @@ export function useLikedDesigns(userId, likedDesignsCtrl) {
           userId,
           page,  
         })
-        setDesigns(newData?.designs || []) 
-        setPagination(newData?.pagination || {})
+        setDesigns(newData?.data.designs || []) 
+        setPagination(newData?.data.pagination || {})
       } finally {
         stopLoading()
       }
@@ -42,8 +42,8 @@ export function useLikedDesigns(userId, likedDesignsCtrl) {
             userId,
             page, 
           })
-          setDesigns([...designs, ...newData?.designs || []])
-          setPagination(newData?.pagination || {})
+          setDesigns([...designs, ...newData?.data.designs || []])
+          setPagination(newData?.data.pagination || {})
         } finally {
           stopLoading()
         }

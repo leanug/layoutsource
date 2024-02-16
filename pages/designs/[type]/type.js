@@ -1,12 +1,11 @@
 import { useRouter } from 'next/router'
 import PropTypes from 'prop-types'
+import { notFound } from 'next/navigation';
 
 import { validTypes } from '@/utils'
 import { useDesigns } from "@/hooks"
-
 import { Error, PaginatedDesigns } from "@/components"
 import { PageMenu } from '@/containers'
-
 import { Layout } from '@/api'
 
 const layoutCtrl = new Layout()
@@ -20,11 +19,11 @@ const layoutCtrl = new Layout()
  * @returns {JSX.Element} React component.
  */
 const DesignsByTypePage = (props) => {
+  const router = useRouter()
   const { data } = props
   const { categories } = data || {}
   const category = 'all'
 
-  const router = useRouter()
   const { type } = router.query
 
   const {
@@ -40,15 +39,13 @@ const DesignsByTypePage = (props) => {
   // Check if the type is valid
   const isValidType = validTypes.includes(type);
 
+  // Category not found
   if (! isValidType) {
-    //router.push('/404')
-    console.log(router);
-    //return {notFound: true} // No flicker after push
-    return null; // Optional: Return null to avoid rendering the component
+    notFound();
   }
 
   if(error) {
-    return <Error message={ error.message } />
+    return <Error message={ error } />
   }
 
   return (

@@ -28,10 +28,13 @@ export function UserDesigns (props) {
   }, [page])
 
   return (
-    <ul>
+    <ul className='flex flex-col gap-1'>
       {
         designs.map(item => (
-          <li key={ item.id } className='flex flex-row justify-between'>
+          <li 
+            key={ item.id } 
+            className='flex flex-row justify-between rounded-md bg-gray-50 px-4 py-2.5'
+          >
             <div>
               { item.attributes.title }
             </div>

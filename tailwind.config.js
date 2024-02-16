@@ -8,8 +8,16 @@ module.exports = {
   ],
   theme: {
     extend: {
+      colors: {
+        'blue-750': '#234ACD',
+      },
       fontFamily: {
         inter: ['Inter', 'sans'],
+      },
+      textSizes: {
+        '4xl': '3rem',
+        '6xl': '10rem',
+        // Add more sizes as needed
       },
     },
   },

@@ -15,8 +15,8 @@ export const DisplayCategories = (props) => {
           {/* All category */}
           <li key="all">
             {categorySlug === 'all' ? (
-              <div className="px-3 py-1.5 bg-gray-100 rounded-lg justify-center items-center inline-flex">
-                <div className="text-gray-900 font-medium">All</div>
+              <div className="px-3 py-1.5 bg-slate-100 dark:text-slate-900 rounded-lg justify-center items-center inline-flex">
+                <div className="font-semibold">All</div>
               </div>
             ) : (
               <Link href={`/designs/${type}`} className="text-gray-600 hover:text-gray-800 transition">
@@ -29,13 +29,13 @@ export const DisplayCategories = (props) => {
           {categories?.map((category) => (
             <li key={category.id}>
               {categorySlug === category.attributes.slug ? (
-                <div className="px-3 py-1.5 bg-gray-100 rounded-lg justify-center items-center inline-flex">
-                  <div className="text-gray-900 font-medium">{category.attributes.title}</div>
+                <div className="px-3 py-1.5 bg-slate-100 rounded-lg justify-center items-center inline-flex">
+                  <div className="font-medium">{category.attributes.title}</div>
                 </div>
               ) : (
                 <Link
                   href={`/designs/${type}/${category.attributes.slug}`}
-                  className="text-gray-600 hover:text-gray-800 transition"
+                  className=" hover:text-gray-800 transition"
                 >
                   {category.attributes.title}
                 </Link>

@@ -6,5 +6,5 @@ export const useShowcaseStore = create((set) => ({
   handleShowcaseModal: (isOpen, content = null) => set({ 
     showcaseModal: isOpen, 
     showcaseModalContent: content 
-  }),
-}));
+  })
+}))

@@ -41,29 +41,33 @@ export function DesignLikeButton(props) {
   // Show like / dislike buttons
   return (
     <div>
-      {loading ? (
-        <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center p-2">
-          <LoadingIndicator />
-        </div>
-      ) : (
-        <div>
-          {likedLayout ? (
-            <button
-              onClick={ handleDislikeLayout }
-              className="w-8 h-8 rounded-full bg-white flex items-center justify-center p-2"
-            >
-              <HeartSolid className="w-4 h-4" />
-            </button>
-          ) : (
-            <button
-              onClick={ handleLikeLayout }
-              className="w-8 h-8 rounded-full bg-white flex items-center justify-center p-2"
-            >
-              <HeartRegular className="w-4 h-4" />
-            </button>
-          )}
-        </div>
-      )}
+      {
+        loading ? (
+          <div className="w-8 h-8 rounded-full bg-white flex items-center justify-center p-2">
+            <LoadingIndicator />
+          </div>
+        ) : (
+          <div>
+            {
+              likedLayout ? (
+                <button
+                  onClick={ handleDislikeLayout }
+                  className="w-8 h-8 rounded-md bg-white flex items-center justify-center p-2"
+                >
+                  <HeartSolid className="w-4 h-4" />
+                </button>
+              ) : (
+                <button
+                  onClick={ handleLikeLayout }
+                  className="w-8 h-8 rounded-md bg-white flex items-center justify-center p-2"
+                >
+                  <HeartRegular className="w-4 h-4" />
+                </button>
+              )
+            }
+          </div>
+        )
+      }
     </div>
   );
 }

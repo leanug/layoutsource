@@ -15,8 +15,10 @@ export function PageMenu (props) {
   
   return (
     designCount ? (
-      <section>
-        <div className="section-full mb-3 gap-8 flex-row flex items-center justify-between">
+      <section className="mt-20 mb-8">
+        <div className={`
+          section-full mb-3 gap-8 flex-row flex items-center justify-between font-semibold
+        `}>
           {
             displayCategories ? (
               <DisplayCategories 
@@ -35,7 +37,7 @@ export function PageMenu (props) {
           }
 
           <div className="flex flex-row items-center gap-3">
-            <span className="w-40 text-right">
+            <span className="w-40 text-right font-normal">
               { designCount } { designCount === 1 ? 'result' : 'results'}
             </span>
             <DropdownMenu handleSorting={ handleSorting } />

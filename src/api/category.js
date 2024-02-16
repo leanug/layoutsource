@@ -1,5 +1,10 @@
-import { ENV } from "@/utils";
 import QueryString from 'qs'
+
+import { 
+  checkResponse,
+  ENV, 
+  handleError
+} from "@/utils";
 
 export class Category {
   async getAll () {
@@ -8,8 +13,11 @@ export class Category {
       const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.CATEGORY }?${ sort }` //?populate=icon to get all the icons
       const response = await fetch(url)
       const result = await response.json()
-      if (response.status !== 200) throw result
-      return result
+      
+      return {
+        data: result.data,
+        success: true
+      }
     } catch (error) {
       console.error(error);
     }
@@ -18,50 +26,57 @@ export class Category {
   async getCategoriesByType (type = 'homepages') {
     try {
       const query = QueryString.stringify({
-        // Use the populate parameter to fetch additional data
         populate: ['title', 'slug'],
         filters: {
           type: {
             slug: {
               $eq: type
             }
-            
           }
-          /* slug: { $eq: 'blog'} */
         },
         sort: ['order:asc'],
       })
 
       const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.CATEGORY }?${ query }`
       const response = await fetch(url)
+      await checkResponse(response)
       const result = await response.json()
-      
-      if (response.status !== 200) {
-        if(ENV.IS_DEV) {
-          console.error('API request failed', result)
-        }
-        return null
-      }
 
-      return result
-    } catch (error) {
-      if(ENV.IS_DEV) {
-        console.error('Error while fetching categories by type: ', error)
+      return {
+        data: result.data,
+        success: true
       }
-      return null
+    } catch (error) {
+      return handleError(error, logCtrl)
     }
   }
 
+  /**
+   * Fetches a category by its slug.
+   *
+   * @async
+   * @function
+   * @param {string} slug - The slug of the category to be fetched.
+   * @returns {Promise<Object>} A promise that resolves to an object with category data and success status.
+   *   @property {Object} data - The category data.
+   *   @property {boolean} success - Indicates the success status of the operation.
+   * @throws {Error} If an error occurs during the fetch operation.
+   */
   async getCategoryBySlug (slug) {
     try {
       const filters = `filters[slug][$eq]=${ slug }`
       const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.CATEGORY }?${ filters }`
+
       const response = await fetch(url)
+      await checkResponse(response)
       const result = await response.json()
-      if (response.status !== 200) throw result
-      return result.data[0]
+
+      return {
+        data: result.data[0],
+        success: true
+      }
     } catch (error) {
-      throw (error)
+      return handleError(error, logCtrl)
     }
   }
 }

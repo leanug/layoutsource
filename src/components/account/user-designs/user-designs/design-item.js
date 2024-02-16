@@ -3,7 +3,7 @@ export function DesignItem (props) {
  
   return (
     <>
-      <div className="max-w-xl w-full mx-auto bg-white rounded-xl shadow-md overflow-hidden">
+      <div className="max-w-xl w-full mx-auto bg-gray-50 rounded-xl shadow-md overflow-hidden">
         <img className="h-48 w-full object-cover" src="https://via.placeholder.com/300" alt="Placeholder Image" />
         <div className="p-4">
           <h3 className="text-xl font-bold text-gray-800">{ title }</h3>

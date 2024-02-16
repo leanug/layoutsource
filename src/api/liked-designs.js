@@ -223,15 +223,8 @@ export class LikedDesigns {
       const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.LIKED_LAYOUTS }?${ query }`
 
       const response = await authFetch(url)
+      await checkResponse(response)
       const result = await response.json()
-
-      if (response.status !== 200) {
-        if(ENV.IS_DEV) {
-          console.error('API request failed', result)
-        }
-        return null
-      }
-
       const { data, meta } = result
       
       // Extract designs
@@ -239,17 +232,16 @@ export class LikedDesigns {
       
       const mappedDesigns = mapDesigns(designs)
       const mappedPagination = mapPagination(meta.pagination)
+
       return {
-        designs: mappedDesigns,
-        pagination: mappedPagination,
+        data: {
+          designs: mappedDesigns,
+          pagination: mappedPagination
+        },
+        success: true
       }
     } catch (error) {
-      if(ENV.IS_DEV) {
-        console.error(error)
-      }
-      return {
-        error: "An error occurred while fetching the data.",
-      };
+      return handleError(error, logCtrl)
     }
   }  
 }

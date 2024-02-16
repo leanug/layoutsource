@@ -1,5 +1,6 @@
-import { useLoading, useFirstRender } from "@/hooks"
 import { useState, useEffect } from "react"
+
+import { useLoading, useFirstRender, useRenderCount } from "@/hooks"
 import { useDesignsStore } from "@/store"
 
 /**
@@ -20,31 +21,33 @@ export function useDesigns(router, layoutCtrl) {
   const { designs, setDesigns } = useDesignsStore()
 
   const { type, category } = router.query
-   
-  // Load designs on type or category page change
+  
+  useRenderCount()
+
+  // Load designs on type or category change
   useEffect(() => {
     (async () => {
       try {
         console.log('#1 useEffect', page);
         startLoading()
-        const newData = await layoutCtrl.getDesigns({ 
+        const result = await layoutCtrl.getDesigns({ 
           type, 
           page: 1, 
           sortBy: 'updatedAt', 
           category 
         })
         
-        if(newData.error) {
-          setError(newData.error)
+        if(result.success) {
+          setError('')
+          setPage(1)
+          setSortBy('updatedAt')
+          setDesigns(result.data?.designs || [])
+          setPagination(result.data?.pagination || [])
+        } else {
+          setError('Error')
           setPage(1)
           setDesigns([])
           setPagination([])
-        } else {
-          setError(null)
-          setPage(1)
-          setSortBy('updatedAt')
-          setDesigns(newData?.designs || [])
-          setPagination(newData?.pagination || [])
         }
       } finally {
         stopLoading()
@@ -52,29 +55,30 @@ export function useDesigns(router, layoutCtrl) {
     })()
   }, [type, category])
 
-  // Load designs on type page change
+  // Load designs on sort by change
   useEffect(() => {
     if(firstRender === false) {
       (async () => {
         try {
           console.log('#2 useEffect', page)
           startLoading()
-          const newData = await layoutCtrl.getDesigns({
+          const result = await layoutCtrl.getDesigns({
             type,
             page: 1, 
             sortBy, 
             category 
           })
-          if(newData.error) {
-            setError(newData.error)
+
+          if(result.success) {
+            setError(null)
+            setPage(1)
+            setDesigns(result.data?.designs || [])
+            setPagination(result.data?.pagination || [])
+          } else {
+            setError(result.data.error)
             setPage(1)
             setDesigns([])
             setPagination([])
-          } else {
-            setError(null)
-            setPage(1)
-            setDesigns(newData?.designs || [])
-            setPagination(newData?.pagination || [])
           }
         } finally {
           stopLoading()
@@ -90,21 +94,21 @@ export function useDesigns(router, layoutCtrl) {
         try {
           console.log('#3 useEffect', page)
           startLoading()
-          const newData = await layoutCtrl.getDesigns({ 
+          const result = await layoutCtrl.getDesigns({ 
             type, 
             page, 
             sortBy, 
             category 
           })
 
-          if(newData.error) {
-            setError(newData.error)
+          if(result.success) {
+            setError(null)
+            setDesigns([...designs, ...result.data?.designs || []])
+          } else {
+            setError('Error')
             setPage(1)
             setDesigns([])
             setPagination([])
-          } else {
-            setError(null)
-            setDesigns([...designs, ...newData?.designs || []])
           }
         } finally {
           stopLoading()

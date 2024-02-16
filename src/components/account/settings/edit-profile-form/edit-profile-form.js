@@ -34,11 +34,13 @@ export function EditProfileForm() {
   })
 
   return (
-    <div className="max-w-2xl mx-auto p-6 rounded-lg shadow-lg">
-      <h2 className="font-semibold mb-4">Edit Profile</h2>
-      <form onSubmit={formik.handleSubmit}>
-        <div className="mb-4">
-          <label htmlFor="name" className="block text-gray-700 font-medium">
+    <div className="w-full">
+      <form onSubmit={ formik.handleSubmit }>
+        <div className="mb-5">
+          <label 
+            htmlFor="name" 
+            className="label"
+          >
             Name
           </label>
           <input
@@ -48,7 +50,7 @@ export function EditProfileForm() {
             onChange={ formik.handleChange }
             onBlur={ formik.handleBlur }
             value={ formik.values.name }
-            className={`border border-gray-300 p-2 w-full rounded ${
+            className={`border border-gray-300 py-3 px-4 w-full rounded-lg ${
               formik.touched.name && formik.errors.name
                 ? "border-red-500"
                 : ""
@@ -58,8 +60,11 @@ export function EditProfileForm() {
             <p className="text-red-500 text-sm mt-1">{formik.errors.name}</p>
           )}
         </div>
-        <div className="mb-4">
-          <label htmlFor="email" className="block text-gray-700 font-medium">
+        <div className="mb-5">
+          <label 
+            htmlFor="email" 
+            className="label"
+          >
             Email
           </label>
           <input
@@ -69,7 +74,7 @@ export function EditProfileForm() {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.email}
-            className={`border border-gray-300 p-2 w-full rounded ${
+            className={`border border-gray-300 py-3 px-4 w-full rounded-lg ${
               formik.touched.email && formik.errors.email
                 ? "border-red-500"
                 : ""
@@ -80,10 +85,11 @@ export function EditProfileForm() {
           )}
         </div>
 
-        {/* Add the additional fields (bio, website, username) here */}
-        {/* Example for the "Bio" field */}
-        <div className="mb-4">
-          <label htmlFor="bio" className="block text-gray-700 font-medium">
+        <div className="mb-5">
+          <label 
+            htmlFor="bio" 
+            className="label"
+          >
             Bio
           </label>
           <textarea
@@ -92,29 +98,32 @@ export function EditProfileForm() {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.bio}
-            className={`border border-gray-300 p-2 w-full rounded ${
+            className={`border border-gray-300 py-3 px-4 w-full rounded-lg ${
               formik.touched.bio && formik.errors.bio
                 ? "border-red-500"
                 : ""
             }`}
           />
           {formik.touched.bio && formik.errors.bio && (
-            <p className="text-red-500 text-sm mt-1">{formik.errors.bio}</p>
+            <p className="text-red-500 text-sm mt-1">{ formik.errors.bio }</p>
           )}
         </div>
 
-        <div className="mb-4">
-          <label htmlFor="location" className="block text-gray-700 font-medium">
+        <div className="mb-5">
+          <label 
+            htmlFor="location" 
+            className="label"
+          >
             Location
           </label>
           <input
             type="text"
             id="location"
             name="location"
-            onChange={formik.handleChange}
-            onBlur={formik.handleBlur}
-            value={formik.values.location}
-            className={`border border-gray-300 p-2 w-full rounded ${
+            onChange={ formik.handleChange }
+            onBlur={ formik.handleBlur }
+            value={ formik.values.location }
+            className={`border border-gray-300 py-3 px-4 w-full rounded-lg ${
               formik.touched.location && formik.errors.location
                 ? "border-red-500"
                 : ""
@@ -125,8 +134,11 @@ export function EditProfileForm() {
           )}
         </div>
 
-        <div className="mb-4">
-          <label htmlFor="website" className="block text-gray-700 font-medium">
+        <div className="mb-5">
+          <label 
+            htmlFor="website" 
+            className="label"
+          >
             Your website
           </label>
           <input
@@ -136,7 +148,7 @@ export function EditProfileForm() {
             onChange={formik.handleChange}
             onBlur={formik.handleBlur}
             value={formik.values.website}
-            className={`border border-gray-300 p-2 w-full rounded ${
+            className={`border border-gray-300 py-3 px-4 w-full rounded-lg ${
               formik.touched.website && formik.errors.website
                 ? "border-red-500"
                 : ""
@@ -148,7 +160,7 @@ export function EditProfileForm() {
         </div>
         <button
           type="submit"
-          className="bg-blue-500 text-white px-4 py-2 rounded"
+          className="btn-primary ml-auto mt-6"
           disabled={formik.isSubmitting}
         >
           Save Changes

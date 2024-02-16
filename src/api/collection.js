@@ -1,3 +1,5 @@
+import QueryString from 'qs'
+
 import { 
   authFetch,
   checkResponse,
@@ -5,9 +7,6 @@ import {
   handleError,
   mapDesigns,
 } from '@/utils'
-
-import QueryString from 'qs'
-
 import { Log } from './log'
 
 const logCtrl = new Log()
@@ -43,15 +42,16 @@ export class Collection {
           pageSize: 30,
         },
       })
+
       const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.COLLECTIONS }?${ query }`
-
       const response = await authFetch(url)
-
       await checkResponse(response)
-
       const result = await response.json()
     
-      return { data: result.data }; // Return the response data or status
+      return { 
+        data: result.data ,
+        success: true
+      } // Return the response data or status
     } catch (error) {
       return handleError(error, logCtrl)
     }
@@ -83,10 +83,9 @@ export class Collection {
           }
         },
       })
-      const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.COLLECTIONS }?${ query }`
 
+      const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.COLLECTIONS }?${ query }`
       const response = await authFetch(url)
-     
       await checkResponse(response)
 
       const result = await response.json()
@@ -100,13 +99,18 @@ export class Collection {
       const paramData = data[0]?.attributes.designs.data || []
 
       const mappedDesigns = mapDesigns(paramData)
-      
-      return {
+
+      const collectionInfo = {
         designs: mappedDesigns,
         collectionTitle: data[0]?.attributes.title || '',
         collectionDescription: data[0]?.attributes.description || '',
         collectionId: data[0]?.id || 0,
-        totalDesigns: data[0]?.attributes.totalDesigns || 0
+        totalDesigns: data[0]?.attributes.totalDesigns || 0,
+      };
+      
+      return {
+        data: collectionInfo,
+        success: true
       }
     } catch (error) {
       return handleError(error, logCtrl)

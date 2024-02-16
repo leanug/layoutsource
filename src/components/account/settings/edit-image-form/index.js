@@ -1,17 +1,22 @@
 import * as Yup from 'yup'
 import { useFormik } from 'formik'
-import { useState } from 'react';
+import { useState } from 'react'
 
 import { useAuth } from '@/hooks';
 import { Upload, User } from '@/api'
 import { useNotificationStore } from "@/store"
 
+import Image from 'next/image'
+
+import fallbackImg from '@/assets/images/avatar.svg'
+
 export function EditImageForm({ avatar }) {
   const [showButtons, setShowButtons] = useState(false)
-  
+
   const { addNotification } = useNotificationStore()
 
   const { user, updateUser } = useAuth()
+
   const userCtrl = new User()
   const uploadCtrl = new Upload()
 
@@ -56,7 +61,6 @@ export function EditImageForm({ avatar }) {
         const data = new FormData()
         data.append('files', formFileData?.file)
         const uploadResult = await uploadCtrl.upload(data)
-        console.log('uploadResult= ', uploadResult);
 
         // Check if the upload was successful
         if (uploadResult.success) {
@@ -86,22 +90,25 @@ export function EditImageForm({ avatar }) {
   })
 
   return (
-    <div className="max-w-2xl mx-auto p-6">
-      <h2 className="font-semibold mb-4">Edit Profile</h2>
-      <div className='flex flex-row gap-3'>
-        <div className="w-20 h-20 rounded-full overflow-hidden mb-4">
-          <img
-            src={ newAvatarUrl || avatar }
+    <div className="max-w-2xl mx-auto">
+      <div className='flex flex-row gap-3 items-center'>
+        <div className="w-20 h-20 rounded-full overflow-hidden">
+          <Image
+            src={ avatar || fallbackImg }
             alt="User Avatar"
-            className="w-full h-full object-cover"
+            width={'30'}
+            height={'30'}
+            className="w-full h-full object-cover rounded-full"
+            placeholder="empty" // use 'empty' for a blank placeholder
           />
         </div>
         
         {
           ! showButtons && 
           <button 
-            className='bg-blue-100 text-white px-4 py-2 rounded btn-secondary h-10'
-            onClick={ handleShowButtons }>
+            className='btn-light'
+            onClick={ handleShowButtons }
+          >
               Upload new image
           </button>
         }
@@ -118,7 +125,8 @@ export function EditImageForm({ avatar }) {
                   type="file" 
                   onChange={(event) => {
                     formik.setFieldValue("file", event.currentTarget.files[0])
-                  }} />
+                  }} 
+                />
                 </div>
                 <button
                   type="submit"
@@ -133,5 +141,5 @@ export function EditImageForm({ avatar }) {
         </form>
       </div>
     </div>
-  );
+  )
 }

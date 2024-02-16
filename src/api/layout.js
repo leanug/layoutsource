@@ -1,3 +1,5 @@
+import QueryString from 'qs'
+
 import {
   authFetch,
   checkResponse,
@@ -8,9 +10,6 @@ import {
   mapDesigns, 
   mapPagination
 } from '@/utils'
-
-import QueryString from 'qs'
-
 import { Log } from '@/api'
 
 const logCtrl = new Log()
@@ -81,21 +80,19 @@ export class Layout {
 
       const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.LAYOUTS }?${ query }`
       const response = await fetch(url)
+      await checkResponse(response)
       const result = await response.json()
-    
-      if (response.status !== 200) {
-        throw new Error(result)
-      }
-
       const { data, meta } = result
 
       const mappedDesigns = mapDesigns(data)
       const mappedPagination = mapPagination(meta.pagination)
       
-      return {
-        error: null,
-        designs: mappedDesigns,
-        pagination: mappedPagination,
+      return { 
+        data: {
+          designs: mappedDesigns,
+          pagination: mappedPagination,
+        },
+        success: true
       }
     } catch (error) {
       return handleError(error)

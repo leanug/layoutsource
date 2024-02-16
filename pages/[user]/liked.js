@@ -1,20 +1,32 @@
 import { useRouter } from "next/router"
-import { LikedDesigns, Nav, Info } from "@/components"
+
+import { 
+  LikedDesigns, 
+  Nav, 
+  Info, 
+  LoadingIndicator 
+} from "@/components"
 import { useAuth } from "@/hooks"
 import { sanitizeQueryString } from '@/utils'
 
-function TestPage() {
+function LikedDesignsPage() {
   const { user } = useAuth()
   const router = useRouter()
 
   const { user: userSlug } = router.query;
   const safeUserSlug = sanitizeQueryString(userSlug)
 
+  // Check if user is loaded
   if(! user) {
-    return null;
+    return (
+      <section style={{ height: '90vh' }}>
+        <LoadingIndicator />
+      </section>
+    )
   }
   
-  if(safeUserSlug !== user.username) {
+  // Invalid username slug
+  if(safeUserSlug !== user?.username) {
     router.push('/')
   }
 
@@ -34,4 +46,4 @@ function TestPage() {
     </section>
   )
 }
-export default TestPage
+export default LikedDesignsPage

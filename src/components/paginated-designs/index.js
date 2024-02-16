@@ -46,5 +46,5 @@ export function PaginatedDesigns (props) {
         )
       }
     </section>
-  );
+  )
 }

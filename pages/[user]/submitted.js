@@ -1,5 +1,7 @@
 import { useRouter } from "next/router"
-import { 
+
+import {
+  LoadingIndicator,
   Nav, 
   Info, 
   UserDesigns 
@@ -7,15 +9,20 @@ import {
 import { useAuth } from "@/hooks"
 import { sanitizeQueryString } from '@/utils'
 
-function TestPage() {
+function UserSubmittedDesignsPage() {
   const { user } = useAuth()
   const router = useRouter()
 
   const { user: userSlug } = router.query;
   const safeUserSlug = sanitizeQueryString(userSlug)
 
+  // Check if user is loaded
   if(! user) {
-    return null;
+    return (
+      <section style={{ height: '90vh' }}>
+        <LoadingIndicator />
+      </section>
+    )
   }
   
   if(safeUserSlug !== user.username) {
@@ -38,4 +45,4 @@ function TestPage() {
     </section>
   )
 }
-export default TestPage
+export default UserSubmittedDesignsPage

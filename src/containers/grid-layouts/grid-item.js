@@ -44,7 +44,10 @@ export default function GridItem(props) {
               <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 <div className="flex gap-3">
                   <button
-                    className="bg-blue-500 text-white px-4 py-2 rounded"
+                    className={`
+                      bg-gray-50 border border-gray-200  text-white px-3 py-2 rounded-md
+
+                    `}
                     onClick={ () => openCollectionsModal(design.id) }
                   >
                     <BookmarkRegular />

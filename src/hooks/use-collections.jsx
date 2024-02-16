@@ -7,16 +7,13 @@ import {
   useFirstRender,
   useLoading
 } from "@/hooks"
-
-import { ConfirmationDialog } from '@/components'
-
 import { 
   useModalStore, 
   useNotificationStore, 
   useDesignsStore 
 } from "@/store"
-
 import { EditCollectionForm } from "@/containers"
+import { ConfirmationDialog } from '@/components'
 
 const PAGE_SIZE = 2; // Set to your desired number of items per page
 
@@ -49,20 +46,22 @@ export function useCollections(user, router, collectionCtrl) {
         try { 
           startLoading()
 
-          const newData = await collectionCtrl.getBySlug({
+          const result = await collectionCtrl.getBySlug({
             userId: user['id'], 
             slug,
             page,
             itemsPerPage: PAGE_SIZE
           })
-          
-          if(newData) {
-            setDesigns([...newData?.designs] || []) 
-            setTotalItems(newData.totalDesigns)
-            setTotalPages(Math.ceil(newData.totalDesigns / PAGE_SIZE))
-            setTitle(newData.collectionTitle)
-            setDescription(newData.collectionDescription)
-            setCollectionId(newData.collectionId)
+
+          if(result?.success) {
+            const { data } = result
+            console.log(data);
+            setDesigns([...data?.designs] || []) 
+            setTotalItems(data.totalDesigns)
+            setTotalPages(Math.ceil(data.totalDesigns / PAGE_SIZE))
+            setTitle(data.collectionTitle)
+            setDescription(data.collectionDescription)
+            setCollectionId(data.collectionId)
             setCollectionExists(true)
           } else {
             setCollectionExists(false)
@@ -81,15 +80,16 @@ export function useCollections(user, router, collectionCtrl) {
         try {
           startLoading()
 
-          const newData = await collectionCtrl.getBySlug({
+          const result = await collectionCtrl.getBySlug({
             userId: user['id'],  
             slug,
             page,
             itemsPerPage: PAGE_SIZE
           })
           
-          if(newData) {
-            setDesigns([...designs, ...newData?.designs || []])
+          if(result?.success) {
+            const { data } = result
+            setDesigns([...designs, ...data?.designs || []])
             setPage(page)
           }
         } finally {
@@ -105,13 +105,13 @@ export function useCollections(user, router, collectionCtrl) {
   const deleteCollection = async () => {
     try {
       startLoading()
-      const response = await collectionCtrl.delete(user?.id, collectionId)
+      const result = await collectionCtrl.delete(user?.id, collectionId)
 
-      if(response?.success) {
-        addNotification(response?.message || '', 'success')
+      if(result?.success) {
+        addNotification(result?.message || '', 'success')
         router.push(`/${ userSlug }/collections`)
       } else {
-        addNotification(response?.error.message || '', 'error')
+        addNotification(result?.error.message || '', 'error')
       }
     } finally {
       stopLoading()
