@@ -18,7 +18,7 @@ export const ShowcaseModal = () => {
         >
           &times;
         </button>
-        { showcaseModalContent }
+        {showcaseModalContent}
       </div>
     </div>
   ) : null

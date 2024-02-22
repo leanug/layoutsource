@@ -1,8 +1,8 @@
-import { useMobileMenuStore } from '@/store'
+import { useAsideMenuStore } from '@/store'
 import { MenuSolid } from './icons/menu-solid'
 
 export function MobileMenuButton() {
-  const { toggleMenu } = useMobileMenuStore()
+  const { toggleMenu } = useAsideMenuStore()
 
   return (
     <button onClick={toggleMenu} className="xl:hidden">

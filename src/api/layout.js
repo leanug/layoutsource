@@ -7,8 +7,8 @@ import {
   handleError,
   isValidSlug,
   isValidType,
-  mapDesigns, 
-  mapPagination
+  mapDesigns,
+  mapPagination,
 } from '@/utils'
 import { Log } from '@/api'
 
@@ -33,32 +33,38 @@ export class Layout {
    * @throws {Error} If an error occurs during the fetch.
    * @returns {Promise<Object>} A promise that resolves to the fetched layouts.
    */
-  async getDesigns({ type = 'homepages', page = 1, sortBy = 'updatedAt', category = 'all' }) {
+  async getDesigns({
+    type = 'homepages',
+    page = 1,
+    sortBy = 'updatedAt',
+    category = 'all',
+  }) {
     try {
       // Check if the provided sortBy value is a valid option; default to 'updatedAt' if not.
-      const sortParam = VALID_SORT_OPTIONS[sortBy] || VALID_SORT_OPTIONS.updatedAt
+      const sortParam =
+        VALID_SORT_OPTIONS[sortBy] || VALID_SORT_OPTIONS.updatedAt
 
       // Sanitize category
       const safeCat = category === 'all' ? 'all' : isValidSlug(category)
 
       // Sanitize type
       const safeType = isValidType(type) ? type : ''
-      
+
       // Define the base filters object
       const filters = {
         categories: {
           type: {
-              slug: {
-                  $eq: safeType
-              }
+            slug: {
+              $eq: safeType,
+            },
           },
-        }
+        },
       }
 
       // Add the additional filter for 'slug' if category is not 'all'
       if (category !== 'all') {
         filters.categories.slug = {
-            $eq: safeCat
+          $eq: safeCat,
         }
       }
 
@@ -67,7 +73,7 @@ export class Layout {
         // Use the populate parameter to fetch additional data
         populate: {
           cover: {
-            fields: ['height', 'name', 'url', 'width']
+            fields: ['height', 'name', 'url', 'width'],
           },
         },
         filters,
@@ -78,7 +84,7 @@ export class Layout {
         },
       })
 
-      const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.LAYOUTS }?${ query }`
+      const url = `${ENV.API_URL}/${ENV.ENDPOINTS.LAYOUTS}?${query}`
       const response = await fetch(url)
       await checkResponse(response)
       const result = await response.json()
@@ -86,13 +92,13 @@ export class Layout {
 
       const mappedDesigns = mapDesigns(data)
       const mappedPagination = mapPagination(meta.pagination)
-      
-      return { 
+
+      return {
         data: {
           designs: mappedDesigns,
           pagination: mappedPagination,
         },
-        success: true
+        success: true,
       }
     } catch (error) {
       return handleError(error)
@@ -100,20 +106,20 @@ export class Layout {
   }
 
   async searchDesigns({ queryString, page, sortBy = 'updatedAt' }) {
-     // Check if the provided sortBy value is a valid option; default to 'updatedAt' if not.
-     const sortParam = VALID_SORT_OPTIONS[sortBy] || VALID_SORT_OPTIONS.updatedAt
+    // Check if the provided sortBy value is a valid option; default to 'updatedAt' if not.
+    const sortParam = VALID_SORT_OPTIONS[sortBy] || VALID_SORT_OPTIONS.updatedAt
 
     try {
       const query = QueryString.stringify({
         populate: {
           cover: {
-            fields: ['formats', 'height', 'name', 'url', 'width']
+            fields: ['formats', 'height', 'name', 'url', 'width'],
           },
         },
         filters: {
           title: {
-            $contains: queryString
-          }
+            $contains: queryString,
+          },
         },
         sort: [sortParam],
         pagination: {
@@ -122,15 +128,15 @@ export class Layout {
         },
       })
 
-      const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.LAYOUTS }?${ query }`
+      const url = `${ENV.API_URL}/${ENV.ENDPOINTS.LAYOUTS}?${query}`
       const response = await fetch(url)
       const result = await response.json()
-      
+
       if (response.status !== 200) {
         // This throw statement will stop the execution
-        throw new Error('HTTP Error: ' + response.status);
+        throw new Error('HTTP Error: ' + response.status)
       }
-      
+
       const { data, meta } = result
       const mappedDesigns = mapDesigns(data)
       const mappedPagination = mapPagination(meta.pagination)
@@ -140,12 +146,12 @@ export class Layout {
         pagination: mappedPagination,
       }
     } catch (error) {
-      if(ENV.IS_DEV) {
+      if (ENV.IS_DEV) {
         console.error(error)
       }
       return {
-        error: "An error occurred while fetching the data.",
-      };
+        error: 'An error occurred while fetching the data.',
+      }
     }
   }
 
@@ -160,100 +166,100 @@ export class Layout {
       const query = QueryString.stringify({
         populate: {
           categories: {
-            fields: ['*']
+            fields: ['*'],
           },
           image: {
-            fields: ['formats', 'height', 'name', 'url', 'width']
-          }
+            fields: ['formats', 'height', 'name', 'url', 'width'],
+          },
         },
         filters: {
           slug: {
-            $eq: designSlug
-          }
-        }
+            $eq: designSlug,
+          },
+        },
       })
- 
-      const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.LAYOUTS }?${ query }`
-      const response = await fetch(url);
+
+      const url = `${ENV.API_URL}/${ENV.ENDPOINTS.LAYOUTS}?${query}`
+      const response = await fetch(url)
       await checkResponse(response)
       const result = await response.json()
 
-      return { 
-        success: true, 
-        data: result.data
-      } 
+      return {
+        success: true,
+        data: result.data,
+      }
     } catch (error) {
-     return handleError(error, logCtrl)
+      return handleError(error, logCtrl)
     }
   }
 
-  async like (layoutLikes, layoutId) {
+  async like(layoutLikes, layoutId) {
     try {
-      const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.LAYOUTS }/${ layoutId }`
-      const currentLikes = layoutLikes || 0; // Default to 0 if likes field is undefined
+      const url = `${ENV.API_URL}/${ENV.ENDPOINTS.LAYOUTS}/${layoutId}`
+      const currentLikes = layoutLikes || 0 // Default to 0 if likes field is undefined
       const updatedLikes = currentLikes + 1 // Increment the likes count by one
 
       const params = {
         method: 'PUT',
         headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          data: {
-            likes: updatedLikes,
-          }
-        })
-      }
-      // Send a request to the server to like the layout
-      const response = await authFetch(url, params);
-      // Handle the response
-      const result = await response.json()
-
-      if (response.status !== 200) {
-        // Handle the error here, for example, log it
-        console.error('Error updating liked layout:', result);
-        throw new Error('Failed to update liked layout');
-      }
-  
-      return result.data; // Return the response data or status
-    } catch (error) {
-      console.error(error);
-      // log error
-    }
-  }
-
-  async dislike(layoutLikes, layoutId) {
-    try {
-      const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.LAYOUTS }/${ layoutId }`;
-      const currentLikes = layoutLikes || 0; // Default to 0 if likes field is undefined
-      const updatedLikes = Math.max(currentLikes - 1, 0) // Decrement the likes count by one
-  
-      const params = {
-        method: 'PUT',
-        headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           data: {
             likes: updatedLikes,
           },
         }),
-      };
-      // Send a request to the server to dislike the layout
-      const response = await authFetch(url, params);
+      }
+      // Send a request to the server to like the layout
+      const response = await authFetch(url, params)
       // Handle the response
-      const result = await response.json();
-  
+      const result = await response.json()
+
       if (response.status !== 200) {
         // Handle the error here, for example, log it
-        console.error('Error updating disliked layout:', result);
-        throw new Error('Failed to update disliked layout');
+        console.error('Error updating liked layout:', result)
+        throw new Error('Failed to update liked layout')
       }
-  
-      return result.data; // Return the response data or status
+
+      return result.data // Return the response data or status
     } catch (error) {
-      console.error(error);
-      throw new Error('An error occurred while updating a disliked layout');
+      console.error(error)
+      // log error
+    }
+  }
+
+  async dislike(layoutLikes, layoutId) {
+    try {
+      const url = `${ENV.API_URL}/${ENV.ENDPOINTS.LAYOUTS}/${layoutId}`
+      const currentLikes = layoutLikes || 0 // Default to 0 if likes field is undefined
+      const updatedLikes = Math.max(currentLikes - 1, 0) // Decrement the likes count by one
+
+      const params = {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          data: {
+            likes: updatedLikes,
+          },
+        }),
+      }
+      // Send a request to the server to dislike the layout
+      const response = await authFetch(url, params)
+      // Handle the response
+      const result = await response.json()
+
+      if (response.status !== 200) {
+        // Handle the error here, for example, log it
+        console.error('Error updating disliked layout:', result)
+        throw new Error('Failed to update disliked layout')
+      }
+
+      return result.data // Return the response data or status
+    } catch (error) {
+      console.error(error)
+      throw new Error('An error occurred while updating a disliked layout')
     }
   }
 }

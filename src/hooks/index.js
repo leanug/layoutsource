@@ -1,4 +1,3 @@
-export * from './use-aside'
 export * from './use-auth'
 export * from './use-collection'
 export * from './use-collections'

@@ -2,7 +2,7 @@ import Link from 'next/link'
 
 export function Navigation({ vertical }) {
   const navClass = vertical
-    ? 'flex flex-col font-medium gap-3 p-2.5'
+    ? 'flex flex-col font-medium gap-5 py-2 font-normal'
     : 'flex flex-row space-x-4'
 
   return (

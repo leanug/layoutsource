@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState } from 'react'
 
 /**
  * A custom React hook for managing loading state.
@@ -7,7 +7,7 @@ import { useState } from "react";
  * @property {Function} startLoading - A function to set the loading state to true, indicating the start of the loading process.
  * @property {Function} stopLoading - A function to set the loading state to false, indicating the end of the loading process.
  */
-export function useLoading () {
+export function useLoading() {
   const [loading, setLoading] = useState(false)
 
   const startLoading = () => setLoading(true)
@@ -16,6 +16,6 @@ export function useLoading () {
   return {
     loading,
     startLoading,
-    stopLoading
+    stopLoading,
   }
 }

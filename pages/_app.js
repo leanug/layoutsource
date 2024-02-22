@@ -1,13 +1,24 @@
+import { useRouter } from 'next/router';
+
 import { AuthProvider } from '@/contexts'
 import '../src/app/globals.css'
-import { BasicLayout } from '@/components'
+import { BasicLayout, AuthLayout } from '@/components'
 
 function MyApp({ Component, pageProps }) {
+  const router = useRouter()
+  const isAuthPage = router.pathname.startsWith('/join')
+
   return (
     <AuthProvider>
-      <BasicLayout>
-        <Component {...pageProps} />
-      </BasicLayout>
+      {isAuthPage ? (
+        <AuthLayout>
+          <Component {...pageProps} />
+        </AuthLayout>
+      ) : (
+        <BasicLayout>
+          <Component {...pageProps} />
+        </BasicLayout>
+      )}
     </AuthProvider>
   )
 }

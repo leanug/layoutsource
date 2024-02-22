@@ -1,25 +1,18 @@
-import LoginForm from '@/components/auth/login-form'
-import Link from 'next/link'
-import { useAuth } from '@/hooks';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/router'
+
+import { LoginForm } from '@/components'
+import { useAuth } from '@/hooks'
 
 function SignIn() {
   const router = useRouter()
   const { user } = useAuth()
-  
+
   if (user) {
     router.push('/')
     return null // No flicker after push
   }
 
-  return (
-    <>
-     <LoginForm />
-      <div>
-        <Link href="/join/sign-up">You don't have an account?</Link>
-      </div>
-    </>
-  )
+  return <LoginForm />
 }
 
-export default SignIn;
+export default SignIn

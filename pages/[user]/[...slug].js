@@ -1,7 +1,6 @@
-// pages/[user]/[...slug].js
+import { useRouter } from 'next/router'
 
 import { Custom404 } from '@/components'
-import { useRouter } from 'next/router'
 
 /**
  * Catch all page for non existing urls
@@ -14,9 +13,7 @@ const NotFoundPage = () => {
     return <div>Loading...</div>
   }
 
-  return (
-    <Custom404 />
-  )
+  return <Custom404 />
 }
 
 export default NotFoundPage

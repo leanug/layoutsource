@@ -1,14 +1,13 @@
+import QueryString from 'qs'
+
 import {
   checkResponse,
   handleError,
-  ENV, 
+  ENV,
   authFetch,
-  mapDesigns, 
-  mapPagination
+  mapDesigns,
+  mapPagination,
 } from '@/utils'
-
-import QueryString from 'qs'
-
 import { Log } from './log'
 
 const logCtrl = new Log()
@@ -23,17 +22,17 @@ export class LikedDesigns {
    * @returns {Promise<boolean>} A promise that resolves to `true` if the layout is liked, or `false` if it is not liked.
    * @throws {Error} If an error occurs during the check process.
    */
-  async check (userId, designId) {
+  async check(userId, designId) {
     try {
-      const filterUser = `filters[user][id][$eq][0]=${ userId }`
-      const filterLayout = `filters[layout][id][$eq][1]=${ designId }`
-      const urlParams = `${ filterUser }&${ filterLayout }`
-      const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.LIKED_LAYOUTS }?${ urlParams }`
+      const filterUser = `filters[user][id][$eq][0]=${userId}`
+      const filterLayout = `filters[layout][id][$eq][1]=${designId}`
+      const urlParams = `${filterUser}&${filterLayout}`
+      const url = `${ENV.API_URL}/${ENV.ENDPOINTS.LIKED_LAYOUTS}?${urlParams}`
 
       const response = await authFetch(url, urlParams)
       const result = await response.json()
 
-      if (response.status !== 200 ) throw result
+      if (response.status !== 200) throw result
 
       if (result.data.length === 0) return false
 
@@ -41,7 +40,7 @@ export class LikedDesigns {
     } catch (error) {
       console.error(error)
     }
-  }  
+  }
 
   /**
    * Fetches all liked design IDs for a given user.
@@ -59,24 +58,24 @@ export class LikedDesigns {
    * const result = await likedDesignCtrl.getAll(userId);
    * // Example result: { success: true, data: [1, 2, 3] }
    */
-  async getAll (userId) {
+  async getAll(userId) {
     try {
       const query = QueryString.stringify({
         populate: {
           layout: {
             fields: ['id'],
-          }
+          },
         },
         filters: {
           user: {
             id: {
-              $eq: userId
-            }
-          }
-        }
+              $eq: userId,
+            },
+          },
+        },
       })
-      
-      const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.LIKED_LAYOUTS }?${ query }`
+
+      const url = `${ENV.API_URL}/${ENV.ENDPOINTS.LIKED_LAYOUTS}?${query}`
 
       const response = await authFetch(url)
       await checkResponse(response)
@@ -94,19 +93,19 @@ export class LikedDesigns {
        */
       const likedDesignsObj = result.data.reduce((acc, item) => {
         // Extract designId from the current liked design item
-        const designId = item.attributes.layout.data.id;
+        const designId = item.attributes.layout.data.id
 
         // Map designId to its associated likedDesignCollectionItemId in the accumulator object
-        acc[designId] = item.id;
+        acc[designId] = item.id
 
         // Return the updated accumulator for the next iteration
-        return acc;
+        return acc
       }, {})
-      
+
       return {
         data: likedDesignsObj,
-        success: true
-      } 
+        success: true,
+      }
     } catch (error) {
       return handleError(error, logCtrl)
     }
@@ -114,7 +113,7 @@ export class LikedDesigns {
 
   /**
    * Asynchronously adds a liked design layout for a user.
-   * 
+   *
    * It adds a pair of user and design elements to the Liked designs collection
    *
    * @async
@@ -127,20 +126,20 @@ export class LikedDesigns {
    *     @property {number} likedLayoutsCollectionItemId - The ID related to the liked design layout in the Liked Layouts collection.
    * @throws {Error} Throws an error if there is an issue with the request or server response.
    */
-  async add (userId, designId) {
+  async add(userId, designId) {
     try {
-      const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.LIKED_LAYOUTS }`
+      const url = `${ENV.API_URL}/${ENV.ENDPOINTS.LIKED_LAYOUTS}`
       const params = {
         method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           data: {
             user: userId,
             layout: designId,
-          }
-        })
+          },
+        }),
       }
       // Send a request to the server to like the layout
       const response = await authFetch(url, params)
@@ -150,8 +149,8 @@ export class LikedDesigns {
 
       return {
         data,
-        success: true
-      } 
+        success: true,
+      }
     } catch (error) {
       return handleError(error, logCtrl)
     }
@@ -168,21 +167,21 @@ export class LikedDesigns {
    *   @property {Object} data - Data returned from the server after the deletion.
    * @throws {Error} Throws an error if there is an issue with the request or server response.
    */
-  async delete (likedDesignsCollectionItemId) {
+  async delete(likedDesignsCollectionItemId) {
     try {
-      const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.LIKED_LAYOUTS }/${ likedDesignsCollectionItemId }`
+      const url = `${ENV.API_URL}/${ENV.ENDPOINTS.LIKED_LAYOUTS}/${likedDesignsCollectionItemId}`
       const params = {
         method: 'DELETE',
       }
       // Send a request to the server to delete the layout
-      const response = await authFetch(url, params);
+      const response = await authFetch(url, params)
       await checkResponse(response)
       const result = await response.json()
-      
-      return { 
-        success: true, 
-        data: result
-      } 
+
+      return {
+        success: true,
+        data: result,
+      }
     } catch (error) {
       return handleError(error, logCtrl)
     }
@@ -193,7 +192,7 @@ export class LikedDesigns {
    * @param {string} userId - The ID of the user to be updated.
    * @returns {Promise<Object>} A promise that resolves to the updated user information.
    */
-  async get ({ userId, page }) {
+  async get({ userId, page }) {
     try {
       const query = QueryString.stringify({
         populate: {
@@ -201,47 +200,47 @@ export class LikedDesigns {
             fields: ['title', 'likes', 'views', 'id', 'slug'],
             populate: {
               cover: {
-                fields: ['formats', 'height', 'name', 'url', 'width']
-              }
-            }
-          }
+                fields: ['formats', 'height', 'name', 'url', 'width'],
+              },
+            },
+          },
         },
         filters: {
           user: {
             id: {
-              $eq: userId
-            }
-          }
+              $eq: userId,
+            },
+          },
         },
         sort: ['updatedAt:desc'],
         pagination: {
           page: page,
           pageSize: 1,
-        }
+        },
       })
-      
-      const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.LIKED_LAYOUTS }?${ query }`
+
+      const url = `${ENV.API_URL}/${ENV.ENDPOINTS.LIKED_LAYOUTS}?${query}`
 
       const response = await authFetch(url)
       await checkResponse(response)
       const result = await response.json()
       const { data, meta } = result
-      
+
       // Extract designs
-      const designs = data.map(item => item.attributes.layout.data)
-      
+      const designs = data.map((item) => item.attributes.layout.data)
+
       const mappedDesigns = mapDesigns(designs)
       const mappedPagination = mapPagination(meta.pagination)
 
       return {
         data: {
           designs: mappedDesigns,
-          pagination: mappedPagination
+          pagination: mappedPagination,
         },
-        success: true
+        success: true,
       }
     } catch (error) {
       return handleError(error, logCtrl)
     }
-  }  
+  }
 }

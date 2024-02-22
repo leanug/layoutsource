@@ -1,6 +1,6 @@
 import Head from 'next/head'
 
-import { useAside, useAuth, useFetchLikedDesigns } from '@/hooks'
+import { useAuth, useFetchLikedDesigns } from '@/hooks'
 import { LikedDesigns } from '@/api'
 import { useDarkModeStore } from '@/store'
 
@@ -9,16 +9,15 @@ import {
   ShowcaseModal,
   Notification,
   Header,
+  HeaderUser,
   Footer,
   AsideMenu,
-  MobileMenu,
+  SearchBarFull,
 } from '@/components'
 
 const likedDesignsCtrl = new LikedDesigns()
 
 export const BasicLayout = ({ children }) => {
-  const { toggleMenu, closeMenu, isOpen } = useAside()
-
   const { darkMode } = useDarkModeStore()
   const { user, logout } = useAuth()
 
@@ -32,20 +31,18 @@ export const BasicLayout = ({ children }) => {
           <meta name="viewport" content="width=device-width, initial-scale=1" />
         </Head>
         <div
-          className={`text-slate-900 transition duration-300 flex flex-col min-h-screen font-inter dark:text-white`}
+          className={`
+          text-slate-900 transition duration-300 flex flex-col 
+            min-h-screen font-inter dark:text-white
+          `}
         >
-          <Header toggleMenu={toggleMenu} />
+          {user ? <HeaderUser /> : <Header />}
+          <SearchBarFull />
           <main className={`flex-1`}>{children}</main>
           <Footer />
         </div>
-        <AsideMenu
-          isOpen={isOpen}
-          closeMenu={closeMenu}
-          user={user}
-          logout={logout}
-        />
+        <AsideMenu user={user} logout={logout} />
       </div>
-      <MobileMenu />
       <Modal />
       <ShowcaseModal />
       <Notification />

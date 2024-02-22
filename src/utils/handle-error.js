@@ -1,4 +1,4 @@
-import { ENV } from "@/utils"
+import { ENV } from '@/utils'
 
 /**
  * Checks the response status and throws an error if not okay.
@@ -9,7 +9,7 @@ import { ENV } from "@/utils"
  */
 export async function handleError(error, logCtrl) {
   if (ENV.IS_DEV) {
-    console.error(error);
+    console.error(error)
   }
 
   // Log error
@@ -22,8 +22,8 @@ export async function handleError(error, logCtrl) {
       userAction: error?.userAction,
       url: error?.url,
     },
-    user: error?.userId
-  });
+    user: error?.userId,
+  })
 
   return {
     success: false,

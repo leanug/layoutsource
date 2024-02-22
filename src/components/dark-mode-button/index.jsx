@@ -13,7 +13,7 @@ export function DarkModeButton() {
       onClick={darkModeHandler}
       className={`
         bg-gray-50 hover:bg-gray-100 font-bold 
-         pl-4 pr-[14px] rounded-lg dark:bg-slate-700 py-3
+         pl-4 pr-[14px] rounded-lg dark:bg-gray-700 py-3
       `}
     >
       {darkMode ? (

@@ -6,18 +6,18 @@
  * @throws {Object} An error object with additional properties like userId.
  */
 export const checkResponse = async (response, userId) => {
-  if (! response.ok) {
-    let error;
-   
+  if (!response.ok) {
+    let error
+
     try {
-      const result = await response.json();
-      error = result?.error || { message: "Unexpected error" }
+      const result = await response.json()
+      error = result?.error || { message: 'Unexpected error' }
       error.userId = userId
       error.url = response?.url
     } catch {
-      error = { message: "Unexpected error" };
+      error = { message: 'Unexpected error' }
     }
 
-    throw error;
+    throw error
   }
 }

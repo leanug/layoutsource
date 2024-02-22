@@ -1,9 +1,7 @@
-import {
-  authFetch,
-  checkResponse,
-  ENV,
-  handleError
-} from '@/utils'
+import { authFetch, checkResponse, ENV, handleError } from '@/utils'
+import { Log } from './log'
+
+const logCtrl = new Log()
 
 /**
  * Represents a User.
@@ -15,15 +13,15 @@ export class User {
    */
   async getMe() {
     try {
-      const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.USERS_ME }?${ 'populate=*' }`
+      const url = `${ENV.API_URL}/${ENV.ENDPOINTS.USERS_ME}?${'populate=*'}`
 
       const response = await authFetch(url) // Authenticated petition
       await checkResponse(response)
       const result = await response.json()
-      
-      return { 
-        success: true, 
-        data: result
+
+      return {
+        success: true,
+        data: result,
       }
     } catch (error) {
       return handleError(error, logCtrl)
@@ -38,23 +36,23 @@ export class User {
    */
   async updateMe(userId, data) {
     try {
-      const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.USERS }/${ userId }`
+      const url = `${ENV.API_URL}/${ENV.ENDPOINTS.USERS}/${userId}`
       const params = {
         method: 'PUT',
         headers: {
-          "Content-Type": "application/json"
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify(data)
+        body: JSON.stringify(data),
       }
 
       const response = await authFetch(url, params)
       await checkResponse(response)
       const result = await response.json()
-      
-      return { 
-        success: true, 
-        data: result
-      } 
+
+      return {
+        success: true,
+        data: result,
+      }
     } catch (error) {
       return handleError(error, logCtrl)
     }

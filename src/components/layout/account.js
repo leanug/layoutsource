@@ -2,7 +2,8 @@ import { useRouter } from 'next/router'
 import Image from 'next/image'
 
 import { useAuth } from '@/hooks'
-import { CaretDown } from '@/components'
+import { CaretDown, MenuSolid } from '@/components'
+import { useAsideMenuStore } from '@/store'
 
 import fallbackImg from '@/assets/images/avatar.svg'
 
@@ -20,50 +21,32 @@ import fallbackImg from '@/assets/images/avatar.svg'
  *
  * @returns {JSX.Element} The rendered Account component.
  */
-const Account = ({ toggleMenu }) => {
+export function Account() {
   const { user } = useAuth()
   const router = useRouter()
+  const { toggleMenu } = useAsideMenuStore()
 
-  const goToLogin = () => router.push('/join/sign-in')
-  const goToAccount = () => router.push(`/${ user.username }`)
+  const goToAccount = () => router.push(`/${user.username}`)
 
   return (
-    <div className='flex flex-row gap-2'>
-      {
-        user ? (
-          <>
-            <button 
-              className='w-10 h-10'
-              onClick={ goToAccount }
-            >
-              <Image
-                src={ user.avatar.url || fallbackImg }
-                alt="User Avatar"
-                width={'30'}
-                height={'30'}
-                className="w-full h-full object-cover rounded-full"
-                placeholder="empty" // use 'empty' for a blank placeholder
-                priority={ false }
-              />
-            </button>
-            <button
-              id="userAsideMenuButton" 
-              onClick={ toggleMenu }
-            >
-              <CaretDown className="w-6 h-6 fill-slate-900 dark:fill-slate-50" />
-            </button>
-          </>
-        ) : (
-        <button 
-          className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
-          onClick={ goToLogin }
-        >
-          Login
-        </button>
-        )
-      }
+    <div className="flex flex-row gap-2">
+      <button className="w-10 h-10 hidden xl:block" onClick={goToAccount}>
+        <Image
+          src={user.avatar?.url || fallbackImg}
+          alt="User Avatar"
+          width={'30'}
+          height={'30'}
+          className="w-full h-full object-cover rounded-full"
+          placeholder="empty" // use 'empty' for a blank placeholder
+          priority={false}
+        />
+      </button>
+      <button id="userAsideMenuButton" onClick={toggleMenu}>
+        {/* Show burger icon for screens smaller than md */}
+        <MenuSolid className="w-6 h-6 fill-slate-900 dark:fill-slate-50 block xl:hidden" />
+        {/* Show caret icon for screens md and larger */}
+        <CaretDown className="w-6 h-6 fill-slate-900 dark:fill-slate-50 hidden xl:block" />
+      </button>
     </div>
   )
 }
-
-export default Account

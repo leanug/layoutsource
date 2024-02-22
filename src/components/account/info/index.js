@@ -8,7 +8,7 @@ export function Info({ user }) {
     <div className="flex flex-col items-center justify-center mt-20">
       <div className="w-32 h-32 rounded-full overflow-hidden mb-4">
         <Image
-          src={user.avatar.url || fallbackImg}
+          src={user.avatar?.url || fallbackImg}
           alt="User Avatar"
           width={'120'}
           height={'120'}
