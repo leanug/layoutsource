@@ -1,16 +1,11 @@
-import { useAuth } from '@/hooks'
 import {
-  LoadingIndicator,
   EditProfileForm,
   EditImageForm,
   SettingsMenu,
+  UserLayout,
 } from '@/components'
 
-export default function UserSettingsPage() {
-  const { user } = useAuth()
-
-  if (!user) return <LoadingIndicator />
-
+function UserSettingsPage() {
   return (
     <section className="section-full mt-20">
       <div className="flex flex-row mx-auto gap-8 w-full max-w-3xl">
@@ -27,3 +22,9 @@ export default function UserSettingsPage() {
     </section>
   )
 }
+
+UserSettingsPage.getLayout = (page) => {
+  return <UserLayout>{page}</UserLayout>
+}
+
+export default UserSettingsPage

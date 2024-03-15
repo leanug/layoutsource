@@ -1,5 +1,6 @@
-import { ENV, authFetch } from '@/utils'
 import QueryString from 'qs'
+
+import { ENV, authFetch, handleError, checkResponse } from '@/utils'
 
 export class UserLayout {
   /**
@@ -8,62 +9,63 @@ export class UserLayout {
    * @param {Object} data - The data containing the updated user information.
    * @returns {Promise<Object>} A promise that resolves to the updated user information.
    */
-  async create (userId, data) {
+  async create(userId, data) {
     try {
-      const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.USER_LAYOUTS }`
+      const url = `${ENV.API_URL}/${ENV.ENDPOINTS.USER_LAYOUTS}`
       const params = {
         method: 'POST',
         headers: {
-          "Content-Type": "application/json"
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ data: {
-          ...data,
-          user: userId
-        }
-        })
+        body: JSON.stringify({
+          data: {
+            ...data,
+            user: userId,
+          },
+        }),
       }
       const response = await authFetch(url, params)
+      await checkResponse(response)
       const result = await response.json()
 
-      if (response.status !== 200 ) {
-        if(ENV.IS_DEV) {
-          console.error('Error creating new user design: ', result)
-        }
+      return {
+        success: true,
+        data: result.data,
       }
-
-      return result
     } catch (error) {
-      if(ENV.IS_DEV) {
-        console.error(error)
-      }
+      return handleError(error)
     }
   }
 
-  async get (userId, page = 1) {
+  async get(userId, page = 1) {
     try {
       const query = QueryString.stringify({
         fields: ['url', 'status', 'title'],
         filters: {
-          id: {
-            $eq: userId
-          }
+          user: {
+            id: {
+              $eq: userId,
+            },
+          },
         },
         sort: ['updatedAt:desc'],
         pagination: {
           page: page,
-          pageSize: 30,
+          pageSize: 150,
         },
       })
-      const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.USER_LAYOUTS }?${ query }`
+      const url = `${ENV.API_URL}/${ENV.ENDPOINTS.USER_LAYOUTS}?${query}`
 
-      const response = await authFetch(url) // uso authFetch porque es una peticion autenticada
+      const response = await authFetch(url)
+      await checkResponse(response)
       const result = await response.json()
 
-      if (response.status !== 200) throw result
-
-      return result
+      return {
+        success: true,
+        data: result.data,
+      }
     } catch (error) {
-      console.error(error);
+      return handleError(error)
     }
   }
 }

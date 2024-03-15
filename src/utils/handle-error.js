@@ -29,7 +29,7 @@ export async function handleError(error, logCtrl) {
     success: false,
     error: {
       status: error?.status,
-      message: error?.userMessage || 'Oops! An error occured',
+      message: error?.userMessage || error?.message || 'Oops! An error occured',
     },
   }
 }

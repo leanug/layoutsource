@@ -1,15 +1,12 @@
-import Link from 'next/link';
+import { useCategoriesByType } from '@/hooks'
+import Link from 'next/link'
 
 export const DisplayCategories = (props) => {
-  const { 
-    categorySlug, 
-    type, 
-    categories, 
-    className 
-  } = props
-  
+  const { categorySlug, type, className } = props
+  const { categories } = useCategoriesByType(type)
+
   return (
-    <aside className={`overflow-x-auto ${ className }`}>
+    <aside className={`overflow-x-auto ${className}`}>
       <div className="overflow-x-auto" style={{ paddingBottom: '4px' }}>
         <ul className="flex flex-row items-center gap-4">
           {/* All category */}
@@ -19,7 +16,10 @@ export const DisplayCategories = (props) => {
                 <div className="font-semibold">All</div>
               </div>
             ) : (
-              <Link href={`/designs/${type}`} className="text-gray-600 hover:text-gray-800 transition">
+              <Link
+                href={`/designs/${type}`}
+                className="text-gray-600 hover:text-gray-800 transition"
+              >
                 All
               </Link>
             )}

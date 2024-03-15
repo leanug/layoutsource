@@ -1,50 +1,49 @@
 import QueryString from 'qs'
 
-import { 
-  checkResponse,
-  ENV, 
-  handleError
-} from "@/utils";
+import { checkResponse, ENV, handleError } from '@/utils'
+import { Log } from './log'
+
+const logCtrl = new Log()
 
 export class Category {
-  async getAll () {
+  async getAll() {
     try {
       const sort = 'sort=order:asc'
-      const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.CATEGORY }?${ sort }` //?populate=icon to get all the icons
+      const url = `${ENV.API_URL}/${ENV.ENDPOINTS.CATEGORY}?${sort}` //?populate=icon to get all the icons
       const response = await fetch(url)
       const result = await response.json()
-      
+
       return {
         data: result.data,
-        success: true
+        success: true,
       }
     } catch (error) {
-      console.error(error);
+      console.error(error)
     }
   }
 
-  async getCategoriesByType (type = 'homepages') {
+  async getCategoriesByType(type = 'homepages') {
     try {
       const query = QueryString.stringify({
         populate: ['title', 'slug'],
         filters: {
           type: {
             slug: {
-              $eq: type
-            }
-          }
+              $eq: type,
+            },
+          },
         },
         sort: ['order:asc'],
       })
 
-      const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.CATEGORY }?${ query }`
+      const url = `${ENV.API_URL}/${ENV.ENDPOINTS.CATEGORY}?${query}`
       const response = await fetch(url)
       await checkResponse(response)
       const result = await response.json()
 
       return {
         data: result.data,
-        success: true
+        success: true,
       }
     } catch (error) {
       return handleError(error, logCtrl)
@@ -62,10 +61,10 @@ export class Category {
    *   @property {boolean} success - Indicates the success status of the operation.
    * @throws {Error} If an error occurs during the fetch operation.
    */
-  async getCategoryBySlug (slug) {
+  async getCategoryBySlug(slug) {
     try {
-      const filters = `filters[slug][$eq]=${ slug }`
-      const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.CATEGORY }?${ filters }`
+      const filters = `filters[slug][$eq]=${slug}`
+      const url = `${ENV.API_URL}/${ENV.ENDPOINTS.CATEGORY}?${filters}`
 
       const response = await fetch(url)
       await checkResponse(response)
@@ -73,7 +72,7 @@ export class Category {
 
       return {
         data: result.data[0],
-        success: true
+        success: true,
       }
     } catch (error) {
       return handleError(error, logCtrl)

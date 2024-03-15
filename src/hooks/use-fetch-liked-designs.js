@@ -1,21 +1,25 @@
 // useFetchLikedDesigns.js
-import { useEffect } from 'react';
+import { useEffect } from 'react'
 import { useLikedDesignsStore } from '@/store'
+import { LikedDesigns } from '@/api'
+
+const likedDesignsCtrl = new LikedDesigns()
 
 /**
  * Custom hook to fetch liked designs for a user.
  * @param {Object} user - The user object containing user information.
  * @param {Object} likedDesignsCtrl - Controller for managing liked designs.
  */
-export const useFetchLikedDesigns = (user, likedDesignsCtrl) => {
-  const { setLikedDesigns } = useLikedDesignsStore();
-
+export const useFetchLikedDesigns = (userId) => {
+  const { setLikedDesigns } = useLikedDesignsStore()
+  console.count('useFetchLikedDesigns')
   /**
    * useEffect to fetch and update liked designs when the user changes.
    */
   useEffect(() => {
-    if (user?.id) {
-      (async () => { 
+    console.count('fetch liked designs')
+    if (userId) {
+      ;(async () => {
         /**
          * Fetch liked designs for the user.
          * @returns {Promise<Object>} - Object with success status and data.
@@ -23,13 +27,12 @@ export const useFetchLikedDesigns = (user, likedDesignsCtrl) => {
          *   @property {Object} data - Object where keys are designIds and values are
          *     likedDesignCollectionItemIds.
          */
-        const result = await likedDesignsCtrl.getAll(user.id)
-       
+        const result = await likedDesignsCtrl.getAll(userId)
+
         if (result.success) {
           setLikedDesigns(result.data)
         }
       })()
     }
-  }, [user]);
-
+  }, [userId, setLikedDesigns])
 }

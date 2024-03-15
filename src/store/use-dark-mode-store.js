@@ -1,6 +1,6 @@
-import { create } from 'zustand';
+import { create } from 'zustand'
 
 export const useDarkModeStore = create((set) => ({
   darkMode: true,
-  toggleDarkMode: () => set((state) => ({ darkMode: ! state.darkMode })),
+  setDarkMode: (value) => set({ darkMode: value }), // Function to update darkMode
 }))

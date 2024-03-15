@@ -1,7 +1,4 @@
-import {
-  authFetch,
-  ENV, 
-} from '@/utils'
+import { authFetch, ENV } from '@/utils'
 
 export class Log {
   /**
@@ -15,13 +12,13 @@ export class Log {
    */
   async create(data) {
     try {
-      const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.LOGS }`
+      const url = `${ENV.API_URL}/${ENV.ENDPOINTS.LOGS}`
       const params = {
         method: 'POST',
         headers: {
-          "Content-Type": "application/json"
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ data })
+        body: JSON.stringify({ data }),
       }
 
       const response = await authFetch(url, params)
@@ -30,8 +27,8 @@ export class Log {
       if (response.status !== 200) {
         throw new Error(result)
       }
-    } catch(error) {
-      if(ENV.IS_DEV) {
+    } catch (error) {
+      if (ENV.IS_DEV) {
         console.error('Error creating log: ', error)
       }
     }

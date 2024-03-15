@@ -1,5 +1,7 @@
 import { createContext, useEffect, useState } from 'react'
+
 import { Token, User } from '@/api'
+import { useLoading } from '@/hooks'
 
 export const AuthContext = createContext()
 
@@ -10,10 +12,12 @@ export function AuthProvider(props) {
   const { children } = props
   const [user, setUser] = useState(null)
   const [token, setToken] = useState(null)
+  const { loading, startLoading, stopLoading } = useLoading()
 
   useEffect(() => {
     const initializeAuth = async () => {
       try {
+        startLoading()
         const storedToken = tokenCtrl.getToken()
 
         if (!storedToken) {
@@ -29,7 +33,7 @@ export function AuthProvider(props) {
       } catch (error) {
         console.error('Error initializing auth:', error)
       } finally {
-        //setLoading(false);
+        stopLoading()
       }
     }
 
@@ -38,6 +42,8 @@ export function AuthProvider(props) {
 
   const login = async (token) => {
     try {
+      startLoading()
+
       // Set the token in localStorage
       tokenCtrl.setToken(token)
 
@@ -53,7 +59,7 @@ export function AuthProvider(props) {
       console.error('Error during login:', error)
       throw new Error(error)
     } finally {
-      //setLoading(false);
+      stopLoading()
     }
   }
 
@@ -75,10 +81,11 @@ export function AuthProvider(props) {
 
   const data = {
     accessToken: token, // Corrected to use the actual token
-    user,
+    loading,
     login,
     logout,
     updateUser,
+    user,
   }
 
   return <AuthContext.Provider value={data}>{children}</AuthContext.Provider>

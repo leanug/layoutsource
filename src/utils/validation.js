@@ -16,13 +16,13 @@
  */
 function isValidSlug(input) {
   // Remove non-alphanumeric characters except hyphens and underscores
-  const sanitized = input.replace(/[^\w\s-]/g, '');
+  const sanitized = input.replace(/[^\w\s-]/g, '')
 
   // Replace spaces with hyphens
-  const slug = sanitized.replace(/\s+/g, '-');
+  const slug = sanitized.replace(/\s+/g, '-')
 
   // Convert to lowercase and trim
-  return slug.toLowerCase().trim();
+  return slug.toLowerCase().trim()
 }
 
 /**
@@ -34,22 +34,29 @@ function isValidSlug(input) {
 function isValidType(type) {
   const validTypes = [
     'all',
-    'homepages', 
-    'innerpages', 
-    'landingpages', 
-    'components'
-  ];
+    'homepages',
+    'innerpages',
+    'landingpages',
+    'components',
+  ]
   return validTypes.includes(type)
+}
+
+function isValidCategory(categories, category) {
+  const isValidCategory = categories.some(
+    (cat) => cat.attributes.slug === category,
+  )
+  return isValidCategory
 }
 
 function sanitizeQueryString(queryString) {
   // Remove leading and trailing whitespace
-  queryString = queryString?.trim() || '';
+  queryString = queryString?.trim() || ''
 
   // Remove all characters except letters, numbers, and spaces
-  queryString = queryString?.replace(/[^a-zA-Z0-9\s]/g, '') || '';
+  queryString = queryString?.replace(/[^a-zA-Z0-9\s]/g, '') || ''
 
-  return queryString;
+  return queryString
 }
 
-export { isValidSlug, isValidType, sanitizeQueryString }
+export { isValidSlug, isValidType, isValidCategory, sanitizeQueryString }

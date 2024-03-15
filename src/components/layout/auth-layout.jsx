@@ -1,24 +1,36 @@
 import Head from 'next/head'
-import Link from 'next/link'
+import { useEffect } from 'react'
+import { useRouter } from 'next/router'
 
-import { HouseSolid, Notification } from '@/components'
+import { useAuth } from '@/hooks'
+import { ScreenLoadingIndicator } from '@/components'
 
+/**
+ * Renders the layout for authentication pages, such as login and register forms.
+ *
+ * @param {Object} props - The component props.
+ * @param {ReactNode} props.children - The child components to render within the layout.
+ * @returns {ReactNode} The rendered authentication layout.
+ */
 export const AuthLayout = ({ children }) => {
+  const router = useRouter()
+  const { user, loading } = useAuth()
+
+  useEffect(() => {
+    if (user && router) {
+      router.push('/')
+    }
+  }, [user, router])
+
+  if (loading || user) return <ScreenLoadingIndicator />
+
   return (
-    <div className={`relative`}>
-      <div className="absolute left-4 top-4">
-        <Link
-          href="/"
-          className="text-gray-500 flex flex-row gap-2.5 items-center"
-        >
-          <HouseSolid className="w-5 h-5 fill-gray-500" />
-          Home
-        </Link>
-      </div>
+    <div className={`relative ${user ? 'hidden' : ''}`}>
       <div className="h-full">
         <Head>
           <meta name="viewport" content="width=device-width, initial-scale=1" />
         </Head>
+        {/* Main content */}
         <div
           className={`
           text-slate-900 transition duration-300 flex flex-col 
@@ -31,8 +43,8 @@ export const AuthLayout = ({ children }) => {
             {children}
           </main>
         </div>
+        {/* End Main content */}
       </div>
-      <Notification />
     </div>
   )
 }

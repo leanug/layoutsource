@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -23,25 +23,45 @@
   @apply w-full px-3 md:px-16;
 }
 
+.container {
+  @apply max-w-screen-2xl mx-auto
+}
+
 .form-title {
   @apply font-bold text-3xl;
 }
 
+.top-title {
+  @apply text-blue-750 bg-blue-50 font-medium px-4 py-2 uppercase text-sm rounded-full
+}
+
 /* Buttons */
 .btn-primary {
-  @apply bg-blue-500 hover:bg-blue-700 ease-in text-white px-4 py-2.5 rounded-lg font-semibold block;
+  @apply bg-blue-500 hover:bg-blue-700 ease-in text-white px-4 py-2.5 rounded-lg font-semibold inline;
+}
+.big-btn-primary {
+  @apply text-xl bg-blue-500 hover:bg-blue-700 hover:dark:bg-blue-700  ease-in text-white px-6 py-3 rounded-lg font-semibold inline;
 }
 .btn-light {
-  @apply bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 ease-in text-gray-900 dark:text-white px-4 py-2.5 rounded-lg font-semibold block;
+  @apply bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 ease-in text-gray-900 dark:text-white px-4 py-2.5 rounded-lg font-semibold inline;
+}
+.btn-dark {
+  @apply bg-gray-950 hover:bg-gray-700 hover:dark:bg-gray-100 dark:bg-white ease-in text-white dark:text-gray-950 px-4 py-2.5 rounded-lg font-semibold inline;
+}
+.big-btn-dark {
+  @apply text-xl bg-gray-950 hover:bg-gray-700 hover:dark:bg-gray-100 dark:bg-white ease-in text-white dark:text-gray-950 px-6 py-3 rounded-lg font-semibold inline;
 }
 .btn-settings-menu {
-  @apply bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 border border-gray-200 ease-in text-gray-900 text-center dark:text-white px-4 py-2.5 rounded-lg font-semibold w-full;
+  @apply bg-gray-50 dark:bg-gray-700 hover:bg-gray-100 hover:dark:bg-gray-800 border border-gray-200 dark:border-gray-500 ease-in text-gray-900 text-center dark:text-white px-4 py-2.5 rounded-lg font-semibold inline;
 }
 .btn-settings-menu.active {
-  @apply bg-gray-100;
+  @apply bg-gray-100 dark:bg-gray-800;
 }
 .btn-secondary {
   @apply hover:bg-gray-100 border border-gray-300 ease-in duration-200 text-gray-900 text-center dark:text-white dark:border-gray-400 dark:hover:bg-gray-600 px-4 py-2.5 rounded-lg font-semibold;
+}
+.big-btn-secondary {
+  @apply text-xl hover:bg-gray-100 border border-gray-300 ease-in duration-200 text-gray-900 text-center dark:text-white dark:border-gray-400 dark:hover:bg-gray-600 px-6 py-3 rounded-lg font-semibold;
 }
 .label {
   @apply block text-gray-700 font-semibold mb-3 dark:text-white
@@ -49,7 +69,7 @@
 
 /* Forms */
 .form-input {
-  @apply w-full px-4 py-2 border border-gray-200 bg-gray-50 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-200 focus:bg-gray-50;
+  @apply w-full px-4 py-3 border border-gray-300 dark:border-gray-500  dark:bg-gray-950 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-200 focus:bg-gray-50;
 }
 .label {
   @apply block font-semibold text-gray-600 mb-1.5

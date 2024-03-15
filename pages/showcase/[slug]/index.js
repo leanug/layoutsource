@@ -1,6 +1,6 @@
-import { ENV } from '@/utils';
-import { isValidSlug } from "@/utils"
-import { Layout } from "@/api";
+import { ENV } from '@/utils'
+import { isValidSlug } from '@/utils'
+import { Layout } from '@/api'
 
 export { default } from './slug'
 
@@ -14,43 +14,47 @@ export { default } from './slug'
  */
 export async function getServerSideProps(context) {
   const layoutCtrl = new Layout()
-  const { params: { slug: designSlug } } = context
+  const {
+    params: { slug: designSlug },
+  } = context
 
-  if(! isValidSlug(designSlug)) {
+  if (!isValidSlug(designSlug)) {
     return {
       props: {
-        data: null
-      }
+        data: null,
+      },
     }
   }
 
   try {
     const response = await layoutCtrl.getDesignBySlug(designSlug)
-   
-    if(! response?.data) {
-      if(ENV.IS_DEV) {
-        console.error(`No data found for designSlug: ${ designSlug }, ${ response }`)
+
+    if (!response?.data) {
+      if (ENV.IS_DEV) {
+        console.error(
+          `No data found for designSlug: ${designSlug}, ${response}`,
+        )
       }
       return {
         props: {
-          data: null
-        }
+          data: null,
+        },
       }
     }
 
     return {
       props: {
-        data: response
-      }
+        data: response,
+      },
     }
   } catch (error) {
-    if(ENV.IS_DEV) {
-      console.error('Error fetching design. ',error)
+    if (ENV.IS_DEV) {
+      console.error('Error fetching design. ', error)
     }
     return {
       props: {
-        data: null
-      }
+        data: null,
+      },
     }
-  }  
+  }
 }

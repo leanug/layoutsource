@@ -1,49 +1,60 @@
-import { DisplayCategories, DropdownMenu } from ".";
+import { useRouter } from 'next/router'
+import { useEffect } from 'react'
 
-export function PageMenu (props) {
-  const { 
-    query,
-    categorySlug, 
-    designCount,
-    type, 
-    categories,
-    handleSorting,
-    className,
-    displayCategories,
-    displaySearchQueryData
-  } = props
-  
-  return (
-    designCount ? (
-      <section className="mt-20 mb-8">
-        <div className={`
-          section-full mb-3 gap-8 flex-row flex items-center justify-between font-semibold
-        `}>
-          {
-            displayCategories ? (
-              <DisplayCategories 
-                categorySlug={ categorySlug }
-                type={ type }
-                categories={ categories }
-                className={ className }
-              />
-            ) : null
-          }
-          
-          {
-            displaySearchQueryData ? (
-              <h1 className="text-center">Query: { query || '-' }</h1>
-            ) : null
-          }
+import { isValidType } from '@/utils'
+import { DisplayCategories, DropdownMenu } from '.'
+import { ScreenLoadingIndicator } from '@/components'
+import { useDesignsStore } from '@/store'
 
-          <div className="flex flex-row items-center gap-3">
-            <span className="w-40 text-right font-normal">
-              { designCount } { designCount === 1 ? 'result' : 'results'}
-            </span>
-            <DropdownMenu handleSorting={ handleSorting } />
-          </div>
+export function PageMenu(props) {
+  const { searchQuery, categorySlug, className, displaySearchQueryData } = props
+
+  const {
+    setSortBy,
+    setPage,
+    pagination: { totalItems },
+  } = useDesignsStore()
+  const router = useRouter()
+  const { type } = router.query
+
+  const validType = isValidType(type) // Check if the type is valid
+
+  useEffect(() => {
+    // Category not found
+    if (!validType) {
+      //router.push('/404')
+    }
+  }, [validType, router])
+
+  if (!validType) {
+    return <ScreenLoadingIndicator />
+  }
+
+  return totalItems ? (
+    <section className="mt-20 mb-8">
+      <div
+        className={`
+          section-full mb-3 gap-8 flex-row flex items-center 
+          justify-between font-semibold
+        `}
+      >
+        <DisplayCategories
+          categorySlug={categorySlug}
+          type={type}
+          className={className}
+        />
+
+        {displaySearchQueryData ? (
+          <h1 className="text-center">Query: {searchQuery || '-'}</h1>
+        ) : null}
+
+        <div className="flex flex-row items-center gap-3">
+          <span className="w-40 text-right font-normal">
+            {totalItems} {totalItems === 1 ? 'result' : 'results'}
+          </span>
+          <DropdownMenu setPage={setPage} setSortBy={setSortBy} />
         </div>
-      </section>
-    ) : null
-  )
+      </div>
+    </section>
+  ) : null
 }

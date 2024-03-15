@@ -29,10 +29,12 @@ export class User {
   }
 
   /**
-   * Updates the user information for the given userId.
-   * @param {string} userId - The ID of the user to be updated.
-   * @param {Object} data - The data containing the updated user information.
-   * @returns {Promise<Object>} A promise that resolves to the updated user information.
+   * Update user data asynchronously.
+   * @param {string} userId - The ID of the user to update.
+   * @param {object} data - The data to update for the user.
+   * @returns {Promise<object>} A promise that resolves to an object with the result of the update.
+   *                            If successful, the object contains { success: true, data: updatedUserData }.
+   *                            If there's an error, the object contains { success: false, error: errorMessage }.
    */
   async updateMe(userId, data) {
     try {
@@ -54,6 +56,7 @@ export class User {
         data: result,
       }
     } catch (error) {
+      // Return error message
       return handleError(error, logCtrl)
     }
   }

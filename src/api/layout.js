@@ -15,6 +15,7 @@ import { Log } from '@/api'
 const logCtrl = new Log()
 
 const PAGE_SIZE = 4
+const FEATURED_PAGE_LIMIT = 25
 const VALID_SORT_OPTIONS = {
   createdAt: 'createdAt:desc',
   views: 'views:desc',
@@ -38,6 +39,7 @@ export class Layout {
     page = 1,
     sortBy = 'updatedAt',
     category = 'all',
+    pageSize = PAGE_SIZE,
   }) {
     try {
       // Check if the provided sortBy value is a valid option; default to 'updatedAt' if not.
@@ -72,15 +74,15 @@ export class Layout {
         fields: ['title', 'views', 'likes', 'slug'],
         // Use the populate parameter to fetch additional data
         populate: {
-          cover: {
-            fields: ['height', 'name', 'url', 'width'],
+          image: {
+            fields: ['name', 'url', 'formats'],
           },
         },
         filters,
         sort: [sortParam],
         pagination: {
           page: page,
-          pageSize: PAGE_SIZE,
+          pageSize: pageSize,
         },
       })
 
@@ -101,7 +103,56 @@ export class Layout {
         success: true,
       }
     } catch (error) {
-      return handleError(error)
+      return handleError(error, logCtrl)
+    }
+  }
+
+  /**
+   * Get a layout by its slug from the API.
+   *
+   * @param {string} designSlug - The slug of the design to retrieve.
+   * @returns {Promise<object|null>} - A Promise that resolves to the retrieved layout object or null if an error occurs.
+   */
+  async getFeatured() {
+    try {
+      const query = QueryString.stringify({
+        fields: ['title'],
+        filters: {
+          featured: true,
+        },
+        populate: {
+          cover: {
+            fields: ['height', 'name', 'url', 'width'],
+          },
+        },
+        pagination: {
+          limit: FEATURED_PAGE_LIMIT,
+        },
+      })
+
+      const url = `${ENV.API_URL}/${ENV.ENDPOINTS.LAYOUTS}?${query}`
+      const response = await fetch(url)
+      await checkResponse(response)
+      const result = await response.json()
+
+      // Map results
+      const extractedData = result.data.map((item) => ({
+        title: item.attributes.title,
+        id: item.id,
+        cover: {
+          height: item.attributes.cover.data.attributes.height,
+          name: item.attributes.cover.data.attributes.name,
+          url: item.attributes.cover.data.attributes.url,
+          width: item.attributes.cover.data.attributes.width,
+        },
+      }))
+
+      return {
+        success: true,
+        data: extractedData,
+      }
+    } catch (error) {
+      return handleError(error, logCtrl)
     }
   }
 
@@ -142,6 +193,7 @@ export class Layout {
       const mappedPagination = mapPagination(meta.pagination)
 
       return {
+        success: true,
         designs: mappedDesigns,
         pagination: mappedPagination,
       }

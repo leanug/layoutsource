@@ -1,5 +1,5 @@
 export function mapDesigns(data) {
-  if (! data?.length) return []
+  if (!data?.length) return []
 
   return data.map((item) => {
     return {
@@ -9,13 +9,17 @@ export function mapDesigns(data) {
       views: item.attributes.views,
       likes: item.attributes.likes,
       slug: item.attributes.slug,
-      cover: item.attributes.cover
+      image: item.attributes.image
         ? {
-            id: item.attributes.cover.data?.id || null,
-            name: item.attributes.cover.data?.attributes.name || null,
-            url: item.attributes.cover.data?.attributes.url || null,
-            width: item.attributes.cover.data?.attributes.width || null,
-            height: item.attributes.cover.data?.attributes.height || null,
+            //name: item.attributes.cover.data?.attributes.name || null,
+            url:
+              item.attributes.image.data.attributes.formats.medium.url || null,
+            height:
+              item.attributes.image.data.attributes.formats.medium.height ||
+              null,
+            width:
+              item.attributes.image.data.attributes.formats.medium.width ||
+              null,
           }
         : null,
     }
