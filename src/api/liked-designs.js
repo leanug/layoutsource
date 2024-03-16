@@ -10,6 +10,8 @@ import {
 } from '@/utils'
 import { Log } from './log'
 
+const PAGE_SIZE = 4
+
 const logCtrl = new Log()
 
 export class LikedDesigns {
@@ -215,7 +217,7 @@ export class LikedDesigns {
         sort: ['updatedAt:desc'],
         pagination: {
           page: page,
-          pageSize: 1,
+          pageSize: PAGE_SIZE,
         },
       })
 

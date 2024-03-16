@@ -1,13 +1,13 @@
 import { useRouter } from 'next/router'
 
-import { LikedDesigns, Nav, Info } from '@/components'
+import { LikedDesigns, Nav, Info, UserLayout } from '@/components'
 import { useAuth } from '@/hooks'
 import { sanitizeQueryString } from '@/utils'
 
 function LikedDesignsPage() {
   const { user } = useAuth()
   const router = useRouter()
-
+  console.count('LikedDesignsPage')
   const { user: userSlug } = router.query
   const safeUserSlug = sanitizeQueryString(userSlug)
 
@@ -29,4 +29,9 @@ function LikedDesignsPage() {
     </section>
   )
 }
+
+LikedDesignsPage.getLayout = (page) => {
+  return <UserLayout>{page}</UserLayout>
+}
+
 export default LikedDesignsPage

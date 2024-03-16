@@ -17,8 +17,9 @@ export default function Design(props) {
         <div className="w-full mb-4 relative group flex-grow overflow-hidden">
           <div
             className={`
-              h-48 md:h-[720px] overflow-hidden w-full bg-slate-500 
-              origin-top cursor-pointer rounded-lg
+              h-48 md:h-[720px] overflow-hidden w-full bg-gray-500 
+              origin-top cursor-pointer rounded-lg border border-gray-10 
+              dark:border-gray-600
             `}
             onClick={() => showcaseDesign(design.slug)}
           >

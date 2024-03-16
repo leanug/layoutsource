@@ -27,8 +27,10 @@ export const useDesignsStore = create((set) => ({
   sortBy: 'updatedAt',
   type: 'homepages',
   category: null,
+  query: '',
 
   setType: (type) => set({ type }),
+  setQuery: (query) => set({ query }),
   setCategory: (category) => set({ category }),
   setLoading: (loading) => set({ loading }),
   setPagination: (pagination) => set({ pagination }),

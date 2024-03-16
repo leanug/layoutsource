@@ -9,25 +9,27 @@ export function useDesign() {
   const [design, setDesign] = useState({})
   const { loading, startLoading, stopLoading } = useLoading(false)
 
-  const path = window.location.href
-  const designSlug = path.split('/').pop()
-
   useEffect(() => {
-    ;(async () => {
-      try {
-        startLoading()
-        const response = await layoutCtrl.getDesignBySlug(designSlug)
-        if (response.success) {
-          setDesign({
-            ...response.data[0]?.attributes,
-            id: response.data[0]?.id,
-          })
+    if (typeof window !== 'undefined') {
+      const path = window.location.href
+      const designSlug = path.split('/').pop()
+
+      ;(async () => {
+        try {
+          startLoading()
+          const response = await layoutCtrl.getDesignBySlug(designSlug)
+          if (response.success) {
+            setDesign({
+              ...response.data[0]?.attributes,
+              id: response.data[0]?.id,
+            })
+          }
+        } finally {
+          stopLoading()
         }
-      } finally {
-        stopLoading()
-      }
-    })()
-  }, [designSlug])
+      })()
+    }
+  }, [])
 
   return {
     design,

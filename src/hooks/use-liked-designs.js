@@ -1,5 +1,5 @@
-import { useLoading, useFirstRender } from '@/hooks'
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
+
 import { useDesignsStore } from '@/store'
 import { LikedDesigns as LikedDesignsService } from '@/api'
 
@@ -10,59 +10,35 @@ const likedDesignsCtrl = new LikedDesignsService()
  * @returns {Object} An object containing designs data, loading state, and a function to load more designs.
  */
 export function useLikedDesigns(userId) {
-  const [page, setPage] = useState(1)
-  const [pagination, setPagination] = useState({})
+  const { setDesigns, page, setPagination, setLoading, setPage } =
+    useDesignsStore()
 
-  const { firstRender } = useFirstRender()
-  const { loading, startLoading, stopLoading } = useLoading()
-
-  const { designs, setDesigns } = useDesignsStore()
-
-  // Load designs on page load
+  // Reset values
   useEffect(() => {
-    ;(async () => {
-      try {
-        startLoading()
-        const newData = await likedDesignsCtrl.get({
-          userId,
-          page,
-        })
-        setDesigns(newData?.data.designs || [])
-        setPagination(newData?.data.pagination || {})
-      } finally {
-        stopLoading()
-      }
-    })()
-  }, [])
+    setPage(1)
+  }, [page, setPage])
 
   // Load more designs on page change
   useEffect(() => {
-    if (!firstRender && page > 1) {
-      ;(async () => {
-        try {
-          startLoading()
-          const newData = await likedDesignsCtrl.get({
-            userId,
-            page,
-          })
-          setDesigns([...designs, ...(newData?.data.designs || [])])
-          setPagination(newData?.data.pagination || {})
-        } finally {
-          stopLoading()
+    ;(async () => {
+      setLoading(true)
+      try {
+        console.log('page=', page, ' userId= ', userId);
+        const result = await likedDesignsCtrl.get({
+          userId,
+          page,
+        })
+        if (result.success) {
+          console.log(result);
+          setDesigns(result.data?.designs || [])
+          page === 1 && setPagination(result.data?.pagination || {})
+        } else {
+          setDesigns([])
+          setPagination({})
         }
-      })()
-    }
+      } finally {
+        setLoading(false)
+      }
+    })()
   }, [page])
-
-  const handlePage = () => {
-    setPage((prevPage) => prevPage + 1)
-  }
-
-  return {
-    page,
-    loading,
-    designs,
-    pagination,
-    handlePage,
-  }
 }

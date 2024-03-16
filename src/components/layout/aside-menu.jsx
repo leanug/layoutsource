@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 
-import { DarkModeButton, LoadingIndicator, Navigation } from '@/components'
+import { DarkModeButton, Navigation } from '@/components'
 import { useAsideMenuStore } from '@/store'
 
 import fallbackImg from '@/assets/images/avatar.svg'
@@ -29,7 +29,7 @@ export function AsideMenu({ user, logout }) {
 
       return () => {
         document.removeEventListener('click', handleOutsideClick)
-      };
+      }
     }
   }, [isOpen, toggleMenu])
 
@@ -42,24 +42,6 @@ export function AsideMenu({ user, logout }) {
 
     // Redirect to the login page
     router.push('/join/sign-in') // Replace '/login' with the actual login route
-  }
-
-  // Check if user is still loading
-  if (!user) {
-    return (
-      <div
-        ref={menuRef}
-        className={`
-          absolute top-20 right-0 sm:right-4 bg-white rounded-xl
-          max-w-md w-full transition-opacity duration-300
-          ${isOpen ? 'opacity-100' : 'opacity-0 hidden'}
-        `}
-      >
-        <div className="my-5">
-          <LoadingIndicator />
-        </div>
-      </div>
-    )
   }
 
   const renderMenuContent = () => {
@@ -81,31 +63,31 @@ export function AsideMenu({ user, logout }) {
         </li>
 
         {/* Navigation */}
-        <Navigation vertical={ true } />
+        <Navigation vertical={true} />
 
         {/* Account */}
         <li className="w-full block border-t border-gray-100 pt-5">
-          <Link 
-            className="w-full block" 
-            href={`/${user?.username || ''}`} 
+          <Link
+            className="w-full block"
+            href={`/${user?.username || ''}`}
             onClick={toggleMenu}
           >
             Profile
           </Link>
         </li>
         <li className="w-full block">
-          <Link 
-            className="w-full block" 
-            href={`/${user?.username || ''}/liked`} 
+          <Link
+            className="w-full block"
+            href={`/${user?.username || ''}/liked`}
             onClick={toggleMenu}
           >
             Liked Designs
           </Link>
         </li>
         <li className="w-full block">
-          <Link 
-            className="w-full block" 
-            href={`/${user?.username || ''}/submited`} 
+          <Link
+            className="w-full block"
+            href={`/${user?.username || ''}/submited`}
             onClick={toggleMenu}
           >
             Submited
@@ -123,14 +105,14 @@ export function AsideMenu({ user, logout }) {
         <li className="border-t border-gray-100 pt-5 mt-2">
           <Link
             className="w-full block"
-            href={'/account/settings'} 
+            href={'/account/settings'}
             onClick={toggleMenu}
           >
             Settings
           </Link>
         </li>
-        <li className="border-t border-gray-100 pt-5 mt-2">
-          <DarkModeButton />
+        <li className="border-t border-gray-100 pt-5 mt-2 flex flex-row items-center justify-between">
+          Switch theme <DarkModeButton buttonType={'aside'} />
         </li>
         {user ? (
           <li className="border-t border-gray-100 pt-5 mt-2">

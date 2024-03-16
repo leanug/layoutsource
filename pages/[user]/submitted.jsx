@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router'
 
-import { Nav, Info, UserDesigns } from '@/components'
+import { Nav, Info, UserDesigns, UserLayout } from '@/components'
 import { useAuth } from '@/hooks'
 import { sanitizeQueryString } from '@/utils'
 
@@ -29,4 +29,9 @@ function UserSubmittedDesignsPage() {
     </section>
   )
 }
+
+UserSubmittedDesignsPage.getLayout = (page) => {
+  return <UserLayout>{page}</UserLayout>
+}
+
 export default UserSubmittedDesignsPage

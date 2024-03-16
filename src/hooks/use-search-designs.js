@@ -1,92 +1,53 @@
-import { useState, useEffect } from "react"
-import { useLoading, useFirstRender } from "@/hooks"
+import { useEffect } from 'react'
+
+import { Layout } from '@/api'
+import { useDesignsStore } from '@/store'
+
+const layoutCtrl = new Layout()
 
 /**
- * Custom hook for managing designs data and fetching new designs.
- * @returns {Object} An object containing designs data, loading state, and a function to load more designs.
+ * Custom hook for fetching searched designs.
+ * @returns {void}
  */
-export function useSearchDesigns(query = '', layoutCtrl) {
-  const { loading, startLoading, stopLoading } = useLoading()
-  const { firstRender } = useFirstRender()
+export function useSearchDesigns() {
+  const {
+    sortBy,
+    setDesigns,
+    setPagination,
+    page,
+    query,
+    setPage,
+    setLoading,
+  } = useDesignsStore()
 
-  const [designs, setDesigns] = useState([])
-  const [page, setPage] = useState(1)
-  const [pagination, setPagination] = useState({})
-  const [sortBy, setSortBy] = useState('updatedAt')
-  
-  // Load designs on user input search query change
+  // Reset values
   useEffect(() => {
-    (async () => {
-      try {
-        startLoading()
-        const newData = await layoutCtrl.searchDesigns({ 
-          queryString: query, 
-          page: 1, 
-        })
-        setPage(1)
-        setSortBy('updatedAt') // No search by Title, do not implement
-        setDesigns(newData.designs)
-        setPagination(newData.pagination)
-      } finally {
-        stopLoading()
-      }
-    })()
-  }, [query])
-
-  // Load designs on sortBy parameter change
-  useEffect(() => {
-    if(firstRender === false) {
-      (async () => {
-        try {
-          startLoading()
-          const newData = await layoutCtrl.searchDesigns({ 
-            queryString: query, 
-            page: 1, 
-            sortBy, 
-          })
-          setPage(1)
-          setDesigns(newData.designs)
-          setPagination(newData.pagination)
-        } finally {
-          stopLoading()
-        }
-      })()
-    }
-  }, [sortBy])
+    setPage(1)
+  }, [setPage, query])
 
   // Load more designs on page change
   useEffect(() => {
-    if(firstRender === false && page !== 1) {
-      (async () => {
+    // Check if query is not an empty string
+    if (query !== '') {
+      ;(async () => {
         try {
-          startLoading()
-          const newData = await layoutCtrl.searchDesigns({ 
-            queryString: query, 
-            page, 
-            sortBy, 
+          setLoading(true)
+          const result = await layoutCtrl.searchDesigns({
+            queryString: query,
+            page,
+            sortBy,
           })
-          setDesigns([...designs, ...newData.designs])
+          if (result.success) {
+            setDesigns(result.data?.designs || [])
+            page === 1 && setPagination(result.data?.pagination || {})
+          } else {
+            setDesigns([])
+            setPagination({})
+          }
         } finally {
-          stopLoading()
+          setLoading(false)
         }
       })()
     }
-  }, [page])
-
-  const handlePage = () => {
-    setPage(prevPage => prevPage + 1)
-  }
-
-  const handleSorting = (sortBy) => {
-    setSortBy(sortBy)
-  }
-
-  return {
-    designs,
-    page,
-    loading,
-    pagination,
-    handlePage,
-    handleSorting
-  }
+  }, [page, sortBy, query, setLoading, setDesigns, setPagination])
 }

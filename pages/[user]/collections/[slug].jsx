@@ -2,7 +2,7 @@ import { useRouter } from 'next/router'
 
 import { sanitizeQueryString } from '@/utils'
 import { useAuth, useCollections } from '@/hooks'
-import { Custom404, LoadingIndicator, PaginatedDesigns } from '@/components'
+import { LoadingIndicator, PaginatedDesigns, UserLayout } from '@/components'
 import { Collection } from '@/api'
 
 const collectionCtrl = new Collection()
@@ -11,13 +11,13 @@ const collectionCtrl = new Collection()
  * Render collection page by slug
  * @returns
  */
-export default function CollectionPage() {
+function CollectionPage() {
   const { user } = useAuth()
 
   const router = useRouter()
   const { user: userSlug } = router.query
   const safeUserSlug = sanitizeQueryString(userSlug)
- 
+
   const {
     description,
     designs,
@@ -78,3 +78,9 @@ export default function CollectionPage() {
     </>
   )
 }
+
+CollectionPage.getLayout = (page) => {
+  return <UserLayout>{page}</UserLayout>
+}
+
+export default CollectionPage

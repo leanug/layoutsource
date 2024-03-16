@@ -1,5 +1,10 @@
-import { DesignsGridWrapper, UserLayout } from '@/components'
+import { useEffect } from 'react'
+import { useRouter } from 'next/router'
+
+import { isValidType } from '@/utils'
+import { DesignsGridWrapper, LoadingIndicator, UserLayout } from '@/components'
 import { PageMenu } from '@/containers'
+import { useDesigns } from '@/hooks'
 
 /**
  * PageTypePage component displays a page with categories and designs
@@ -10,24 +15,32 @@ import { PageMenu } from '@/containers'
  * @returns {JSX.Element} React component.
  */
 const DesignsByCategoryPage = () => {
-  console.count('TypePage')
+  useDesigns() // Fetch data
+  const router = useRouter()
+  console.count('CategoryPage')
 
-  /* const validType = isValidType(type)
-  const validCategory = isValidCategory(categories, category)
+  const { type, category } = router.query
+ 
+  const validType = isValidType(type)
 
   useEffect(() => {
-    if (!validType || !validCategory) {
-      router.push('/404')
+    if (!validType) {
+      //router.push('/404')
+      console.log('Category or Type not valid: Redirect')
     }
-  }, [validType, validCategory, router])
+  }, [validType, router])
 
-  if (!validType || !validCategory || !designs) {
-    return <ScreenLoadingIndicator />
-  } */
+  if (!validType) {
+    return (
+      <div className="w-full flex items-center justify-center">
+        <LoadingIndicator />
+      </div>
+    )
+  }
 
   return (
     <>
-      <PageMenu categorySlug={'all'} displayCategories={true} />
+      <PageMenu type={type} categorySlug={category} displayCategories={true} />
       <DesignsGridWrapper />
     </>
   )

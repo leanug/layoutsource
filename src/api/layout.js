@@ -194,8 +194,10 @@ export class Layout {
 
       return {
         success: true,
-        designs: mappedDesigns,
-        pagination: mappedPagination,
+        data: {
+          designs: mappedDesigns,
+          pagination: mappedPagination,
+        },
       }
     } catch (error) {
       if (ENV.IS_DEV) {

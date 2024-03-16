@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router'
 
-import { Collections, Nav, Info } from '@/components'
+import { Collections, Nav, Info, UserLayout } from '@/components'
 import { useAuth } from '@/hooks'
 import { sanitizeQueryString } from '@/utils'
 
@@ -28,4 +28,9 @@ function CollectionsPage() {
     </section>
   )
 }
+
+CollectionsPage.getLayout = (page) => {
+  return <UserLayout>{page}</UserLayout>
+}
+
 export default CollectionsPage

@@ -2,7 +2,6 @@ import { DesignsGrid } from '@/containers'
 import { LoadingIndicator, NoResults } from '@/components'
 import { MoreDesigns } from './more-designs'
 import { useDesignsStore } from '@/store'
-import { useDesigns } from '@/hooks'
 
 /**
  * DisplayDesigns component displays a list of layouts based on the provided type.
@@ -11,7 +10,6 @@ import { useDesigns } from '@/hooks'
  * @returns {JSX.Element} React component.
  */
 export function DesignsGridWrapper() {
-  useDesigns() // Fetch data
   const { designs, pagination, loading, page, incrementPage } =
     useDesignsStore()
 
