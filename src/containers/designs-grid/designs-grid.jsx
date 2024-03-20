@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react'
+import { useCallback, useEffect, useRef } from 'react'
 import { useRouter } from 'next/router'
 
 import Design from './design'
@@ -43,11 +43,11 @@ export function DesignsGrid({ designs }) {
     (designSlug) => {
       // Use JavaScript history to navigate without page reload
       window.history.pushState(null, null, `/showcase/${designSlug}`)
-      const modalContent = <ShowcaseDesign userId={user.id} />
+      const modalContent = <ShowcaseDesign />
 
       handleShowcaseModal(true, modalContent)
     },
-    [user, handleShowcaseModal],
+    [handleShowcaseModal],
   )
 
   return (

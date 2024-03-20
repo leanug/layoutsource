@@ -2,13 +2,9 @@ import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 
 import { isValidType } from '@/utils'
-import {
-  DesignsGridWrapper,
-  UserLayout,
-  ScreenLoadingIndicator,
-} from '@/components'
+import { DesignsGridWrapper, UserLayout, LoadingIndicator } from '@/components'
 import { PageMenu } from '@/containers'
-import { useDesigns } from '@/hooks'
+import { useDesigns, useAuth } from '@/hooks'
 
 /**
  * PageTypePage component displays a page with categories and designs
@@ -19,23 +15,29 @@ import { useDesigns } from '@/hooks'
  * @returns {JSX.Element} React component.
  */
 const DesignsByTypePage = () => {
-  useDesigns() // Fetch data
   const router = useRouter()
-  console.count('TypePage')
-
+  const { user, loading } = useAuth()
   const { type } = router.query
-
   const validType = isValidType(type) // Check if the type is valid
 
-  useEffect(() => {
-    // Category not found
-    if (!validType) {
-      //router.push('/404')
-    }
-  }, [validType, router])
+  // Fetch data
+  useDesigns()
 
-  if (!validType) {
-    return <ScreenLoadingIndicator />
+  useEffect(() => {
+    // Redirect to 404 page if the type is invalid or user is not logged in
+    if (!validType || (!loading && !user)) {
+      console.log('User not logged in or invalid type')
+      //router.push('/404') // Uncomment this line to redirect to 404 page
+    }
+  }, [validType, loading, user])
+
+  // Display loading indicator while loading or if user is not logged in
+  if (!validType || loading || !user) {
+    return (
+      <div className="w-full flex items-center justify-center">
+        <LoadingIndicator />
+      </div>
+    )
   }
 
   return (

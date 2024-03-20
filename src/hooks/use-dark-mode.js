@@ -25,7 +25,6 @@ export function useDarkMode() {
   // Function to update localStorage when darkMode value changes
   useEffect(() => {
     if (typeof window !== 'undefined' && localStorage) {
-      console.log('set item darkmode=', darkMode);
       localStorage.setItem(DARK_MODE_KEY, darkMode.toString()) // Convert boolean to string before saving
     }
   }, [darkMode])

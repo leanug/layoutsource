@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import React from 'react';
+import React from 'react'
 
 import {
   Account,
@@ -15,6 +15,7 @@ import { useFullSearchBarStore } from '@/store'
 const HeaderFull = () => {
   const { toggleBar, isOpen: isFullBarOpen } = useFullSearchBarStore()
   console.count('header-full')
+
   return (
     <header
       className={`

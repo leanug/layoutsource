@@ -1,4 +1,6 @@
-import { ENV } from '@/utils'
+// showcase/[slug]/index.js
+
+import { ENV, updateRelatedDesigns } from '@/utils'
 import { isValidSlug } from '@/utils'
 import { Layout } from '@/api'
 
@@ -22,29 +24,43 @@ export async function getServerSideProps(context) {
     return {
       props: {
         data: null,
+        success: false,
       },
     }
   }
 
   try {
-    const response = await layoutCtrl.getDesignBySlug(designSlug)
+    const slugResponse = await layoutCtrl.getDesignBySlug(designSlug)
 
-    if (!response?.data) {
-      if (ENV.IS_DEV) {
-        console.error(
-          `No data found for designSlug: ${designSlug}, ${response}`,
-        )
-      }
-      return {
-        props: {
-          data: null,
-        },
-      }
+    if (!slugResponse?.success) {
+      throw new Error(
+        `No data found for designSlug: ${designSlug}, ${slugResponse}`,
+      )
+    }
+
+    const categorySlug =
+      slugResponse.data[0].attributes.categories.data[0].attributes.slug
+    const relatedDesignsResponse = await layoutCtrl.getDesigns({
+      category: categorySlug,
+      page: 1,
+      pageSize: 5,
+    })
+
+    let updatedRelatedDesigns = []
+    if (relatedDesignsResponse.success) {
+      updatedRelatedDesigns = updateRelatedDesigns(
+        relatedDesignsResponse.data.designs,
+        slugResponse.data[0].id,
+      )
     }
 
     return {
       props: {
-        data: response,
+        data: {
+          relatedDesigns: updatedRelatedDesigns,
+          design: slugResponse.data[0].attributes,
+        },
+        success: true,
       },
     }
   } catch (error) {
@@ -53,7 +69,12 @@ export async function getServerSideProps(context) {
     }
     return {
       props: {
-        data: null,
+        success: false,
+        error: {
+          status: error?.status,
+          message:
+            error?.userMessage || error?.message || 'Oops! An error occured',
+        },
       },
     }
   }

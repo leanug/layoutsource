@@ -1,5 +1,4 @@
-// useFetchLikedDesigns.js
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import { useLikedDesignsStore } from '@/store'
 import { LikedDesigns } from '@/api'
 
@@ -11,14 +10,14 @@ const likedDesignsCtrl = new LikedDesigns()
  * @param {Object} likedDesignsCtrl - Controller for managing liked designs.
  */
 export const useFetchLikedDesigns = (userId) => {
+  const hasFetchedDesigns = useRef(false)
   const { setLikedDesigns } = useLikedDesignsStore()
-  console.count('useFetchLikedDesigns')
+
   /**
    * useEffect to fetch and update liked designs when the user changes.
    */
   useEffect(() => {
-    console.count('fetch liked designs')
-    if (userId) {
+    if (userId && !hasFetchedDesigns.current) {
       ;(async () => {
         /**
          * Fetch liked designs for the user.
@@ -31,6 +30,7 @@ export const useFetchLikedDesigns = (userId) => {
 
         if (result.success) {
           setLikedDesigns(result.data)
+          hasFetchedDesigns.current = true
         }
       })()
     }

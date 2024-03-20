@@ -1,18 +1,34 @@
 import { useRouter } from 'next/router'
+import { useEffect } from 'react'
 
-import { LikedDesigns, Nav, Info, UserLayout } from '@/components'
+import {
+  LikedDesigns,
+  Nav,
+  Info,
+  UserLayout,
+  LoadingIndicator,
+} from '@/components'
 import { useAuth } from '@/hooks'
 import { sanitizeQueryString } from '@/utils'
 
 function UserLikedDesignsPage() {
   const { user } = useAuth()
   const router = useRouter()
-
   const { user: userSlug } = router.query
   const safeUserSlug = sanitizeQueryString(userSlug)
 
-  if (safeUserSlug !== user.username) {
-    router.push('/404')
+  useEffect(() => {
+    if (safeUserSlug !== user?.username) {
+      router.push('/404')
+    }
+  }, [router, user, safeUserSlug])
+
+  if (!user) {
+    return (
+      <div className="w-full flex justify-center items-center">
+        <LoadingIndicator />
+      </div>
+    )
   }
 
   return (

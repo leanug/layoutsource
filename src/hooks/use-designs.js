@@ -33,7 +33,6 @@ export function useDesigns() {
         })
         if (result.success) {
           console.count('fetching liked designs')
-          console.log(result)
           setDesigns(result.data?.designs || [])
           page === 1 && setPagination(result.data?.pagination || {})
         } else {
@@ -47,21 +46,5 @@ export function useDesigns() {
         setLoading(false)
       }
     })()
-  }, [type, category, page, sortBy])
-
-  useEffect(() => {
-    console.log('type:', type, ' - IM THE ONE CHANGING TYPE!')
-  }, [type])
-
-  useEffect(() => {
-    console.log('category:', category, ' - IM THE ONE CHANGING CATEGORY!')
-  }, [category])
-
-  useEffect(() => {
-    console.log('page:', page, ' - IM THE ONE CHANGING PAGE!')
-  }, [page])
-
-  useEffect(() => {
-    console.log('sortBy:', sortBy, ' - IM THE ONE CHANGING SORTBY!')
-  }, [sortBy])
+  }, [type, category, page, sortBy, setDesigns, setLoading, setPagination])
 }

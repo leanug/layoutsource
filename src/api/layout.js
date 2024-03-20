@@ -35,7 +35,7 @@ export class Layout {
    * @returns {Promise<Object>} A promise that resolves to the fetched layouts.
    */
   async getDesigns({
-    type = 'homepages',
+    type = '',
     page = 1,
     sortBy = 'updatedAt',
     category = 'all',
@@ -48,18 +48,20 @@ export class Layout {
 
       // Sanitize category
       const safeCat = category === 'all' ? 'all' : isValidSlug(category)
-
       // Sanitize type
       const safeType = isValidType(type) ? type : ''
 
       // Define the base filters object
       const filters = {
         categories: {
-          type: {
-            slug: {
-              $eq: safeType,
-            },
-          },
+          type: safeType
+            ? {
+                // Only add the type filter if safeType is not empty
+                slug: {
+                  $eq: safeType,
+                },
+              }
+            : {}, // Otherwise, make it an empty object
         },
       }
 
@@ -219,6 +221,9 @@ export class Layout {
     try {
       const query = QueryString.stringify({
         populate: {
+          tags: {
+            fields: ['*'],
+          },
           categories: {
             fields: ['*'],
           },

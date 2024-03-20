@@ -46,8 +46,8 @@ export function AsideMenu({ user, logout }) {
 
   const renderMenuContent = () => {
     return (
-      <ul className="p-8 flex flex-col gap-4 border-gray-100 w-full">
-        <li className="flex items-center border-b border-gray-100 pb-7">
+      <ul className="p-8 flex flex-col gap-4 border-gray-200 dark:border-gray-400 w-full dark:bg-gray-950 dark:text-white rounded-lg">
+        <li className="flex items-center border-b border-gray-200 dark:border-gray-400 pb-7">
           <Image
             src={user?.avatar?.url || fallbackImg}
             alt="User Avatar"
@@ -58,7 +58,9 @@ export function AsideMenu({ user, logout }) {
           />
           <div className="ml-2">
             <p className="text-md font-medium">{user?.name || ''}</p>
-            <p className="text-sm text-gray-500">{user?.username || ''}</p>
+            <p className="text-sm text-gray-500 dark:text-gray-300">
+              {user?.username || ''}
+            </p>
           </div>
         </li>
 
@@ -66,43 +68,47 @@ export function AsideMenu({ user, logout }) {
         <Navigation vertical={true} />
 
         {/* Account */}
-        <li className="w-full block border-t border-gray-100 pt-5">
-          <Link
-            className="w-full block"
-            href={`/${user?.username || ''}`}
-            onClick={toggleMenu}
-          >
-            Profile
-          </Link>
-        </li>
-        <li className="w-full block">
-          <Link
-            className="w-full block"
-            href={`/${user?.username || ''}/liked`}
-            onClick={toggleMenu}
-          >
-            Liked Designs
-          </Link>
-        </li>
-        <li className="w-full block">
-          <Link
-            className="w-full block"
-            href={`/${user?.username || ''}/submited`}
-            onClick={toggleMenu}
-          >
-            Submited
-          </Link>
-        </li>
-        <li className="w-full block">
-          <Link
-            className="w-full block"
-            href={`/${user?.username || ''}/collections`}
-            onClick={toggleMenu}
-          >
-            Collections
-          </Link>
-        </li>
-        <li className="border-t border-gray-100 pt-5 mt-2">
+        {user ? (
+          <>
+            <li className="w-full block border-t border-gray-200 dark:border-gray-400 pt-5">
+              <Link
+                className="w-full block"
+                href={`/${user?.username || ''}`}
+                onClick={toggleMenu}
+              >
+                Profile
+              </Link>
+            </li>
+            <li className="w-full block">
+              <Link
+                className="w-full block"
+                href={`/${user?.username || ''}/liked`}
+                onClick={toggleMenu}
+              >
+                Liked Designs
+              </Link>
+            </li>
+            <li className="w-full block">
+              <Link
+                className="w-full block"
+                href={`/${user?.username || ''}/submited`}
+                onClick={toggleMenu}
+              >
+                Submited
+              </Link>
+            </li>
+            <li className="w-full block">
+              <Link
+                className="w-full block"
+                href={`/${user?.username || ''}/collections`}
+                onClick={toggleMenu}
+              >
+                Collections
+              </Link>
+            </li>
+          </>
+        ) : null}
+        <li className="border-t border-gray-200 dark:border-gray-400 pt-5 mt-2">
           <Link
             className="w-full block"
             href={'/account/settings'}
@@ -111,11 +117,12 @@ export function AsideMenu({ user, logout }) {
             Settings
           </Link>
         </li>
-        <li className="border-t border-gray-100 pt-5 mt-2 flex flex-row items-center justify-between">
-          Switch theme <DarkModeButton buttonType={'aside'} />
+        <li className="border-t border-gray-200 dark:border-gray-400 pt-5 mt-2 flex flex-row items-center justify-between">
+          <span>Switch theme</span>
+          <DarkModeButton buttonType={'aside'} />
         </li>
         {user ? (
-          <li className="border-t border-gray-100 pt-5 mt-2">
+          <li className="border-t border-gray-200 dark:border-gray-400 pt-5 mt-2">
             <button onClick={logoutHandler}>Logout</button>
           </li>
         ) : null}

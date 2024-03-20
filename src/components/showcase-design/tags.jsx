@@ -1,4 +1,5 @@
 import React from 'react'
+import Link from 'next/link'
 
 const Tags = ({ tags }) => {
   if (!tags) {
@@ -10,12 +11,13 @@ const Tags = ({ tags }) => {
       <h3 className="mb-3">Tags</h3>
       <div className="space-x-2">
         {tags.map((tag, index) => (
-          <span
+          <Link
+            href={`/tags/${tag.slug}`}
             key={index}
             className="inline-block bg-gray-50 dark:bg-gray-700 px-2.5 py-1.5 rounded-lg"
           >
-            {tag}
-          </span>
+            {tag.title}
+          </Link>
         ))}
       </div>
     </div>

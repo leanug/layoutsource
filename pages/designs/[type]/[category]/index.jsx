@@ -4,7 +4,7 @@ import { useRouter } from 'next/router'
 import { isValidType } from '@/utils'
 import { DesignsGridWrapper, LoadingIndicator, UserLayout } from '@/components'
 import { PageMenu } from '@/containers'
-import { useDesigns } from '@/hooks'
+import { useDesigns, useAuth } from '@/hooks'
 
 /**
  * PageTypePage component displays a page with categories and designs
@@ -15,20 +15,21 @@ import { useDesigns } from '@/hooks'
  * @returns {JSX.Element} React component.
  */
 const DesignsByCategoryPage = () => {
-  useDesigns() // Fetch data
   const router = useRouter()
-  console.count('CategoryPage')
-
+  const { user, loading } = useAuth()
   const { type, category } = router.query
- 
-  const validType = isValidType(type)
+  const validType = isValidType(type) // Check if the type is valid
+
+  // Fetch data
+  useDesigns()
 
   useEffect(() => {
-    if (!validType) {
-      //router.push('/404')
-      console.log('Category or Type not valid: Redirect')
+    // Redirect to 404 page if the type is invalid or user is not logged in
+    if (!validType || (!loading && !user)) {
+      console.log('User not logged in or invalid type')
+      //router.push('/404') // Uncomment this line to redirect to 404 page
     }
-  }, [validType, router])
+  }, [validType, loading, user])
 
   if (!validType) {
     return (

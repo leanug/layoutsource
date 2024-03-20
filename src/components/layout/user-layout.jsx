@@ -8,26 +8,20 @@ import {
   Footer,
   AsideMenu,
   SearchBarFull,
-  ScreenLoadingIndicator,
+  Header,
 } from '@/components'
 import HeaderFull from '@/components/layout/header-full'
-import useProtectedRoute from '@/hooks/use-protected-route'
 
 /*
  * Layout component for logged in users
  */
 export const UserLayout = ({ children }) => {
-  const { user, loading, logout } = useAuth()
+  const { user, logout } = useAuth()
 
-  useProtectedRoute({ user, loading })
+  console.log('userId= ',user?.id);
 
   // Fetch a list of liked designs
   useFetchLikedDesigns(user?.id)
-
-  // Check if user is loading or if user is not logged in
-  if (loading || !user) {
-    return <ScreenLoadingIndicator />
-  }
 
   // User is logged in
   return (
@@ -42,7 +36,7 @@ export const UserLayout = ({ children }) => {
             min-h-screen font-inter dark:text-white
           `}
         >
-          <HeaderFull />
+          {user ? <HeaderFull /> : <Header />}
           <SearchBarFull />
           <main className={`flex-1`}>{children}</main>
           <Footer />
