@@ -11,7 +11,7 @@ export const ShowcaseModal = () => {
     useShowcaseStore()
 
   return showcaseModal ? (
-    <div className="absolute top-0 left-0 h-full w-screen overflow-y-scroll bg-white dark:bg-gray-900 py-6 px-5">
+    <div className="absolute top-0 left-0 h-full w-screen  bg-white dark:bg-gray-900 py-6 px-5">
       <div className="w-full h-full bg-inherit dark:text-white ">
         <button
           className="font-bold self-end rounded-full hover:bg-gray-200 hover:dark:bg-gray-600 transition-colors ease-in mb-3 w-14 h-14 flex justify-center items-center"

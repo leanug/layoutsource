@@ -3,7 +3,7 @@ import { useEffect } from 'react'
 
 import { sanitizeQueryString } from '@/utils'
 import { DesignsGridWrapper, UserLayout } from '@/components'
-import { useSearchDesigns } from '@/hooks'
+import { useAuthProtection, useSearchDesigns } from '@/hooks'
 import { PageMenu } from '@/containers'
 import { useDesignsStore } from '@/store'
 
@@ -13,21 +13,21 @@ import { useDesignsStore } from '@/store'
  * @returns {JSX.Element} SearchPage component JSX
  */
 function SearchPage() {
+  useAuthProtection()
+
   const router = useRouter()
   const { s } = router.query // Access the query parameters from the URL
   const safeQuery = sanitizeQueryString(s)
 
-  const { setQuery, query } = useDesignsStore()
+  //const { setQuery, query } = useDesignsStore()
 
-  useEffect(() => {
-    console.log('safeQuery', safeQuery)
-    console.log(safeQuery !== query && safeQuery !== '')
+  /* useEffect(() => {
     if (safeQuery !== query) {
       setQuery(safeQuery)
     }
-  }, [safeQuery, query, setQuery])
+  }, [safeQuery, query, setQuery]) */
 
-  useSearchDesigns()
+  useSearchDesigns(safeQuery)
 
   return (
     <>

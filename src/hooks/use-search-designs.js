@@ -9,16 +9,9 @@ const layoutCtrl = new Layout()
  * Custom hook for fetching searched designs.
  * @returns {void}
  */
-export function useSearchDesigns() {
-  const {
-    sortBy,
-    setDesigns,
-    setPagination,
-    page,
-    query,
-    setPage,
-    setLoading,
-  } = useDesignsStore()
+export function useSearchDesigns(query) {
+  const { sortBy, setDesigns, setPagination, page, setPage, setLoading } =
+    useDesignsStore()
 
   // Reset values
   useEffect(() => {
@@ -32,6 +25,8 @@ export function useSearchDesigns() {
       ;(async () => {
         try {
           setLoading(true)
+          console.log('query', query);
+          console.log('page', page);
           const result = await layoutCtrl.searchDesigns({
             queryString: query,
             page,
@@ -39,6 +34,8 @@ export function useSearchDesigns() {
           })
           if (result.success) {
             setDesigns(result.data?.designs || [])
+            console.log('fetchin and saving', result.data?.designs);
+            console.log('page=', page)
             page === 1 && setPagination(result.data?.pagination || {})
           } else {
             setDesigns([])
@@ -48,6 +45,9 @@ export function useSearchDesigns() {
           setLoading(false)
         }
       })()
+    } else {
+      setDesigns([])
+      setPagination({})
     }
   }, [page, sortBy, query, setLoading, setDesigns, setPagination])
 }

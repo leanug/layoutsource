@@ -1,12 +1,6 @@
 import QueryString from 'qs'
 
-import { 
-  authFetch,
-  checkResponse,
-  ENV,
-  handleError,
-  mapDesigns,
-} from '@/utils'
+import { authFetch, checkResponse, ENV, handleError, mapDesigns } from '@/utils'
 import { Log } from './log'
 
 const logCtrl = new Log()
@@ -17,7 +11,7 @@ export class Collection {
    * @param {string} userId - The ID of the user to be updated.
    * @returns {Promise<Object>} A promise that resolves to the updated user information.
    */
-  async getAll (userId, page) {
+  async getAll(userId, page) {
     try {
       const query = QueryString.stringify({
         fields: ['title', 'slug', 'totalDesigns'],
@@ -27,15 +21,15 @@ export class Collection {
             fields: ['cover'],
             populate: {
               cover: {
-                fields: ['formats', 'height', 'name', 'url', 'width']
+                fields: ['formats', 'height', 'name', 'url', 'width'],
               },
             },
-          }
+          },
         },
         filters: {
           user: {
-            id: userId
-          }
+            id: userId,
+          },
         },
         pagination: {
           page: page,
@@ -43,21 +37,27 @@ export class Collection {
         },
       })
 
-      const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.COLLECTIONS }?${ query }`
+      const url = `${ENV.API_URL}/${ENV.ENDPOINTS.COLLECTIONS}?${query}`
       const response = await authFetch(url)
-      await checkResponse(response)
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw {
+          message: errorData?.error?.message || 'Unexpected error',
+          status: response.status,
+        }
+      }
       const result = await response.json()
-    
-      return { 
-        data: result.data ,
-        success: true
+
+      return {
+        data: result.data,
+        success: true,
       } // Return the response data or status
     } catch (error) {
       return handleError(error, logCtrl)
     }
-  }  
+  }
 
-  async getBySlug ({ userId, slug, page, itemsPerPage = 1 }) {
+  async getBySlug({ userId, slug, page, itemsPerPage = 1 }) {
     try {
       const query = QueryString.stringify({
         fields: ['designs', 'title', 'totalDesigns', 'description'],
@@ -66,33 +66,39 @@ export class Collection {
             fields: ['title', 'views', 'likes', 'slug'],
             populate: {
               cover: {
-                fields: ['formats', 'height', 'name', 'url', 'width']
+                fields: ['formats', 'height', 'name', 'url', 'width'],
               },
             },
             sort: ['updatedAt:desc'],
-           limit: itemsPerPage,
-           start: (page - 1) * itemsPerPage,
+            limit: itemsPerPage,
+            start: (page - 1) * itemsPerPage,
           },
         },
         filters: {
           user: {
-            id: userId
+            id: userId,
           },
           slug: {
-            $eq: slug
-          }
+            $eq: slug,
+          },
         },
       })
 
-      const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.COLLECTIONS }?${ query }`
+      const url = `${ENV.API_URL}/${ENV.ENDPOINTS.COLLECTIONS}?${query}`
       const response = await authFetch(url)
-      await checkResponse(response)
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw {
+          message: errorData?.error?.message || 'Unexpected error',
+          status: response.status,
+        }
+      }
 
       const result = await response.json()
       const { data } = result
-      
+
       // Return false if collection does not exist
-      if (! data[0]?.id) {
+      if (!data[0]?.id) {
         return false
       }
 
@@ -106,16 +112,16 @@ export class Collection {
         collectionDescription: data[0]?.attributes.description || '',
         collectionId: data[0]?.id || 0,
         totalDesigns: data[0]?.attributes.totalDesigns || 0,
-      };
-      
+      }
+
       return {
         data: collectionInfo,
-        success: true
+        success: true,
       }
     } catch (error) {
       return handleError(error, logCtrl)
     }
-  }  
+  }
 
   /**
    * Create a new collection.
@@ -128,77 +134,95 @@ export class Collection {
    */
   async create(data) {
     try {
-      const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.COLLECTIONS }`
+      const url = `${ENV.API_URL}/${ENV.ENDPOINTS.COLLECTIONS}`
       const params = {
         method: 'POST',
         headers: {
-          "Content-Type": "application/json"
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ data })
+        body: JSON.stringify({ data }),
       }
-      
+
       const response = await authFetch(url, params)
-      
-      await checkResponse(response)
-      
-      return { 
-        success: true, 
-        message: 'Collection created' 
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw {
+          message: errorData?.error?.message || 'Unexpected error',
+          status: response.status,
+        }
       }
-    } catch(error) {
+
+      return {
+        success: true,
+        message: 'Collection created',
+      }
+    } catch (error) {
       return handleError(error, logCtrl)
     }
   }
 
-  /* 
+  /*
    * Add or remove designs from a given collection
    */
-  async update(collectionId, data, userId) {
+  async update(collectionId, data) {
     try {
-      const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.COLLECTIONS }/${ collectionId }`
+      const url = `${ENV.API_URL}/${ENV.ENDPOINTS.COLLECTIONS}/${collectionId}`
       const params = {
         method: 'PUT',
         headers: {
-          "Content-Type": "application/json"
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ data })
+        body: JSON.stringify({ data }),
       }
 
       const response = await authFetch(url, params)
-
-      await checkResponse(response, userId)
-      
-      return { 
-        success: true, 
-        message: 'Collection updated' 
+      console.log('update data', data);
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw {
+          message: errorData?.error?.message || 'Unexpected error',
+          status: response.status,
+        }
       }
-    } catch(error) {
+
+      return {
+        success: true,
+        message: 'Collection updated',
+      }
+    } catch (error) {
       return handleError(error, logCtrl)
     }
   }
 
-  /* 
+  /*
    * Add or remove designs from a given collection
    */
-  async delete(userId, collectionId) {
+  async delete(collectionId) {
     try {
-      const url = `${ ENV.API_URL }/${ ENV.ENDPOINTS.COLLECTIONS }/${ collectionId }`
+      const url = `${ENV.API_URL}/${ENV.ENDPOINTS.COLLECTIONS}/${collectionId}`
       const params = {
         method: 'DELETE',
         headers: {
-          "Content-Type": "application/json"
+          'Content-Type': 'application/json',
         },
       }
 
       const response = await authFetch(url, params)
-      
-      await checkResponse(response, userId)
-      
-      return { 
-        success: true, 
-        message: 'The collection was deleted'
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw {
+          message: errorData?.error?.message || 'Unexpected error',
+          status: response.status,
+        }
       }
-    } catch(error) {
+
+      return {
+        success: true,
+        message: 'The collection was deleted',
+      }
+    } catch (error) {
       return handleError(error, logCtrl)
     }
   }

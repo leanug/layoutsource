@@ -23,13 +23,13 @@ export function useLikedDesigns(userId) {
     ;(async () => {
       setLoading(true)
       try {
-        console.log('page=', page, ' userId= ', userId);
+        console.log('page=', page, ' userId= ', userId)
         const result = await likedDesignsCtrl.get({
           userId,
           page,
         })
         if (result.success) {
-          console.log(result);
+          console.log(result)
           setDesigns(result.data?.designs || [])
           page === 1 && setPagination(result.data?.pagination || {})
         } else {

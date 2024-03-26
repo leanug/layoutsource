@@ -1,7 +1,6 @@
 import { useState } from 'react'
 
 import { AddCollection, CollectionList, CollectionButtons } from './'
-
 import { UseCollection } from '@/hooks'
 
 /**
@@ -11,7 +10,7 @@ import { UseCollection } from '@/hooks'
 export function Collections({ designId, userId, handleModal }) {
   const [isAddCollectionVisible, setIsAddCollectionVisible] = useState(false)
 
-  const { addDesign, deleteDesign, collections } = UseCollection(userId)
+  const { collections } = UseCollection(userId)
 
   const toggleComponents = () => {
     setIsAddCollectionVisible(!isAddCollectionVisible)
@@ -19,7 +18,7 @@ export function Collections({ designId, userId, handleModal }) {
 
   return (
     <>
-      <div className="max-h-[400px] overflow-y-auto max-w-3xl">
+      <div className="max-h-[400px] flex flex-col gap-10 overflow-y-auto max-w-3xl text-gray-950 dark:text-white">
         {isAddCollectionVisible ? (
           <AddCollection
             userId={userId}
@@ -30,9 +29,7 @@ export function Collections({ designId, userId, handleModal }) {
           <>
             {collections?.length ? (
               <CollectionList
-                addDesign={addDesign}
                 collections={collections}
-                deleteDesign={deleteDesign}
                 designId={designId}
                 handleModal={handleModal}
                 userId={userId}

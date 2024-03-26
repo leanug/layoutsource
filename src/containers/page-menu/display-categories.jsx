@@ -1,10 +1,14 @@
 import Link from 'next/link'
+import { useRouter } from 'next/router'
 
 import { useCategoriesByType } from '@/hooks'
 
-export const DisplayCategories = (props) => {
-  const { categorySlug, type, className } = props
-  const { categories } = useCategoriesByType(type)
+export const DisplayCategories = ({ className }) => {
+  const router = useRouter()
+  const { tags } = router.query
+  const { categories } = useCategoriesByType(tags?.length ? tags[0] : '')
+
+  if (!tags || tags?.length === 0) return null
 
   return (
     <aside className={`overflow-x-auto ${className}`}>
@@ -12,13 +16,13 @@ export const DisplayCategories = (props) => {
         <ul className="flex flex-row items-center gap-4">
           {/* All category */}
           <li key="all">
-            {categorySlug === 'all' ? (
+            {tags?.length === 1 ? (
               <div className="px-3 py-1.5 bg-gray-950 dark:bg-white text-white dark:text-gray-950 rounded-lg justify-center items-center inline-flex">
                 <div className="font-semibold">All</div>
               </div>
             ) : (
               <Link
-                href={`/designs/${type}`}
+                href={`/designs/${tags[0]}`}
                 className="px-3 py-1.5 transition-colors ease-in bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 hover:dark:bg-gray-600 rounded-lg justify-center items-center inline-flex"
               >
                 All
@@ -29,7 +33,7 @@ export const DisplayCategories = (props) => {
           {/* Other categories */}
           {categories?.map((category) => (
             <li key={category.id}>
-              {categorySlug === category.attributes.slug ? (
+              {tags[1] === category.attributes.slug ? (
                 <div className="px-3 py-1.5 bg-gray-950 dark:bg-white text-white dark:text-gray-950 rounded-lg justify-center items-center inline-flex">
                   <div className="font-semibold">
                     {category.attributes.title}
@@ -37,7 +41,7 @@ export const DisplayCategories = (props) => {
                 </div>
               ) : (
                 <Link
-                  href={`/designs/${type}/${category.attributes.slug}`}
+                  href={`/designs/${tags[0]}/${category.attributes.slug}`}
                   className="px-3 py-1.5 transition-colors ease-in bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 hover:dark:bg-gray-600 rounded-lg justify-center items-center inline-flex"
                 >
                   {category.attributes.title}

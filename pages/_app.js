@@ -1,5 +1,5 @@
 import { AuthProvider } from '@/contexts'
-import { BaseLayout } from '@/components' // Import the BaseLayout component
+import { BaseLayout } from '@/components'
 import '../src/app/globals.css'
 
 export default function App({ Component, pageProps }) {

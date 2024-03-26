@@ -2,8 +2,7 @@ import { DisplayCategories, DropdownMenu } from '.'
 import { useDesignsStore } from '@/store'
 
 export function PageMenu(props) {
-  const { searchQuery, type, categorySlug, className, displaySearchQueryData } =
-    props
+  const { searchQuery, className, displaySearchQueryData } = props
 
   const {
     setSortBy,
@@ -19,13 +18,7 @@ export function PageMenu(props) {
           justify-between font-semibold
         `}
       >
-        {type ? (
-          <DisplayCategories
-            categorySlug={categorySlug}
-            type={type}
-            className={className}
-          />
-        ) : null}
+        <DisplayCategories className={className} />
 
         {displaySearchQueryData ? (
           <h1 className="text-center font-normal text-xl">

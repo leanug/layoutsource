@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { Collection } from '@/api'
-import { useLoading } from '.'
 import { useNotificationStore } from '@/store'
 
 const collectionCtrl = new Collection()
@@ -8,16 +7,13 @@ const collectionCtrl = new Collection()
 export function UseCollection(userId) {
   const [collections, setCollections] = useState([])
 
-  const { startLoading, stopLoading, loading } = useLoading()
   const { addNotification } = useNotificationStore()
 
   // Fetch all collections
   useEffect(() => {
     ;(async () => {
-      startLoading()
       const response = await collectionCtrl.getAll(userId)
       response?.data && setCollections(response.data)
-      stopLoading()
     })()
   }, [userId])
 
@@ -99,6 +95,5 @@ export function UseCollection(userId) {
     addDesign,
     deleteDesign,
     collections,
-    loading,
   }
 }

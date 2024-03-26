@@ -80,7 +80,15 @@ export class LikedDesigns {
       const url = `${ENV.API_URL}/${ENV.ENDPOINTS.LIKED_LAYOUTS}?${query}`
 
       const response = await authFetch(url)
-      await checkResponse(response)
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw {
+          message: errorData?.error?.message || 'Unexpected error',
+          status: response.status,
+        }
+      }
+
       const result = await response.json()
 
       /**
@@ -145,7 +153,15 @@ export class LikedDesigns {
       }
       // Send a request to the server to like the layout
       const response = await authFetch(url, params)
-      await checkResponse(response)
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw {
+          message: errorData?.error?.message || 'Unexpected error',
+          status: response.status,
+        }
+      }
+
       const result = await response.json()
       const data = { likedLayoutsCollectionItemId: result.data.id }
 
@@ -177,7 +193,14 @@ export class LikedDesigns {
       }
       // Send a request to the server to delete the layout
       const response = await authFetch(url, params)
-      await checkResponse(response)
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw {
+          message: errorData?.error?.message || 'Unexpected error',
+          status: response.status,
+        }
+      }
       const result = await response.json()
 
       return {
@@ -199,9 +222,15 @@ export class LikedDesigns {
       const query = QueryString.stringify({
         populate: {
           layout: {
-            fields: ['title', 'likes', 'views', 'id', 'slug'],
+            fields: ['title', 'likes', 'views', 'id', 'slug', 'link'],
             populate: {
-              cover: {
+              tags: {
+                fields: ['*'],
+              },
+              categories: {
+                fields: ['*'],
+              },
+              image: {
                 fields: ['formats', 'height', 'name', 'url', 'width'],
               },
             },
@@ -224,7 +253,15 @@ export class LikedDesigns {
       const url = `${ENV.API_URL}/${ENV.ENDPOINTS.LIKED_LAYOUTS}?${query}`
 
       const response = await authFetch(url)
-      await checkResponse(response)
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw {
+          message: errorData?.error?.message || 'Unexpected error',
+          status: response.status,
+        }
+      }
+
       const result = await response.json()
       const { data, meta } = result
 

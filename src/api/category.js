@@ -38,7 +38,13 @@ export class Category {
 
       const url = `${ENV.API_URL}/${ENV.ENDPOINTS.CATEGORY}?${query}`
       const response = await fetch(url)
-      await checkResponse(response)
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw {
+          message: errorData?.error?.message || 'Unexpected error',
+          status: response.status,
+        }
+      }
       const result = await response.json()
 
       return {
@@ -67,7 +73,13 @@ export class Category {
       const url = `${ENV.API_URL}/${ENV.ENDPOINTS.CATEGORY}?${filters}`
 
       const response = await fetch(url)
-      await checkResponse(response)
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw {
+          message: errorData?.error?.message || 'Unexpected error',
+          status: response.status,
+        }
+      }
       const result = await response.json()
 
       return {

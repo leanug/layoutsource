@@ -5,10 +5,12 @@ import { useRouter } from 'next/router'
 
 import { DarkModeButton, Navigation } from '@/components'
 import { useAsideMenuStore } from '@/store'
+import { useAuth } from '@/hooks'
 
 import fallbackImg from '@/assets/images/avatar.svg'
 
-export function AsideMenu({ user, logout }) {
+export function AsideMenu() {
+  const { user, logout } = useAuth()
   const router = useRouter()
   const menuRef = useRef(null)
   const { isOpen, toggleMenu } = useAsideMenuStore()

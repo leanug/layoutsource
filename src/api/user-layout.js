@@ -1,6 +1,6 @@
 import QueryString from 'qs'
 
-import { ENV, authFetch, handleError, checkResponse } from '@/utils'
+import { ENV, authFetch, handleError } from '@/utils'
 
 export class UserLayout {
   /**
@@ -25,7 +25,15 @@ export class UserLayout {
         }),
       }
       const response = await authFetch(url, params)
-      await checkResponse(response)
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw {
+          message: errorData?.error?.message || 'Unexpected error',
+          status: response.status,
+        }
+      }
+
       const result = await response.json()
 
       return {
@@ -57,7 +65,13 @@ export class UserLayout {
       const url = `${ENV.API_URL}/${ENV.ENDPOINTS.USER_LAYOUTS}?${query}`
 
       const response = await authFetch(url)
-      await checkResponse(response)
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw {
+          message: errorData?.error?.message || 'Unexpected error',
+          status: response.status,
+        }
+      }
       const result = await response.json()
 
       return {

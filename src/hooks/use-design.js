@@ -1,35 +1,29 @@
 import { useEffect, useState } from 'react'
-import { useLoading } from '.'
 
 import { Layout } from '@/api'
 
 const layoutCtrl = new Layout()
 
-export function useDesign() {
+export function useDesign(designSlug) {
   const [design, setDesign] = useState({})
-  const { loading, startLoading, stopLoading } = useLoading(false)
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const path = window.location.href
-      const designSlug = path.split('/').pop()
-
-      ;(async () => {
-        try {
-          startLoading()
-          const response = await layoutCtrl.getDesignBySlug(designSlug)
-          if (response.success) {
-            setDesign({
-              ...response.data[0]?.attributes,
-              id: response.data[0]?.id,
-            })
-          }
-        } finally {
-          stopLoading()
+    ;(async () => {
+      try {
+        setLoading(true)
+        const response = await layoutCtrl.getDesignBySlug(designSlug)
+        if (response.success) {
+          setDesign({
+            ...response.data[0]?.attributes,
+            id: response.data[0]?.id,
+          })
         }
-      })()
-    }
-  }, [])
+      } finally {
+        setLoading(false)
+      }
+    })()
+  }, [setLoading, designSlug])
 
   return {
     design,

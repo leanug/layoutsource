@@ -30,16 +30,17 @@ export async function getServerSideProps(context) {
   }
 
   try {
-    const slugResponse = await layoutCtrl.getDesignBySlug(designSlug)
+    const designResponse = await layoutCtrl.getDesignBySlug(designSlug)
 
-    if (!slugResponse?.success) {
+    if (!designResponse?.success) {
       throw new Error(
-        `No data found for designSlug: ${designSlug}, ${slugResponse}`,
+        `No data found for designSlug: ${designSlug}, ${designResponse}`,
       )
     }
 
+    // Fetch related designs by category
     const categorySlug =
-      slugResponse.data[0].attributes.categories.data[0].attributes.slug
+      designResponse.data.design.categories[0].attributes.slug
     const relatedDesignsResponse = await layoutCtrl.getDesigns({
       category: categorySlug,
       page: 1,
@@ -50,7 +51,7 @@ export async function getServerSideProps(context) {
     if (relatedDesignsResponse.success) {
       updatedRelatedDesigns = updateRelatedDesigns(
         relatedDesignsResponse.data.designs,
-        slugResponse.data[0].id,
+        designResponse.data.id,
       )
     }
 
@@ -58,9 +59,8 @@ export async function getServerSideProps(context) {
       props: {
         data: {
           relatedDesigns: updatedRelatedDesigns,
-          design: slugResponse.data[0].attributes,
+          design: designResponse.data.design,
         },
-        success: true,
       },
     }
   } catch (error) {

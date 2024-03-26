@@ -36,7 +36,7 @@ export const DefaultLayout = ({ children }) => {
   if (user) {
     return <ScreenLoadingIndicator />
   } */
-  console.count('home')
+  console.count('DefaultLayout')
   return (
     <div className={`relative`}>
       <div className="h-full">

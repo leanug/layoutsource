@@ -1,60 +1,30 @@
-import Image from "next/image";
+import { UseCollection } from '@/hooks'
 
 export function CollectionItem(props) {
-  const { 
-    addDesign, 
-    collectionId,
-    collectionTitle, 
-    designId,
-    deleteDesign,
-    handleModal,
-    inCollection, 
-    imageUrl,
-  } = props
+  const { addDesign, deleteDesign } = UseCollection()
+  const { collectionId, collectionTitle, designId, handleModal, inCollection } =
+    props
 
-  const backgroundClass = inCollection ? 'bg-gray-200' : '';
-  
   return (
-    <div className={`flex flex-row group gap-3 hover:bg-gray-100 items-center px-4 py-3 ${ backgroundClass }`}>
-      <div className="h-12 overflow-y-hidden bg-gray-300 w-20">
-        {
-          imageUrl ? (
-            <Image
-              src={ imageUrl } // Replace with your image source
-              alt={ collectionTitle }
-              className="w-full h-auto overflow-hidden"
-              width={ 20 }
-              height={ 12 }
-            />
-          ) : (
-            null
-          )
-        }
-      </div>
-      <div className="w-full">{ collectionTitle }</div>
-      {
-        inCollection ? (
-          /* Add design */
-          <div className="flex items-center justify-end w-full">
-            <button 
-              className="py-1 px-3 rounded-md bg-slate-200"
-              onClick={() => deleteDesign(collectionId, designId, handleModal)}
-            >
-              -
-            </button>
-          </div>
-        ) : (
-          /* Delete design */
-          <div className="flex items-center w-full justify-end opacity-0 group-hover:opacity-100 transition-opacity">
-            <button 
-              className="py-1 px-3 rounded-md bg-slate-200"
-              onClick={() => addDesign(collectionId, designId, handleModal)}
-            >
-              +
-            </button>
-          </div>
-        )
-      }
-    </div>
+    <label
+      className={`
+        flex flex-row group gap-3 bg-gray-100 dark:bg-gray-700 rounded-lg items-center px-4 py-3
+        cursor-pointer
+    `}
+    >
+      <input
+        type="checkbox"
+        checked={inCollection}
+        className="h-8 w-8 rounded-lg"
+        onChange={() => {
+          if (inCollection) {
+            deleteDesign(collectionId, designId, handleModal)
+          } else {
+            addDesign(collectionId, designId, handleModal)
+          }
+        }}
+      />
+      <div className="w-full">{collectionTitle}</div>
+    </label>
   )
 }

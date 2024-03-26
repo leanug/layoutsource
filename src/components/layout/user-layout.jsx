@@ -1,29 +1,32 @@
 import Head from 'next/head'
 
-import { useAuth, useFetchLikedDesigns } from '@/hooks'
 import {
   Modal,
   ShowcaseModal,
   Notification,
   Footer,
+  Header,
   AsideMenu,
   SearchBarFull,
-  Header,
+  ScreenLoadingIndicator,
 } from '@/components'
 import HeaderFull from '@/components/layout/header-full'
+import { useAuth, useFetchLikedDesigns } from '@/hooks'
+import { useRouter } from 'next/router'
 
 /*
  * Layout component for logged in users
  */
 export const UserLayout = ({ children }) => {
-  const { user, logout } = useAuth()
+  const { user, loading } = useAuth()
+  const router = useRouter()
 
-  console.log('userId= ',user?.id);
-
+  console.count('UserLayout')
   // Fetch a list of liked designs
   useFetchLikedDesigns(user?.id)
 
-  // User is logged in
+  if (!router || (loading && !user)) return <ScreenLoadingIndicator />
+
   return (
     <>
       <div className="h-full">
@@ -41,7 +44,7 @@ export const UserLayout = ({ children }) => {
           <main className={`flex-1`}>{children}</main>
           <Footer />
         </div>
-        <AsideMenu user={user} logout={logout} />
+        <AsideMenu />
       </div>
       <Modal />
       <ShowcaseModal />

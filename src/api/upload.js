@@ -26,7 +26,13 @@ export class Upload {
       }
       
       const response = await authFetch(url, params)
-      await checkResponse(response)
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw {
+          message: errorData?.error?.message || 'Unexpected error',
+          status: response.status,
+        }
+      }
       const result = await response.json()
       
       return { 

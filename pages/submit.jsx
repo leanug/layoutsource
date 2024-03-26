@@ -1,8 +1,8 @@
 import { SubmitDesignForm, UserLayout } from '@/components'
 
-function SubmitPage () {
+function SubmitPage() {
   return (
-    <section className="section-full">
+    <section className="section-full h-full flex items-center">
       <SubmitDesignForm />
     </section>
   )

@@ -1,7 +1,7 @@
 import Link from 'next/link'
 
 import { LoginForm } from '@/containers'
-import { HouseSolid } from '@/components'
+import { HouseSolid, AuthLayout } from '@/components'
 
 function SignIn() {
   return (
@@ -21,6 +21,10 @@ function SignIn() {
       <LoginForm />
     </>
   )
+}
+
+SignIn.getLayout = (page) => {
+  return <AuthLayout>{page}</AuthLayout>
 }
 
 export default SignIn

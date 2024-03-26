@@ -12,18 +12,15 @@ import Tags from './tags'
 import Categories from './categories'
 import DesignDetailes from './design-details'
 import { useModalStore } from '@/store'
-import { useAuth, useDesign } from '@/hooks'
+import { useAuth } from '@/hooks'
 import fallbackImg from '@/assets/images/default.png'
 
-export function ShowcaseDesign(props) {
-  const { design, relatedDesigns } = props.data
-  console.count('showcase design component')
-
-  // useDesign gets the design data by fetching it using the url
-  //const { design, loading } = useDesign()
+export function ShowcaseDesign({ data }) {
+  const { design, relatedDesigns } = data
+  console.count('ShowcaseDesign')
   const { user } = useAuth()
   const { handleModal } = useModalStore()
-
+  console.log(data);
   const loading = false
   // Open collections modal for creating or updating a collection
   const openCollectionsModal = () => {
@@ -42,28 +39,19 @@ export function ShowcaseDesign(props) {
   let imgUrl, imgHeight, imgWidth
 
   if (design?.slug) {
-    const img = design.image.data?.attributes
-    designCategories = design.categories.data || []
+    const img = design.image
+    designCategories = design.categories || []
     imgUrl = img?.url || fallbackImg
     imgHeight = img?.height || '300px'
     imgWidth = img?.width || '300px'
   }
 
   // Extracting tag information
-  const tagsList = design?.tags?.data.map((item) => {
+  const tagsList = design.tags.map((item) => {
     const { slug, title } = item.attributes
     return { slug, title }
   })
 
-  if (!design) {
-    return (
-      <div className="w-full justify-center items-center flex">
-        <LoadingIndicator />
-      </div>
-    )
-  }
-
-  console.log('id', design)
   return loading ? (
     <LoadingIndicator />
   ) : design?.slug ? (

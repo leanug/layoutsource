@@ -1,10 +1,9 @@
 import { useFormik } from 'formik'
-import { initialValues, validationSchema } from './';
-import { Collection } from "@/api"
-
+import { initialValues, validationSchema } from './'
+import { Collection } from '@/api'
 import { generateRandomSlug } from '@/utils'
-
-import { useNotificationStore } from '@/store';
+import { useNotificationStore } from '@/store'
+import { PrimaryButton } from '@/components'
 
 const collectionCtrl = new Collection()
 
@@ -38,16 +37,14 @@ export function AddCollectionForm({ designId, userId, handleModal }) {
           designs: [designId],
           slug: generateRandomSlug(),
           totalDesigns: 1,
-          user: userId
+          user: userId,
         }
-        
+
         // Create a new collection using the collectionCtrl service
         const response = await collectionCtrl.create(data)
 
-        if(response?.success) {
+        if (response?.success) {
           addNotification(response?.message || '', 'success')
-          setTitle(formValue.title)
-          setDescription(formValue.description)
         } else {
           addNotification(response?.error.message || '', 'error')
         }
@@ -56,51 +53,50 @@ export function AddCollectionForm({ designId, userId, handleModal }) {
         formik.handleReset()
         handleModal() // Close modal
       }
-    }
+    },
   })
 
   return (
-    <form onSubmit={ formik.handleSubmit } className='flex flex-col gap-3'>
+    <form onSubmit={formik.handleSubmit} className="flex flex-col gap-3">
       {/* Title */}
       <div>
-        <label htmlFor="title" className="block text-gray-700">Title:</label>
+        <label htmlFor="title" className="block">
+          Title:
+        </label>
         <input
           name="title"
           id="title"
           label="Collection title"
           placeholder="Title..."
-          value={ formik.values.title }
-          onChange={ formik.handleChange }
+          value={formik.values.title}
+          onChange={formik.handleChange}
           className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300"
         />
         {formik.errors.title && (
-          <p className="text-red-500 text-sm">{ formik.errors.title }</p>
+          <p className="text-red-500 text-sm">{formik.errors.title}</p>
         )}
       </div>
-      
+
       {/* Description */}
       <div>
-        <label htmlFor="description" className="block text-gray-700">Collection Description:</label>
+        <label htmlFor="description" className="block">
+          Collection Description:
+        </label>
         <textarea
           id="description"
           name="description"
           placeholder="Description..."
-          value={ formik.values.description }
-          onChange={ formik.handleChange }
+          value={formik.values.description}
+          onChange={formik.handleChange}
           className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300"
         />
         {formik.errors.description && (
           <p className="text-red-500 text-sm">{formik.errors.description}</p>
         )}
       </div>
-      
+
       {/* Submit */}
-      <button 
-        className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded-lg mr-2"
-        type="submit"
-      >
-        Create collection
-      </button>
+      <PrimaryButton type="submit">Create collection</PrimaryButton>
     </form>
   )
 }

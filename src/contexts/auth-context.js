@@ -1,7 +1,6 @@
 import { createContext, useEffect, useState } from 'react'
 
 import { Token, User } from '@/api'
-import { useLoading } from '@/hooks'
 
 export const AuthContext = createContext()
 
@@ -12,12 +11,12 @@ export function AuthProvider(props) {
   const { children } = props
   const [user, setUser] = useState(null)
   const [token, setToken] = useState(null)
-  const { loading, startLoading, stopLoading } = useLoading()
+  const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     const initializeAuth = async () => {
       try {
-        startLoading()
+        setLoading(true)
         const storedToken = tokenCtrl.getToken()
 
         if (!storedToken) {
@@ -33,7 +32,7 @@ export function AuthProvider(props) {
       } catch (error) {
         console.error('Error initializing auth:', error)
       } finally {
-        stopLoading()
+        setLoading(false)
       }
     }
 
@@ -42,7 +41,7 @@ export function AuthProvider(props) {
 
   const login = async (token) => {
     try {
-      startLoading()
+      setLoading(true)
 
       // Set the token in localStorage
       tokenCtrl.setToken(token)
@@ -59,7 +58,7 @@ export function AuthProvider(props) {
       console.error('Error during login:', error)
       throw new Error(error)
     } finally {
-      stopLoading()
+      setLoading(false)
     }
   }
 

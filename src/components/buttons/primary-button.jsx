@@ -1,6 +1,6 @@
 import Link from 'next/link'
 
-export function PrimaryButton({ onClick, children, to }) {
+export function PrimaryButton({ onClick, children, to, type }) {
   if (to) {
     return (
       <Link to={to} className="btn-primary">
@@ -9,7 +9,7 @@ export function PrimaryButton({ onClick, children, to }) {
     )
   } else {
     return (
-      <button className="btn-primary" onClick={onClick}>
+      <button type={type} className="btn-primary" onClick={onClick}>
         {children}
       </button>
     )

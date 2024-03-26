@@ -1,16 +1,62 @@
 import Image from 'next/image'
+import { useCallback, useEffect } from 'react'
+import { useRouter } from 'next/router'
 
-import { DesignLikeButton } from '@/components'
+import { DesignLikeButton, ShowcaseDesign } from '@/components'
 import Footer from './footer'
 import fallbackImg from '@/assets/images/default.png'
 import { OpenCollectionsButton } from '@/components/buttons/open-collections-button'
+import { useModalStore, useShowcaseStore } from '@/store'
+import { useAuth } from '@/hooks'
+import { Collections } from '@/containers'
 
 /**
  * Displays a design card with its buttons for logged users
  */
 export default function Design(props) {
-  const { design, openCollectionsModal, user, showcaseDesign } = props
-  console.count(`GridItem ${design.id}`)
+  const { design } = props
+  //console.count(`GridItem ${design.id}`)
+  const router = useRouter()
+  const { handleModal } = useModalStore()
+  const { showcaseModal, handleShowcaseModal } = useShowcaseStore()
+  const { user } = useAuth()
+
+  // Open collections modal for creating or updating a collection
+  const openCollectionsModal = useCallback(
+    (designId) => {
+      const content = (
+        <Collections
+          userId={user.id}
+          designId={designId}
+          handleModal={handleModal}
+        />
+      )
+      // Open modal
+      handleModal(true, content, 'Your collections')
+    },
+    [user, handleModal],
+  )
+
+  // Restore the URL to its previous state, when showcase design modal is closed
+  useEffect(() => {
+    if (!showcaseModal) {
+      window.history.pushState(null, null, router.asPath)
+    }
+  }, [showcaseModal, router])
+
+  // Open a big modal for showcasing a big design
+  const showcaseDesign = useCallback(
+    (designSlug) => {
+      // Use JavaScript history to navigate without page reload
+      window.history.pushState(null, null, `/showcase/${designSlug}`)
+      const data = { design, relatedDesigns: [] }
+      const modalContent = <ShowcaseDesign data={data} />
+
+      handleShowcaseModal(true, modalContent)
+    },
+    [handleShowcaseModal, design],
+  )
+
   return (
     <div key={design.id}>
       <div className="transition h-full flex flex-col justify-between dark:text-white">
@@ -27,7 +73,7 @@ export default function Design(props) {
               <Image
                 src={
                   design?.image && design.image?.url
-                    ? design.image.url
+                    ? design.image.formats.large.url
                     : fallbackImg
                 }
                 alt={design.title}
@@ -49,7 +95,7 @@ export default function Design(props) {
             >
               <div className="flex gap-3">
                 <OpenCollectionsButton
-                  userId={user?.id}
+                  designId={design?.id}
                   onClick={openCollectionsModal}
                 />
 

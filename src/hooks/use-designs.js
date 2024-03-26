@@ -11,28 +11,25 @@ export function useDesigns() {
   const { sortBy, setDesigns, setPagination, page, setPage, setLoading } =
     useDesignsStore()
 
-  const { type, category } = router.query
+  const { tags } = router.query
 
   console.count('useDesigns')
 
   // Reset values
   useEffect(() => {
     setPage(1)
-  }, [category, type, sortBy, setPage])
+  }, [tags, sortBy, setPage])
 
   useEffect(() => {
     ;(async () => {
       try {
-        console.count('fetch designs useEffect')
         setLoading(true)
         const result = await layoutCtrl.getDesigns({
-          type,
+          tags,
           page,
           sortBy,
-          category,
         })
         if (result.success) {
-          console.count('fetching liked designs')
           setDesigns(result.data?.designs || [])
           page === 1 && setPagination(result.data?.pagination || {})
         } else {
@@ -46,5 +43,5 @@ export function useDesigns() {
         setLoading(false)
       }
     })()
-  }, [type, category, page, sortBy, setDesigns, setLoading, setPagination])
+  }, [tags, page, sortBy, setDesigns, setLoading, setPagination])
 }

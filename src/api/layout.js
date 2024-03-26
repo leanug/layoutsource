@@ -2,11 +2,10 @@ import QueryString from 'qs'
 
 import {
   authFetch,
-  checkResponse,
   ENV,
   handleError,
   isValidSlug,
-  isValidType,
+  mapDesign,
   mapDesigns,
   mapPagination,
 } from '@/utils'
@@ -35,10 +34,9 @@ export class Layout {
    * @returns {Promise<Object>} A promise that resolves to the fetched layouts.
    */
   async getDesigns({
-    type = '',
     page = 1,
     sortBy = 'updatedAt',
-    category = 'all',
+    tags = [],
     pageSize = PAGE_SIZE,
   }) {
     try {
@@ -47,40 +45,34 @@ export class Layout {
         VALID_SORT_OPTIONS[sortBy] || VALID_SORT_OPTIONS.updatedAt
 
       // Sanitize category
-      const safeCat = category === 'all' ? 'all' : isValidSlug(category)
-      // Sanitize type
-      const safeType = isValidType(type) ? type : ''
+      //const safeTags = tags === 'all' ? 'all' : tags // VALIDATE!!!
 
       // Define the base filters object
-      const filters = {
-        categories: {
-          type: safeType
-            ? {
-                // Only add the type filter if safeType is not empty
-                slug: {
-                  $eq: safeType,
-                },
-              }
-            : {}, // Otherwise, make it an empty object
-        },
-      }
-
-      // Add the additional filter for 'slug' if category is not 'all'
-      if (category !== 'all') {
-        filters.categories.slug = {
-          $eq: safeCat,
-        }
+      let tagFilters = []
+      if (tags.length > 0) {
+        tagFilters = tags.map((tag) => ({
+          tags: {
+            slug: {
+              $eq: tag,
+            },
+          },
+        }))
       }
 
       const query = QueryString.stringify({
-        fields: ['title', 'views', 'likes', 'slug'],
+        fields: ['title', 'views', 'likes', 'slug', 'link'],
         // Use the populate parameter to fetch additional data
         populate: {
+          tags: {
+            fields: ['*'],
+          },
           image: {
-            fields: ['name', 'url', 'formats'],
+            fields: ['formats', 'height', 'name', 'url', 'width'],
           },
         },
-        filters,
+        filters: {
+          $and: tagFilters,
+        },
         sort: [sortParam],
         pagination: {
           page: page,
@@ -90,7 +82,15 @@ export class Layout {
 
       const url = `${ENV.API_URL}/${ENV.ENDPOINTS.LAYOUTS}?${query}`
       const response = await fetch(url)
-      await checkResponse(response)
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw {
+          message: errorData?.error?.message || 'Unexpected error',
+          status: response.status,
+        }
+      }
+
       const result = await response.json()
       const { data, meta } = result
 
@@ -123,7 +123,7 @@ export class Layout {
           featured: true,
         },
         populate: {
-          cover: {
+          image: {
             fields: ['height', 'name', 'url', 'width'],
           },
         },
@@ -134,7 +134,13 @@ export class Layout {
 
       const url = `${ENV.API_URL}/${ENV.ENDPOINTS.LAYOUTS}?${query}`
       const response = await fetch(url)
-      await checkResponse(response)
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw {
+          message: errorData?.error?.message || 'Unexpected error',
+          status: response.status,
+        }
+      }
       const result = await response.json()
 
       // Map results
@@ -165,7 +171,10 @@ export class Layout {
     try {
       const query = QueryString.stringify({
         populate: {
-          cover: {
+          tags: {
+            fields: ['*'],
+          },
+          image: {
             fields: ['formats', 'height', 'name', 'url', 'width'],
           },
         },
@@ -185,9 +194,12 @@ export class Layout {
       const response = await fetch(url)
       const result = await response.json()
 
-      if (response.status !== 200) {
-        // This throw statement will stop the execution
-        throw new Error('HTTP Error: ' + response.status)
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw {
+          message: errorData?.error?.message || 'Unexpected error',
+          status: response.status,
+        }
       }
 
       const { data, meta } = result
@@ -202,12 +214,7 @@ export class Layout {
         },
       }
     } catch (error) {
-      if (ENV.IS_DEV) {
-        console.error(error)
-      }
-      return {
-        error: 'An error occurred while fetching the data.',
-      }
+      return handleError(error, logCtrl)
     }
   }
 
@@ -220,6 +227,7 @@ export class Layout {
   async getDesignBySlug(designSlug) {
     try {
       const query = QueryString.stringify({
+        fields: ['title', 'link', 'likes', 'slug', 'views', 'updatedAt'],
         populate: {
           tags: {
             fields: ['*'],
@@ -240,12 +248,21 @@ export class Layout {
 
       const url = `${ENV.API_URL}/${ENV.ENDPOINTS.LAYOUTS}?${query}`
       const response = await fetch(url)
-      await checkResponse(response)
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw {
+          message: errorData?.error?.message || 'Unexpected error',
+          status: response.status,
+        }
+      }
+
       const result = await response.json()
+      const mappedDesign = mapDesign(result.data[0])
 
       return {
         success: true,
-        data: result.data,
+        data: { design: mappedDesign },
       }
     } catch (error) {
       return handleError(error, logCtrl)
@@ -274,16 +291,17 @@ export class Layout {
       // Handle the response
       const result = await response.json()
 
-      if (response.status !== 200) {
-        // Handle the error here, for example, log it
-        console.error('Error updating liked layout:', result)
-        throw new Error('Failed to update liked layout')
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw {
+          message: errorData?.error?.message || 'Unexpected error',
+          status: response.status,
+        }
       }
 
       return result.data // Return the response data or status
     } catch (error) {
-      console.error(error)
-      // log error
+      return handleError(error, logCtrl)
     }
   }
 
@@ -309,16 +327,18 @@ export class Layout {
       // Handle the response
       const result = await response.json()
 
-      if (response.status !== 200) {
-        // Handle the error here, for example, log it
-        console.error('Error updating disliked layout:', result)
-        throw new Error('Failed to update disliked layout')
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw {
+          message: errorData?.error?.message || 'Unexpected error',
+          status: response.status,
+        }
       }
 
       return result.data // Return the response data or status
     } catch (error) {
       console.error(error)
-      throw new Error('An error occurred while updating a disliked layout')
+      return handleError(error, logCtrl)
     }
   }
 }

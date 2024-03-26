@@ -1,7 +1,7 @@
 import Link from 'next/link'
 
 import { RegisterForm } from '@/containers'
-import { HouseSolid } from '@/components'
+import { HouseSolid, AuthLayout } from '@/components'
 
 function SignUp() {
 
@@ -22,6 +22,10 @@ function SignUp() {
       <RegisterForm />
     </>
   )
+}
+
+SignUp.getLayout = (page) => {
+  return <AuthLayout>{page}</AuthLayout>
 }
 
 export default SignUp
