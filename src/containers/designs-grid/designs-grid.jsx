@@ -2,6 +2,7 @@ import { LoadingIndicator } from '@/components'
 import Design from './design'
 
 export function DesignsGrid({ designs }) {
+  console.log('designs', designs)
   // Loading
   if (!designs?.length) {
     return (

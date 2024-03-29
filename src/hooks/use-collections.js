@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react'
 
 import { useAuth } from '@/hooks'
-import { useModalStore, useNotificationStore, useDesignsStore } from '@/store'
+import { useModalStore, useNotificationStore } from '@/store'
 import { EditCollectionForm } from '@/containers'
 import { ConfirmationDialog } from '@/components'
 import { Collection } from '@/api'
@@ -50,11 +50,9 @@ export function useCollections(userSlug, slug) {
           itemsPerPage: PAGE_SIZE,
         })
 
-        console.log('page', page)
-        console.log('response', response)
         if (response?.success) {
           const { data } = response
-          setDesigns(designs.concat(data?.designs))
+          setDesigns((designs) => designs.concat(data?.designs))
 
           if (page === 1) {
             setTotalItems(data.totalDesigns)

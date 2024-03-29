@@ -17,6 +17,7 @@ export function useDesigns() {
   // Reset values
   useEffect(() => {
     setPage(1)
+    setLoading(true)
   }, [tags, sortBy, setPage])
 
   useEffect(() => {

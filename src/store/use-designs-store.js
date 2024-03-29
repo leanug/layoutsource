@@ -21,7 +21,7 @@ import { create } from 'zustand'
 export const useDesignsStore = create((set) => ({
   designs: [],
   error: null,
-  loading: false,
+  loading: true,
   pagination: {},
   page: 1,
   sortBy: 'updatedAt',

@@ -1,18 +1,34 @@
 import Link from 'next/link'
 import Image from 'next/image'
+import { useRouter } from 'next/router'
 
 import { DefaultLayout } from '@/components'
 import { FeaturedDesigns } from '@/containers'
+import { useAuth } from '@/hooks'
 
 // Images
 import fallbackImg from '@/assets/images/default.png'
 import designsGridImg from '@/assets/images/designs-grid.png'
 import collectionsMenuImg from '@/assets/images/collections-menu.png'
 import heroImg from '@/assets/images/hero-img.png'
+import { useEffect } from 'react'
 
 export default function HomePage() {
+  const router = useRouter()
+  const { user, loading } = useAuth()
+
+  // Redirect if user is logged in
+  useEffect(() => {
+    if (user && router) {
+      router.push('/designs/homepages/')
+    }
+  }, [user, router])
+
+  // Don't show page content if user is logged in or loading
+  if ((!user && loading) || user) return null
+
   return (
-    <>
+    <div className="text-gray-950 dark:text-white">
       <section className="section-full lg:mb-10">
         <div className="max-w-screen-xl text-center mx-auto mb-24 mt-24">
           <span className="top-title">ONLY PROVEN DESIGNS FOR CONVERTIONS</span>
@@ -138,7 +154,7 @@ export default function HomePage() {
           </Link>
         </div>
       </section>
-    </>
+    </div>
   )
 }
 

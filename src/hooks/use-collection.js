@@ -42,7 +42,7 @@ export function UseCollection(userId) {
         setLoading(false)
       }
     })()
-  }, [userId, page])
+  }, [userId, page, addNotification])
 
   /*
    * Increment page number

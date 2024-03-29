@@ -14,7 +14,7 @@ export function DesignsGridWrapper() {
     useDesignsStore()
 
   const { totalItems, totalPages } = pagination
-
+  console.log(loading);
   return (
     <section className="section-full">
       {/* Display loading indicator if loading and totalItems not available */}
@@ -27,7 +27,7 @@ export function DesignsGridWrapper() {
       {/* Render designs if totalItems available */}
       {totalItems ? (
         <>
-          <DesignsGrid designs={designs} loading={loading} />
+          <DesignsGrid designs={designs} />
           {/* Display loading indicator if loading */}
           {loading && (
             <div className="flex text-center items-center justify-center my-12 w-full h-full">
