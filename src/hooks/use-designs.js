@@ -3,6 +3,7 @@ import { useEffect } from 'react'
 import { useDesignsStore } from '@/store'
 import { Layout } from '@/api'
 import { useRouter } from 'next/router'
+import { getSafeTags } from '@/utils'
 
 const layoutCtrl = new Layout()
 
@@ -13,8 +14,6 @@ export function useDesigns() {
 
   const { tags } = router.query
 
-  console.count('useDesigns')
-
   // Reset values
   useEffect(() => {
     setPage(1)
@@ -24,8 +23,9 @@ export function useDesigns() {
     ;(async () => {
       try {
         setLoading(true)
+        const safeTags = getSafeTags(tags, 2)
         const result = await layoutCtrl.getDesigns({
-          tags,
+          tags: safeTags,
           page,
           sortBy,
         })
@@ -36,7 +36,7 @@ export function useDesigns() {
           setDesigns([])
           setPagination({})
         }
-      } catch (error) {
+      } catch {
         setDesigns([])
         setPagination({})
       } finally {

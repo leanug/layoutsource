@@ -1,35 +1,24 @@
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 
-import {
-  LikedDesigns,
-  Nav,
-  Info,
-  UserLayout,
-  LoadingIndicator,
-} from '@/components'
-import { useAuth } from '@/hooks'
+import { LikedDesigns, Nav, Info, UserLayout } from '@/components'
+import { useAuth, useAuthProtection } from '@/hooks'
 import { sanitizeQueryString } from '@/utils'
 
 function UserLikedDesignsPage() {
-  const { user } = useAuth()
+  useAuthProtection()
+  const { user, loading } = useAuth()
   const router = useRouter()
   const { user: userSlug } = router.query
   const safeUserSlug = sanitizeQueryString(userSlug)
 
   useEffect(() => {
-    if (safeUserSlug !== user?.username) {
+    if (!loading && safeUserSlug !== user?.username) {
       router.push('/404')
     }
-  }, [router, user, safeUserSlug])
+  }, [router, user, safeUserSlug, loading])
 
-  if (!user) {
-    return (
-      <div className="w-full flex justify-center items-center">
-        <LoadingIndicator />
-      </div>
-    )
-  }
+  if (!user) return null
 
   return (
     <section className="section-full">
@@ -40,7 +29,7 @@ function UserLikedDesignsPage() {
       <div className="py-10">
         <Nav activeTab={'liked'} slug={safeUserSlug} />
         <div className="mt-10">
-          <LikedDesigns userId={user.id} />
+          <LikedDesigns userId={user?.id} />
         </div>
       </div>
     </section>

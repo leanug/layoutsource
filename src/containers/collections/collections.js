@@ -1,7 +1,8 @@
 import { useState } from 'react'
 
 import { AddCollection, CollectionList, CollectionButtons } from './'
-import { UseCollection } from '@/hooks'
+import { UseCollectionsModal } from '@/hooks'
+import { LoadingIndicator } from '@/components'
 
 /**
  * Collection list for adding or deleting a design from a collection
@@ -10,11 +11,18 @@ import { UseCollection } from '@/hooks'
 export function Collections({ designId, userId, handleModal }) {
   const [isAddCollectionVisible, setIsAddCollectionVisible] = useState(false)
 
-  const { collections } = UseCollection(userId)
-
+  const { collections } = UseCollectionsModal(userId)
   const toggleComponents = () => {
     setIsAddCollectionVisible(!isAddCollectionVisible)
   }
+
+  // Loading
+  if (!collections?.length)
+    return (
+      <div className="w-full h-full flex justify-center items-center">
+        <LoadingIndicator />
+      </div>
+    )
 
   return (
     <>

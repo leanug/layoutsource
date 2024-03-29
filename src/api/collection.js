@@ -1,9 +1,10 @@
 import QueryString from 'qs'
 
-import { authFetch, checkResponse, ENV, handleError, mapDesigns } from '@/utils'
+import { authFetch, ENV, handleError, mapDesigns, mapPagination } from '@/utils'
 import { Log } from './log'
 
 const logCtrl = new Log()
+const PAGE_SIZE = 30
 
 export class Collection {
   /**
@@ -11,16 +12,62 @@ export class Collection {
    * @param {string} userId - The ID of the user to be updated.
    * @returns {Promise<Object>} A promise that resolves to the updated user information.
    */
-  async getAll(userId, page) {
+  async getCollectionsList(userId) {
     try {
       const query = QueryString.stringify({
         fields: ['title', 'slug', 'totalDesigns'],
         sort: ['title:asc'],
         populate: {
           designs: {
-            fields: ['cover'],
+            fields: ['id'],
+          },
+        },
+        filters: {
+          user: {
+            id: userId,
+          },
+        },
+      })
+
+      const url = `${ENV.API_URL}/${ENV.ENDPOINTS.COLLECTIONS}?${query}`
+      const response = await authFetch(url)
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw {
+          message: errorData?.error?.message || 'Unexpected error',
+          status: response.status,
+        }
+      }
+      const result = await response.json()
+      const { data } = result
+
+      return {
+        data: {
+          collections: data,
+        },
+        success: true,
+      } // Return the response data or status
+    } catch (error) {
+      return handleError(error, logCtrl)
+    }
+  }
+
+  /**
+   * Get all the collections for a given userId.
+   * @param {string} userId - The ID of the user to be updated.
+   * @returns {Promise<Object>} A promise that resolves to the updated user information.
+   */
+  async getAll(userId, page = 1) {
+    try {
+      const query = QueryString.stringify({
+        fields: ['title', 'slug', 'totalDesigns'],
+        sort: ['title:asc'],
+        populate: {
+          designs: {
+            fields: ['image'],
             populate: {
-              cover: {
+              image: {
                 fields: ['formats', 'height', 'name', 'url', 'width'],
               },
             },
@@ -33,12 +80,13 @@ export class Collection {
         },
         pagination: {
           page: page,
-          pageSize: 30,
+          pageSize: PAGE_SIZE,
         },
       })
 
       const url = `${ENV.API_URL}/${ENV.ENDPOINTS.COLLECTIONS}?${query}`
       const response = await authFetch(url)
+
       if (!response.ok) {
         const errorData = await response.json()
         throw {
@@ -47,9 +95,15 @@ export class Collection {
         }
       }
       const result = await response.json()
+      const { data, meta } = result
+
+      const mappedPagination = mapPagination(meta.pagination)
 
       return {
-        data: result.data,
+        data: {
+          collections: data,
+          pagination: mappedPagination,
+        },
         success: true,
       } // Return the response data or status
     } catch (error) {
@@ -57,6 +111,11 @@ export class Collection {
     }
   }
 
+  /*
+   * Get the designs corresponding to a collectios by collection slug
+   * No totalItems provided by Strapi, an items counter field (totalDesigns)
+   * was added for each collection.
+   */
   async getBySlug({ userId, slug, page, itemsPerPage = 1 }) {
     try {
       const query = QueryString.stringify({
@@ -65,7 +124,10 @@ export class Collection {
           designs: {
             fields: ['title', 'views', 'likes', 'slug'],
             populate: {
-              cover: {
+              tags: {
+                fields: ['*'],
+              },
+              image: {
                 fields: ['formats', 'height', 'name', 'url', 'width'],
               },
             },
@@ -96,14 +158,16 @@ export class Collection {
 
       const result = await response.json()
       const { data } = result
+      console.log('api result', result)
 
       // Return false if collection does not exist
-      if (!data[0]?.id) {
-        return false
+      if (!result.data[0]?.id) {
+        return {
+          success: false,
+        }
       }
 
       const paramData = data[0]?.attributes.designs.data || []
-
       const mappedDesigns = mapDesigns(paramData)
 
       const collectionInfo = {
@@ -177,7 +241,7 @@ export class Collection {
       }
 
       const response = await authFetch(url, params)
-      console.log('update data', data);
+      console.log('update data', data)
       if (!response.ok) {
         const errorData = await response.json()
         throw {

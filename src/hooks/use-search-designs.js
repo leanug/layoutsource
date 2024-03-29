@@ -16,7 +16,7 @@ export function useSearchDesigns(query) {
   // Reset values
   useEffect(() => {
     setPage(1)
-  }, [setPage, query])
+  }, [setPage, query, sortBy])
 
   // Load more designs on page change
   useEffect(() => {
@@ -25,8 +25,6 @@ export function useSearchDesigns(query) {
       ;(async () => {
         try {
           setLoading(true)
-          console.log('query', query);
-          console.log('page', page);
           const result = await layoutCtrl.searchDesigns({
             queryString: query,
             page,
@@ -34,8 +32,6 @@ export function useSearchDesigns(query) {
           })
           if (result.success) {
             setDesigns(result.data?.designs || [])
-            console.log('fetchin and saving', result.data?.designs);
-            console.log('page=', page)
             page === 1 && setPagination(result.data?.pagination || {})
           } else {
             setDesigns([])

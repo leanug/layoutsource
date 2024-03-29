@@ -4,7 +4,7 @@ import {
   authFetch,
   ENV,
   handleError,
-  isValidSlug,
+  getSafeTags,
   mapDesign,
   mapDesigns,
   mapPagination,
@@ -44,13 +44,13 @@ export class Layout {
       const sortParam =
         VALID_SORT_OPTIONS[sortBy] || VALID_SORT_OPTIONS.updatedAt
 
-      // Sanitize category
-      //const safeTags = tags === 'all' ? 'all' : tags // VALIDATE!!!
+      // Sanitize tags
+      const safeTags = getSafeTags(tags, 2)
 
       // Define the base filters object
       let tagFilters = []
       if (tags.length > 0) {
-        tagFilters = tags.map((tag) => ({
+        tagFilters = safeTags.map((tag) => ({
           tags: {
             slug: {
               $eq: tag,

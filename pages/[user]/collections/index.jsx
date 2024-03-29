@@ -1,19 +1,30 @@
 import { useRouter } from 'next/router'
 
-import { Collections, Nav, Info, UserLayout } from '@/components'
-import { useAuth } from '@/hooks'
+import {
+  Collections,
+  Nav,
+  Info,
+  UserLayout,
+  LoadingIndicator,
+} from '@/components'
+import { useAuth, useAuthProtection } from '@/hooks'
 import { sanitizeQueryString } from '@/utils'
 
 function CollectionsPage() {
-  const { user } = useAuth()
+  useAuthProtection()
+
+  const { user, loading } = useAuth()
   const router = useRouter()
 
   const { user: userSlug } = router.query
   const safeUserSlug = sanitizeQueryString(userSlug)
 
-  if (!safeUserSlug || safeUserSlug !== user.username) {
-    router.push('/404')
-  }
+  if (loading || !user || !router)
+    return (
+      <div className="w-full flex justify-center">
+        <LoadingIndicator />
+      </div>
+    )
 
   return (
     <section className="section-full">

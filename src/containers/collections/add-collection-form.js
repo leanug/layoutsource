@@ -59,7 +59,7 @@ export function AddCollectionForm({ designId, userId, handleModal }) {
   return (
     <form onSubmit={formik.handleSubmit} className="flex flex-col gap-3">
       {/* Title */}
-      <div>
+      <div className="px-[2px]">
         <label htmlFor="title" className="block">
           Title:
         </label>
@@ -70,15 +70,18 @@ export function AddCollectionForm({ designId, userId, handleModal }) {
           placeholder="Title..."
           value={formik.values.title}
           onChange={formik.handleChange}
-          className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300"
+          className={`
+            form-input
+            ${formik.errors.title && formik.touched.title ? 'border-red-500' : 'border-gray-300'}
+          `}
         />
         {formik.errors.title && (
-          <p className="text-red-500 text-sm">{formik.errors.title}</p>
+          <p className="text-red-500 text-sm mt-1">{formik.errors.title}</p>
         )}
       </div>
 
       {/* Description */}
-      <div>
+      <div className="px-[2px]">
         <label htmlFor="description" className="block">
           Collection Description:
         </label>
@@ -88,10 +91,15 @@ export function AddCollectionForm({ designId, userId, handleModal }) {
           placeholder="Description..."
           value={formik.values.description}
           onChange={formik.handleChange}
-          className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring focus:border-blue-300"
+          className={`
+          form-input
+            ${formik.errors.description && formik.touched.description ? 'border-red-500' : 'border-gray-300'}
+          `}
         />
         {formik.errors.description && (
-          <p className="text-red-500 text-sm">{formik.errors.description}</p>
+          <p className="text-red-500 text-sm mt-1">
+            {formik.errors.description}
+          </p>
         )}
       </div>
 

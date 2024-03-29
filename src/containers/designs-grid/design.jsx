@@ -50,12 +50,15 @@ export default function Design(props) {
       // Use JavaScript history to navigate without page reload
       window.history.pushState(null, null, `/showcase/${designSlug}`)
       const data = { design, relatedDesigns: [] }
-      const modalContent = <ShowcaseDesign data={data} />
+      const modalContent = <ShowcaseDesign design={data?.design} />
 
       handleShowcaseModal(true, modalContent)
     },
     [handleShowcaseModal, design],
   )
+  
+  // Loading or no design
+  if (!design?.id) return null
 
   return (
     <div key={design.id}>

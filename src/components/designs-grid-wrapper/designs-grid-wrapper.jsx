@@ -2,7 +2,6 @@ import { DesignsGrid } from '@/containers'
 import { LoadingIndicator, NoResults } from '@/components'
 import { MoreDesigns } from './more-designs'
 import { useDesignsStore } from '@/store'
-import { useDesigns } from '@/hooks'
 
 /**
  * DisplayDesigns component displays a list of layouts based on the provided type.
@@ -11,13 +10,11 @@ import { useDesigns } from '@/hooks'
  * @returns {JSX.Element} React component.
  */
 export function DesignsGridWrapper() {
-  useDesigns()
   const { designs, pagination, loading, page, incrementPage } =
     useDesignsStore()
 
   const { totalItems, totalPages } = pagination
 
-  console.count('DesignsGridWrapper')
   return (
     <section className="section-full">
       {/* Display loading indicator if loading and totalItems not available */}
@@ -30,7 +27,7 @@ export function DesignsGridWrapper() {
       {/* Render designs if totalItems available */}
       {totalItems ? (
         <>
-          <DesignsGrid designs={designs} />
+          <DesignsGrid designs={designs} loading={loading} />
           {/* Display loading indicator if loading */}
           {loading && (
             <div className="flex text-center items-center justify-center my-12 w-full h-full">

@@ -1,9 +1,13 @@
 import { useEffect, useState } from 'react'
 
-import { useFirstRender, useLoading } from '@/hooks'
+import { useAuth } from '@/hooks'
 import { useModalStore, useNotificationStore, useDesignsStore } from '@/store'
 import { EditCollectionForm } from '@/containers'
 import { ConfirmationDialog } from '@/components'
+import { Collection } from '@/api'
+import { useRouter } from 'next/router'
+
+const collectionCtrl = new Collection()
 
 const PAGE_SIZE = 2 // Set to your desired number of items per page
 
@@ -11,13 +15,14 @@ const PAGE_SIZE = 2 // Set to your desired number of items per page
  * Fetch collection data by slug
  * @returns
  */
-export function useCollections(user, router, collectionCtrl) {
-  const { firstRender } = useFirstRender()
-  const { loading, startLoading, stopLoading } = useLoading()
+export function useCollections(userSlug, slug) {
+  const { user } = useAuth()
+  const router = useRouter()
   const { handleModal } = useModalStore()
-  const { designs, setDesigns } = useDesignsStore()
+  const [designs, setDesigns] = useState([])
   const { addNotification } = useNotificationStore()
 
+  const [loading, setLoading] = useState(false)
   const [totalItems, setTotalItems] = useState(0)
   const [totalPages, setTotalPages] = useState(0)
   const [page, setPage] = useState(1)
@@ -25,76 +30,63 @@ export function useCollections(user, router, collectionCtrl) {
   const [description, setDescription] = useState('')
   const [collectionId, setCollectionId] = useState(0)
   const [collectionExists, setCollectionExists] = useState(true)
-  const [initialFetch, setInitialFetch] = useState(false)
-
-  const { slug, user: userSlug } = router.query
+ 
+  // Reset values
+  useEffect(() => {
+    setPage(1)
+  }, [setPage])
 
   // Load more designs on page change
   useEffect(() => {
-    if (user?.id && !firstRender && !initialFetch) {
-      ;(async () => {
-        try {
-          startLoading()
+    if (!user) return
+    ;(async () => {
+      try {
+        setLoading(true)
 
-          const result = await collectionCtrl.getBySlug({
-            userId: user['id'],
-            slug,
-            page,
-            itemsPerPage: PAGE_SIZE,
-          })
+        const response = await collectionCtrl.getBySlug({
+          userId: user['id'],
+          slug,
+          page,
+          itemsPerPage: PAGE_SIZE,
+        })
 
-          if (result?.success) {
-            const { data } = result
-            console.log(data)
-            setDesigns([...data?.designs] || [])
+        console.log('page', page)
+        console.log('response', response)
+        if (response?.success) {
+          const { data } = response
+          setDesigns(designs.concat(data?.designs))
+
+          if (page === 1) {
             setTotalItems(data.totalDesigns)
             setTotalPages(Math.ceil(data.totalDesigns / PAGE_SIZE))
             setTitle(data.collectionTitle)
             setDescription(data.collectionDescription)
             setCollectionId(data.collectionId)
             setCollectionExists(true)
-          } else {
-            setCollectionExists(false)
           }
-        } finally {
-          stopLoading()
-          setInitialFetch(true)
+        } else {
+          setDesigns([])
+          setCollectionExists(false)
+          setTotalItems(0)
+          setTitle('')
+          setDescription('')
+          setCollectionId(null)
+          setCollectionExists(false)
         }
-      })()
-    }
-  }, [user, firstRender])
-
-  useEffect(() => {
-    if (!firstRender && page > 1 && designs?.length < totalItems) {
-      ;(async () => {
-        try {
-          startLoading()
-
-          const result = await collectionCtrl.getBySlug({
-            userId: user['id'],
-            slug,
-            page,
-            itemsPerPage: PAGE_SIZE,
-          })
-
-          if (result?.success) {
-            const { data } = result
-            setDesigns([...designs, ...(data?.designs || [])])
-            setPage(page)
-          }
-        } finally {
-          stopLoading()
-        }
-      })()
-    }
-  }, [page])
+      } catch {
+        setDesigns([])
+      } finally {
+        setLoading(false)
+      }
+    })()
+  }, [user, page, setDesigns, slug])
 
   /**
    * Delete a collection
    */
   const deleteCollection = async () => {
     try {
-      startLoading()
+      setLoading(true)
       const result = await collectionCtrl.delete(user?.id, collectionId)
 
       if (result?.success) {
@@ -104,7 +96,7 @@ export function useCollections(user, router, collectionCtrl) {
         addNotification(result?.error.message || '', 'error')
       }
     } finally {
-      stopLoading()
+      setLoading(false)
     }
   }
 
@@ -151,7 +143,6 @@ export function useCollections(user, router, collectionCtrl) {
     totalItems,
     title,
     description,
-    initialFetch,
     page,
     collectionExists,
     loading,

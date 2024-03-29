@@ -16,7 +16,7 @@ export const NotFoundLayout = ({ children }) => {
       {/* Main content */}
       <div
         className={`
-        text-slate-900 transition duration-300 flex flex-col 
+          transition duration-300 flex flex-col 
           min-h-screen font-inter
         `}
       >

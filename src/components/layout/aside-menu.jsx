@@ -10,7 +10,7 @@ import { useAuth } from '@/hooks'
 import fallbackImg from '@/assets/images/avatar.svg'
 
 export function AsideMenu() {
-  const { user, logout } = useAuth()
+  const { user, loading, logout } = useAuth()
   const router = useRouter()
   const menuRef = useRef(null)
   const { isOpen, toggleMenu } = useAsideMenuStore()
@@ -45,6 +45,8 @@ export function AsideMenu() {
     // Redirect to the login page
     router.push('/join/sign-in') // Replace '/login' with the actual login route
   }
+
+  if (loading || !user || !router) return null
 
   const renderMenuContent = () => {
     return (
@@ -131,6 +133,8 @@ export function AsideMenu() {
       </ul>
     )
   }
+
+  if (!user) return null
 
   return (
     <div

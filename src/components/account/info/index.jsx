@@ -1,8 +1,16 @@
 import Image from 'next/image'
 
 import fallbackImg from '@/assets/images/avatar.svg'
+import { LoadingIndicator } from '@/components'
 
 export function Info({ user }) {
+  if (!user)
+    return (
+      <div className="w-full h-full flex justify-center items-center">
+        <LoadingIndicator />
+      </div>
+    )
+
   return (
     <div className="flex flex-col items-center justify-center mt-20">
       {/* User profile image */}

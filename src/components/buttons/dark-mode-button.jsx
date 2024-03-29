@@ -23,7 +23,7 @@ export function DarkModeButton({ buttonType }) {
           onClick={toggleDarkMode}
           className={`
             font-bold w-28 h-10 flex flex-row gap-2.5 items-center justify-center 
-            rounded-lg py-3 border border-gray-200 hover:bg-gray-50 
+            rounded-lg py-3 border border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-800 
             transition-colors ease-in
           `}
         >

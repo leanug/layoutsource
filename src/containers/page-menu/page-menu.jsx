@@ -27,7 +27,7 @@ export function PageMenu(props) {
           </h1>
         ) : null}
 
-        <div className="flex flex-row items-center gap-3">
+        <div className="flex flex-row items-center w-full lg:w-56 justify-end gap-3">
           <span className="w-40 text-right font-normal">
             {totalItems} {totalItems === 1 ? 'result' : 'results'}
           </span>

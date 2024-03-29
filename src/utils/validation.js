@@ -59,4 +59,14 @@ function sanitizeQueryString(queryString) {
   return queryString
 }
 
-export { isValidSlug, isValidType, isValidCategory, sanitizeQueryString }
+function getSafeTags(tags, number) {
+  return tags.slice(0, number).map(isValidSlug)
+}
+
+export {
+  isValidSlug,
+  isValidType,
+  isValidCategory,
+  sanitizeQueryString,
+  getSafeTags,
+}

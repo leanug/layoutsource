@@ -16,14 +16,13 @@ export function useLikedDesigns(userId) {
   // Reset values
   useEffect(() => {
     setPage(1)
-  }, [page, setPage])
+  }, [setPage, userId])
 
   // Load more designs on page change
   useEffect(() => {
     ;(async () => {
       setLoading(true)
       try {
-        console.log('page=', page, ' userId= ', userId)
         const result = await likedDesignsCtrl.get({
           userId,
           page,
@@ -40,5 +39,5 @@ export function useLikedDesigns(userId) {
         setLoading(false)
       }
     })()
-  }, [page])
+  }, [page, setLoading, setPagination, userId, setDesigns])
 }

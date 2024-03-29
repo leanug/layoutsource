@@ -11,7 +11,7 @@ export const DisplayCategories = ({ className }) => {
   if (!tags || tags?.length === 0) return null
 
   return (
-    <aside className={`overflow-x-auto ${className}`}>
+    <aside className={`overflow-x-auto w-full ${className}`}>
       <div className="overflow-x-auto" style={{ paddingBottom: '4px' }}>
         <ul className="flex flex-row items-center gap-4">
           {/* All category */}

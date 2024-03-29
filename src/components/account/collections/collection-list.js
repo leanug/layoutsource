@@ -5,7 +5,7 @@ import { CollectionItem } from './collection-item'
  */
 export function CollectionList({ collections }) {
   return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-9">
+    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-6 gap-9">
       {collections.map((item) => (
         <CollectionItem key={item.id} item={item} />
       ))}

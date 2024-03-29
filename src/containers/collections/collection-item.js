@@ -1,7 +1,7 @@
-import { UseCollection } from '@/hooks'
+import { UseCollectionsModal } from '@/hooks'
 
 export function CollectionItem(props) {
-  const { addDesign, deleteDesign } = UseCollection()
+  const { addDesign, deleteDesign } = UseCollectionsModal()
   const { collectionId, collectionTitle, designId, handleModal, inCollection } =
     props
 
