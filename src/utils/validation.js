@@ -14,7 +14,7 @@
  * @param {string} slug - The string to be validated as a slug.
  * @returns {boolean} True if the string is a valid slug, false otherwise.
  */
-function isValidSlug(input) {
+function sanitizeSlug(input) {
   // Remove non-alphanumeric characters except hyphens and underscores
   const sanitized = input.replace(/[^\w\s-]/g, '')
 
@@ -60,11 +60,11 @@ function sanitizeQueryString(queryString) {
 }
 
 function getSafeTags(tags, number) {
-  return tags.slice(0, number).map(isValidSlug)
+  return tags.slice(0, number).map(sanitizeSlug)
 }
 
 export {
-  isValidSlug,
+  sanitizeSlug,
   isValidType,
   isValidCategory,
   sanitizeQueryString,

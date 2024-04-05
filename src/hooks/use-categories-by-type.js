@@ -1,18 +1,21 @@
 import { useEffect, useState } from 'react'
+
 import { Category } from '@/api'
+import { sanitizeSlug } from '@/utils'
 
 const categoryCtrl = new Category()
 
 export function useCategoriesByType(type) {
   const [cachedCategories, setCachedCategories] = useState({})
+  const safeType = sanitizeSlug(type)
 
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const categoriesResponse = await categoryCtrl.getCategoriesByType(type)
+        const categoriesResponse = await categoryCtrl.getCategoriesByType(safeType)
         setCachedCategories((prevCachedCategories) => ({
           ...prevCachedCategories,
-          [type]: categoriesResponse.data,
+          [type]: categoriesResponse.data.categories,
         }))
       } catch (error) {
         console.error('Error fetching categories:', error)
@@ -20,10 +23,10 @@ export function useCategoriesByType(type) {
     }
 
     // Fetch categories only if they are not already cached for this type
-    if (!cachedCategories[type]) {
+    if (!cachedCategories[safeType]) {
       fetchCategories()
     }
-  }, [type, cachedCategories])
+  }, [safeType, cachedCategories])
 
-  return { categories: cachedCategories[type] || [] }
+  return { categories: cachedCategories[safeType] || [] }
 }

@@ -15,7 +15,6 @@ import { Collections } from '@/containers'
  */
 export default function Design(props) {
   const { design } = props
-  //console.count(`GridItem ${design.id}`)
   const router = useRouter()
   const { handleModal } = useModalStore()
   const { showcaseModal, handleShowcaseModal } = useShowcaseStore()
@@ -50,13 +49,17 @@ export default function Design(props) {
       // Use JavaScript history to navigate without page reload
       window.history.pushState(null, null, `/showcase/${designSlug}`)
       const data = { design, relatedDesigns: [] }
-      const modalContent = <ShowcaseDesign design={data?.design} />
+      const modalContent = (
+        <div className="mb-20">
+          <ShowcaseDesign design={data?.design} />
+        </div>
+      )
 
       handleShowcaseModal(true, modalContent)
     },
     [handleShowcaseModal, design],
   )
-  
+
   // Loading or no design
   if (!design?.id) return null
 
@@ -66,7 +69,7 @@ export default function Design(props) {
         <div className="w-full mb-4 relative group flex-grow overflow-hidden">
           <div
             className={`
-              h-48 md:h-[720px] overflow-hidden w-full bg-gray-500 
+              aspect-w-4 aspect-h-3 overflow-hidden w-full bg-gray-500 
               origin-top cursor-pointer rounded-lg border border-gray-10 
               dark:border-gray-600
             `}
@@ -75,8 +78,8 @@ export default function Design(props) {
             {design?.image ? (
               <Image
                 src={
-                  design?.image && design.image?.url
-                    ? design.image.formats.large.url
+                  design?.cover && design.cover?.url
+                    ? design.cover.url
                     : fallbackImg
                 }
                 alt={design.title}
@@ -92,11 +95,11 @@ export default function Design(props) {
           {user ? (
             <div
               className={`
-                absolute top-2 right-2 opacity-0 group-hover:opacity-100 
+                absolute top-3 right-3 opacity-0 group-hover:opacity-100 
                 transition-opacity duration-300
               `}
             >
-              <div className="flex gap-3">
+              <div className="flex gap-2.5">
                 <OpenCollectionsButton
                   designId={design?.id}
                   onClick={openCollectionsModal}

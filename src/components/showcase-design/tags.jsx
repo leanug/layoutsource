@@ -13,7 +13,7 @@ const Tags = ({ tags }) => {
         {tags.length &&
           tags.map((tag, index) => (
             <Link
-              href={`/tags/${tag.slug}`}
+              href={`/tag/${tag.slug}`}
               key={index}
               className="inline-block bg-gray-50 dark:bg-gray-700 px-2.5 py-1.5 rounded-lg"
             >

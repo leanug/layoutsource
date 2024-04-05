@@ -48,7 +48,7 @@ export function SubmitDesignForm() {
       </p>
       <form onSubmit={formik.handleSubmit}>
         <div className="mb-4">
-          <label className="block text-gray-700" htmlFor="title">
+          <label className="label" htmlFor="title">
             Website Title
           </label>
           <input
@@ -68,7 +68,7 @@ export function SubmitDesignForm() {
           )}
         </div>
         <div className="mb-4">
-          <label className="block text-gray-700" htmlFor="url">
+          <label className="label" htmlFor="url">
             Website URL
           </label>
           <input

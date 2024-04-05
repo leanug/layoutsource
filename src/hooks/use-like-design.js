@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { useLoading } from '@/hooks'
+
 import {
   useDesignsStore,
   useLikedDesignsStore,
@@ -18,7 +18,7 @@ export function useLikeDesign(props) {
     useLikedDesignsStore()
   const { addNotification } = useNotificationStore()
   const { incrementLikes, decrementLikes } = useDesignsStore()
-  const { loading, startLoading, stopLoading } = useLoading()
+  const { loading, setLoading } = useState(true)
   const [likedLayout, setLikedLayout] = useState(null)
 
   // Check if a design has been liked
@@ -34,7 +34,7 @@ export function useLikeDesign(props) {
   const handleLikeLayout = async () => {
     if (typeof userId === 'number') {
       try {
-        startLoading()
+        setLoading(true)
         /* await new Promise(resolve => setTimeout(resolve, 2000)); */
 
         /**
@@ -68,7 +68,7 @@ export function useLikeDesign(props) {
           )
         }
       } finally {
-        stopLoading() // Stop loading after data is fetched
+        setLoading(false) // Stop loading after data is fetched
       }
     }
   }

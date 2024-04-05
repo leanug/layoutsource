@@ -1,11 +1,11 @@
 import { useRouter } from 'next/router'
 import Link from 'next/link'
-import { useState } from 'react'
+import { useRef, useState } from 'react'
 
 import { useFormik } from 'formik'
 
 import { initialValues, validationSchema } from './login-form-utils'
-import { useAuth, useLoading } from '@/hooks'
+import { useAuth } from '@/hooks'
 import { Auth } from '@/api'
 import {
   EyeSolid,
@@ -17,11 +17,11 @@ import {
 const authCtrl = new Auth()
 
 export function LoginForm() {
+  const calledPush = useRef(false)
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState(false)
   const router = useRouter()
   const { login } = useAuth()
-  const { startLoading, stopLoading, loading } = useLoading() // Initialize the loading state
 
   const handleTogglePassword = (event) => {
     event.preventDefault()
@@ -33,20 +33,19 @@ export function LoginForm() {
     validationSchema: validationSchema(),
     validateOnChange: false,
     onSubmit: async (formValue) => {
-      startLoading() // Start loading when form is submitted
-      try {
-        const response = await authCtrl.login(formValue)
-        if (response.success) {
-          setError(false)
-          login(response.data.jwt)
-          router.push('/')
-        } else {
-          setError(true)
+      const response = await authCtrl.login(formValue)
+      if (response.success) {
+        setError(false)
+        login(response.data.jwt)
+        if (!calledPush.current) {
+          calledPush.current = true
+          router.push('/designs/homepages')
         }
-      } finally {
-        stopLoading()
+      } else {
+        calledPush.current = false
+        setError(true)
       }
-    },
+    }
   })
 
   return (
@@ -72,7 +71,7 @@ export function LoginForm() {
         >
           <div className="mb-4">
             <label htmlFor="identifier" className="label">
-              Email:
+              Email or username:
             </label>
             <input
               type="text"
@@ -104,7 +103,7 @@ export function LoginForm() {
                 id="password"
                 name="password"
                 className={`
-                  form-input
+                  form-input bg-transparent
                   ${formik.errors.password && formik.touched.password ? 'border-red-500' : 'border-gray-300'} 
                 `}
                 placeholder="Password"
@@ -132,7 +131,7 @@ export function LoginForm() {
           <div className="text-end mt-2.5 mb-5">
             <Link
               href="/join/sign-up"
-              className="text-blue-750 hover:text-blue-900 transition ease-in"
+              className="text-blue-750 dark:text-blue-200 dark:hover:text-blue-400 hover:text-blue-900 transition ease-in"
             >
               Forgot your password?{' '}
             </Link>
@@ -155,7 +154,7 @@ export function LoginForm() {
         <div className="mt-3 text-center">
           <Link
             href="/join/sign-up"
-            className="text-blue-750 hover:text-blue-900 transition ease-in"
+            className="text-blue-750 hover:text-blue-900 dark:text-blue-200 dark:hover:text-blue-400 transition ease-in"
           >
             You don&apos;t have an account?
           </Link>

@@ -21,12 +21,13 @@ import fallbackImg from '@/assets/images/avatar.svg'
  *
  * @returns {JSX.Element} The rendered Account component.
  */
-export function Account() {
-  const { user } = useAuth()
+export function Account({ user }) {
   const router = useRouter()
   const { toggleMenu } = useAsideMenuStore()
 
   const goToAccount = () => router.push(`/${user.username}`)
+
+  if (!user) return null
 
   return (
     <div className="flex flex-row gap-2">

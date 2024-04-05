@@ -1,17 +1,24 @@
 import { UseCollection, useAuth } from '@/hooks'
 import { CollectionList } from './collection-list'
-import { NoResults, LoadMore } from '@/components'
+import { LoadMore, LoadingIndicator } from '@/components'
 
 export function Collections() {
   const { user } = useAuth()
-  const { collections, incrementPage, pagination, page } = UseCollection(
-    user?.id,
-  )
+  const { collections, incrementPage, pagination, page, loading } =
+    UseCollection(user?.id)
 
   const { totalItems, totalPages } = pagination
 
-  if (!collections?.length) {
-    return <NoResults text="You don't have any collections" />
+  if (loading && !collections?.length) {
+    return (
+      <div className="w-full flex justify-center">
+        <LoadingIndicator />
+      </div>
+    )
+  }
+
+  if (!loading && !collections?.length) {
+    return <div>You don&apos;t have any collections</div>
   }
 
   return (
@@ -22,7 +29,7 @@ export function Collections() {
         totalPages={totalPages}
         handlePage={incrementPage}
         page={page}
-        message={'No more collections'}
+        message={'No more collections.'}
       />
     </>
   )

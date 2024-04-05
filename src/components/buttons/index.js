@@ -1,3 +1,4 @@
+export * from './back-top-top-button'
 export * from './dark-mode-button'
 export * from './design-like-button'
 export * from './light-button'

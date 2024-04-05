@@ -28,7 +28,6 @@ export function useLikedDesigns(userId) {
           page,
         })
         if (result.success) {
-          console.log(result)
           setDesigns(result.data?.designs || [])
           page === 1 && setPagination(result.data?.pagination || {})
         } else {

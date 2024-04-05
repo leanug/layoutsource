@@ -1,15 +1,9 @@
 import Head from 'next/head'
-import { useEffect } from 'react'
+import { useLayoutEffect, useRef } from 'react'
 import { useRouter } from 'next/router'
 
 import { useAuth } from '@/hooks'
-
-import {
-  Header,
-  Notification,
-  Footer,
-  ScreenLoadingIndicator,
-} from '@/components'
+import { ScreenLoadingIndicator } from '@/components'
 
 /**
  * Renders the layout for authentication pages, such as login and register forms.
@@ -18,27 +12,25 @@ import {
  * @param {ReactNode} props.children - The child components to render within the layout.
  * @returns {ReactNode} The rendered authentication layout.
  */
-export const DefaultLayout = ({ children }) => {
-  /* const router = useRouter()
+export const JoinLayout = ({ children }) => {
+  const router = useRouter()
   const { user, loading } = useAuth()
+  const calledPush = useRef(false)
 
-  // Check if user is logged in
-  useEffect(() => {
-    if (!loading && user) {
-      router.push('/designs/homepages')
+  useLayoutEffect(() => {
+    if (calledPush.current) return
+    if (user && router) {
+      calledPush.current = true
+      router.push('/')
     }
-  }, [router, user, loading])
+  }, [user, router])
 
-  if (loading || !user) {
-    return <ScreenLoadingIndicator />
-  }
+  if (loading) return <ScreenLoadingIndicator />
 
-  if (user) {
-    return <ScreenLoadingIndicator />
-  } */
-  console.count('DefaultLayout')
+  if (user) return null
+
   return (
-    <div className={`relative`}>
+    <div className={`relative ${user ? 'hidden' : ''}`}>
       <div className="h-full">
         <Head>
           <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -47,20 +39,17 @@ export const DefaultLayout = ({ children }) => {
         <div
           className={`
           text-slate-900 transition duration-300 flex flex-col 
-            min-h-screen font-inter
+            min-h-screen font-inter dark:text-white
           `}
         >
-          <Header />
           <main
             className={`flex-1 flex items-center justify-center flex-col px-2.5`}
           >
             {children}
           </main>
-          <Footer />
         </div>
         {/* End Main content */}
       </div>
-      <Notification />
     </div>
   )
 }

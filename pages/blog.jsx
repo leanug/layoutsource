@@ -1,18 +1,15 @@
-import Link from 'next/link'
-import Image from 'next/image'
+import { AuthLayout } from '@/components'
 
-import { DefaultLayout } from '@/components'
-
-export default function HomePage() {
+export default function BlogPage() {
   return (
     <>
       <section className="section-full lg:mb-10">
-       <h1>This is a blog</h1>
+        <h1 className="text-center text-2xl mt-20">🚧 Blog page under construction! 🚧</h1>
       </section>
     </>
   )
 }
 
-HomePage.getLayout = (page) => {
-  return <DefaultLayout>{page}</DefaultLayout>
+BlogPage.getLayout = (page) => {
+  return <AuthLayout>{page}</AuthLayout>
 }

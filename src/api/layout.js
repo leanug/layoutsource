@@ -4,7 +4,6 @@ import {
   authFetch,
   ENV,
   handleError,
-  getSafeTags,
   mapDesign,
   mapDesigns,
   mapPagination,
@@ -36,7 +35,9 @@ export class Layout {
   async getDesigns({
     page = 1,
     sortBy = 'updatedAt',
-    tags = [],
+    type,
+    category,
+    tag,
     pageSize = PAGE_SIZE,
   }) {
     try {
@@ -44,35 +45,53 @@ export class Layout {
       const sortParam =
         VALID_SORT_OPTIONS[sortBy] || VALID_SORT_OPTIONS.updatedAt
 
-      // Sanitize tags
-      const safeTags = getSafeTags(tags, 2)
-
       // Define the base filters object
-      let tagFilters = []
-      if (tags.length > 0) {
-        tagFilters = safeTags.map((tag) => ({
-          tags: {
-            slug: {
-              $eq: tag,
-            },
+      let filters = {}
+      if (type) {
+        filters.type = {
+          slug: {
+            $eq: type,
           },
-        }))
+        }
+      }
+
+      if (category) {
+        filters.categories = {
+          slug: {
+            $eq: category,
+          },
+        }
+      }
+
+      if (tag) {
+        filters.tags = {
+          slug: {
+            $eq: tag,
+          },
+        }
       }
 
       const query = QueryString.stringify({
         fields: ['title', 'views', 'likes', 'slug', 'link'],
         // Use the populate parameter to fetch additional data
         populate: {
+          type: {
+            fields: ['*'],
+          },
           tags: {
             fields: ['*'],
           },
+          categories: {
+            fields: ['*'],
+          },
+          cover: {
+            fields: ['name', 'url'],
+          },
           image: {
-            fields: ['formats', 'height', 'name', 'url', 'width'],
+            fields: ['height', 'name', 'url', 'width'],
           },
         },
-        filters: {
-          $and: tagFilters,
-        },
+        filters,
         sort: [sortParam],
         pagination: {
           page: page,
@@ -134,6 +153,7 @@ export class Layout {
 
       const url = `${ENV.API_URL}/${ENV.ENDPOINTS.LAYOUTS}?${query}`
       const response = await fetch(url)
+
       if (!response.ok) {
         const errorData = await response.json()
         throw {
@@ -171,11 +191,17 @@ export class Layout {
     try {
       const query = QueryString.stringify({
         populate: {
+          type: {
+            fields: ['*'],
+          },
           tags: {
             fields: ['*'],
           },
-          image: {
-            fields: ['formats', 'height', 'name', 'url', 'width'],
+          categories: {
+            fields: ['*'],
+          },
+          cover: {
+            fields: ['name', 'url'],
           },
         },
         filters: {
@@ -192,7 +218,6 @@ export class Layout {
 
       const url = `${ENV.API_URL}/${ENV.ENDPOINTS.LAYOUTS}?${query}`
       const response = await fetch(url)
-      const result = await response.json()
 
       if (!response.ok) {
         const errorData = await response.json()
@@ -202,6 +227,8 @@ export class Layout {
         }
       }
 
+      const result = await response.json()
+      console.log('result', result);
       const { data, meta } = result
       const mappedDesigns = mapDesigns(data)
       const mappedPagination = mapPagination(meta.pagination)
@@ -235,8 +262,11 @@ export class Layout {
           categories: {
             fields: ['*'],
           },
+          type: {
+            fields: ['*'],
+          },
           image: {
-            fields: ['formats', 'height', 'name', 'url', 'width'],
+            fields: ['height', 'name', 'url', 'width'],
           },
         },
         filters: {

@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 
 import { ScreenLoadingIndicator } from '@/components'
 
@@ -8,9 +8,14 @@ import { ScreenLoadingIndicator } from '@/components'
  */
 const NotFoundPage = () => {
   const router = useRouter()
+  const calledPush = useRef(false)
 
   useEffect(() => {
-    if (router) router.push('/404')
+    if (calledPush.current) return
+    if (router) {
+      calledPush.current = true
+      router.push('/404')
+    }
   }, [router])
 
   return <ScreenLoadingIndicator />

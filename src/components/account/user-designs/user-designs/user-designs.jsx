@@ -1,15 +1,15 @@
-import { LoadingIndicator, NoResults } from '@/components'
+import { LoadingIndicator } from '@/components'
 import DesignItem from './design-item'
-import { useUserDesigns } from '@/hooks'
+import { useUserDesigns, useAuth } from '@/hooks'
 
 /*
  * User suggested designs
  */
-export function UserDesigns(props) {
-  const { userId } = props
-  const { designs, loading } = useUserDesigns(userId)
+export function UserDesigns() {
+  const { user } = useAuth()
+  const { designs, loading } = useUserDesigns(user.id)
 
-  if (loading) {
+  if ((loading && !designs?.length) || loading) {
     return (
       <div className="w-full flex justify-center">
         <LoadingIndicator />
@@ -17,8 +17,8 @@ export function UserDesigns(props) {
     )
   }
 
-  if (!designs?.length) {
-    return <NoResults text="No websites uploaded yet" />
+  if (!loading && !designs?.length) {
+    return <div>No websites uploaded yet</div>
   }
 
   return (

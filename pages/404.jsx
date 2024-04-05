@@ -1,8 +1,11 @@
 import Link from 'next/link'
 
 import { NotFoundLayout } from '@/components'
+import { useAuth } from '@/hooks'
 
 const NotFoundPage = () => {
+  const { user } = useAuth()
+
   return (
     <div className="flex flex-col items-center justify-center h-full">
       <h1 className="text-6xl font-extrabold mb-3 dark:text-white text-gray-950">
@@ -15,7 +18,7 @@ const NotFoundPage = () => {
         The page you are looking for does not exist, it might have been moved or
         deleted.
       </p>
-      <Link href="/" className="btn-primary">
+      <Link href={user ? '/designs/homepages' : '/'} className="btn-primary">
         Go Home
       </Link>
     </div>

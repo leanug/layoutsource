@@ -6,10 +6,9 @@ const collectionCtrl = new Collection()
 
 export function UseCollection(userId) {
   const [collections, setCollections] = useState([])
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   const [page, setPage] = useState(1)
   const [pagination, setPagination] = useState({})
-  console.count('useCollection')
   const { addNotification } = useNotificationStore()
 
   // Reset values

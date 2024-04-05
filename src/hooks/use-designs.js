@@ -3,30 +3,29 @@ import { useEffect } from 'react'
 import { useDesignsStore } from '@/store'
 import { Layout } from '@/api'
 import { useRouter } from 'next/router'
-import { getSafeTags } from '@/utils'
 
 const layoutCtrl = new Layout()
 
 export function useDesigns() {
   const router = useRouter()
+  const { categories, tag } = router.query
   const { sortBy, setDesigns, setPagination, page, setPage, setLoading } =
     useDesignsStore()
-
-  const { tags } = router.query
 
   // Reset values
   useEffect(() => {
     setPage(1)
-    setLoading(true)
-  }, [tags, sortBy, setPage])
+  }, [categories, sortBy, setPage, tag])
 
   useEffect(() => {
     ;(async () => {
       try {
         setLoading(true)
-        const safeTags = getSafeTags(tags, 2)
         const result = await layoutCtrl.getDesigns({
-          tags: safeTags,
+          type: categories ? categories[0] : undefined,
+          category:
+            categories && categories.length === 2 ? categories[1] : undefined,
+          tag: tag || undefined,
           page,
           sortBy,
         })
@@ -44,5 +43,5 @@ export function useDesigns() {
         setLoading(false)
       }
     })()
-  }, [tags, page, sortBy, setDesigns, setLoading, setPagination])
+  }, [categories, tag, page, sortBy, setDesigns, setLoading, setPagination])
 }

@@ -11,7 +11,7 @@ export function AuthProvider(props) {
   const { children } = props
   const [user, setUser] = useState(null)
   const [token, setToken] = useState(null)
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const initializeAuth = async () => {

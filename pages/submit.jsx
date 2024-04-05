@@ -1,4 +1,4 @@
-import { SubmitDesignForm, UserLayout } from '@/components'
+import { SubmitDesignForm, AuthLayout } from '@/components'
 
 function SubmitPage() {
   return (
@@ -9,7 +9,7 @@ function SubmitPage() {
 }
 
 SubmitPage.getLayout = (page) => {
-  return <UserLayout>{page}</UserLayout>
+  return <AuthLayout>{page}</AuthLayout>
 }
 
 export default SubmitPage

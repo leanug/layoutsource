@@ -127,8 +127,17 @@ export class Collection {
               tags: {
                 fields: ['*'],
               },
+              type: {
+                fields: ['*'],
+              },
+              categories: {
+                fields: ['*'],
+              },
+              cover: {
+                fields: ['name', 'url'],
+              },
               image: {
-                fields: ['formats', 'height', 'name', 'url', 'width'],
+                fields: ['height', 'name', 'url', 'width'],
               },
             },
             sort: ['updatedAt:desc'],
@@ -148,6 +157,7 @@ export class Collection {
 
       const url = `${ENV.API_URL}/${ENV.ENDPOINTS.COLLECTIONS}?${query}`
       const response = await authFetch(url)
+
       if (!response.ok) {
         const errorData = await response.json()
         throw {
@@ -158,7 +168,6 @@ export class Collection {
 
       const result = await response.json()
       const { data } = result
-      console.log('api result', result)
 
       // Return false if collection does not exist
       if (!result.data[0]?.id) {

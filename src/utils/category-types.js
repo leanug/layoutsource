@@ -1,6 +1,6 @@
 export const validTypes = [
-  'homepages', 
-  'subpages', 
-  'landingpages', 
-  'components'
-];
+  'homepages',
+  'subpages',
+  'landingpages',
+  'components',
+]

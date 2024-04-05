@@ -1,6 +1,6 @@
 import QueryString from 'qs'
 
-import { checkResponse, ENV, handleError } from '@/utils'
+import { ENV, handleError, mapCategories } from '@/utils'
 import { Log } from './log'
 
 const logCtrl = new Log()
@@ -38,6 +38,7 @@ export class Category {
 
       const url = `${ENV.API_URL}/${ENV.ENDPOINTS.CATEGORY}?${query}`
       const response = await fetch(url)
+
       if (!response.ok) {
         const errorData = await response.json()
         throw {
@@ -46,9 +47,10 @@ export class Category {
         }
       }
       const result = await response.json()
+      const mappedCategories = mapCategories(result.data)
 
       return {
-        data: result.data,
+        data: { categories: mappedCategories },
         success: true,
       }
     } catch (error) {
@@ -73,6 +75,7 @@ export class Category {
       const url = `${ENV.API_URL}/${ENV.ENDPOINTS.CATEGORY}?${filters}`
 
       const response = await fetch(url)
+
       if (!response.ok) {
         const errorData = await response.json()
         throw {

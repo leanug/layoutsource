@@ -11,7 +11,7 @@ export function LoadMore(props) {
     </div>
   ) : totalItems ? (
     <div className="flex justify-center my-12">
-      <p className="text-center">You&apos;ve seen all the designs.</p>
+      <p className="text-center">{message}</p>
     </div>
   ) : null
 }

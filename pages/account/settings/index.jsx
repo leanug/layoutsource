@@ -2,7 +2,7 @@ import {
   EditProfileForm,
   EditImageForm,
   SettingsMenu,
-  UserLayout,
+  AuthLayout,
 } from '@/components'
 
 function UserSettingsPage() {
@@ -24,7 +24,7 @@ function UserSettingsPage() {
 }
 
 UserSettingsPage.getLayout = (page) => {
-  return <UserLayout>{page}</UserLayout>
+  return <AuthLayout>{page}</AuthLayout>
 }
 
 export default UserSettingsPage

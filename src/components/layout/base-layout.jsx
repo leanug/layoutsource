@@ -11,7 +11,7 @@ import { useDarkModeStore } from '@/store'
 export const BaseLayout = ({ children }) => {
   useDarkMode()
   const { darkMode } = useDarkModeStore()
-  console.count('base layout')
+
   return (
     <div className={`relative ${darkMode ? 'dark' : ''}`}>
       <div className="dark:bg-gray-900 h-full">{children}</div>

@@ -1,7 +1,7 @@
 export const XmarkSolid = (props) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 290 512"
+    viewBox="0 0 382 512"
     width="1em"
     height="1em"
     {...props}

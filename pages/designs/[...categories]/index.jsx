@@ -1,6 +1,6 @@
-import { DesignsGridWrapper, UserLayout } from '@/components'
+import { DesignsGridWrapper, AuthLayout } from '@/components'
 import { PageMenu } from '@/containers'
-import { useAuthProtection, useDesigns } from '@/hooks'
+import { useDesigns } from '@/hooks'
 
 /**
  * PageTypePage component displays a page with categories and designs
@@ -11,7 +11,6 @@ import { useAuthProtection, useDesigns } from '@/hooks'
  * @returns {JSX.Element} React component.
  */
 const DesignsByTypePage = () => {
-  useAuthProtection()
   useDesigns()
 
   return (
@@ -23,7 +22,7 @@ const DesignsByTypePage = () => {
 }
 
 DesignsByTypePage.getLayout = (page) => {
-  return <UserLayout>{page}</UserLayout>
+  return <AuthLayout>{page}</AuthLayout>
 }
 
 export default DesignsByTypePage

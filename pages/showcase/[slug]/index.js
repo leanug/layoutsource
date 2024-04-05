@@ -1,7 +1,7 @@
 // showcase/[slug]/index.js
 
 import { ENV, updateRelatedDesigns } from '@/utils'
-import { isValidSlug } from '@/utils'
+import { sanitizeSlug } from '@/utils'
 import { Layout } from '@/api'
 
 export { default } from './slug'
@@ -20,7 +20,9 @@ export async function getServerSideProps(context) {
     params: { slug: designSlug },
   } = context
 
-  if (!isValidSlug(designSlug)) {
+  const safeSlug = sanitizeSlug(designSlug)
+
+  if (!safeSlug) {
     return {
       props: {
         data: null,
@@ -61,6 +63,7 @@ export async function getServerSideProps(context) {
           relatedDesigns: updatedRelatedDesigns,
           design: designResponse.data.design,
         },
+        success: true,
       },
     }
   } catch (error) {
@@ -70,8 +73,12 @@ export async function getServerSideProps(context) {
     return {
       props: {
         success: false,
+        data: {
+          relatedDesigns: [],
+          design: [],
+        },
         error: {
-          status: error?.status,
+          status: error?.status || null,
           message:
             error?.userMessage || error?.message || 'Oops! An error occured',
         },

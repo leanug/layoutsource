@@ -24,5 +24,5 @@ module.exports = {
     },
   },
   darkMode: 'class', // Enable the 'class' mode for dark mode
-  plugins: [],
+  plugins: [require('daisyui')],
 }

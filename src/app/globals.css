@@ -69,7 +69,7 @@
 
 /* Forms */
 .form-input {
-  @apply w-full px-4 py-3 border border-gray-300 dark:border-gray-500  dark:bg-gray-950 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-200 focus:bg-gray-50;
+  @apply w-full px-4 py-3 border border-gray-300 dark:border-gray-500 bg-transparent rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-200 focus:bg-gray-50;
 }
 .label {
   @apply block font-semibold text-gray-600 mb-1.5

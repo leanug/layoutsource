@@ -1,34 +1,62 @@
 import Link from 'next/link'
-import { useRouter } from 'next/router'
+import React from 'react'
 
-import { DarkModeButton, Logo } from '@/components'
+import {
+  Account,
+  DarkModeButton,
+  Navigation,
+  SearchBar,
+  MagnifyingGlassSolid,
+  CircleXmarkSolid,
+  Logo,
+} from '@/components'
+import { useFullSearchBarStore } from '@/store'
 
-export const Header = () => {
-  const router = useRouter()
-
-  const goToLogin = () => router.push('/join/sign-in')
-  const goToSignup = () => router.push('/join/sign-up')
+export const Header = ({ user }) => {
+  const { toggleBar, isOpen: isFullBarOpen } = useFullSearchBarStore()
 
   return (
-    <header className="section-full flex flex-row justify-between py-6 font-semibold items-center">
-      {/* Logo and site title */}
-      <Link className="block w-40" href="/">
-        <span className="sr-only">Layoutsource home page</span>
+    <header
+      className={`
+        section-full flex flex-row gap-5 justify-between py-6 
+        font-semibold items-center
+      `}
+    >
+      <Link className="block w-40" href={user ? '/designs/homepages' : '/'}>
+        <span className="sr-only">Layoutloom home page</span>
         <Logo />
       </Link>
-
-      {/* Buttons */}
-      <div className="flex md:flex-row gap-5 items-center">
-        {/* Submit design button */}
-        <DarkModeButton />
-
-        <div className="hidden xl:flex flex-row gap-5 items-center">
-          <Link href="/submit" className="">
-            Submit website
-          </Link>
+      <div className="hidden xl:flex flex-row gap-5 w-full items-center">
+        {user ? <Navigation /> : null}
+        {user ? <SearchBar /> : null}
+      </div>
+      <div className="flex flex-row gap-5 items-center">
+        <button className="xl:hidden" onClick={toggleBar}>
+          {isFullBarOpen ? (
+            <CircleXmarkSolid
+              className={`
+                w-5 h-5 fill-gray-400 dark:fill-gray-300 
+                text-gray-400
+              `}
+            />
+          ) : (
+            <MagnifyingGlassSolid
+              className={`
+                w-5 h-5 fill-gray-400 dark:fill-gray-300 
+                text-gray-400
+              `}
+            />
+          )}
+        </button>
+        <div className="hidden xl:flex flex-row gap-2.5 w-full items-center">
+          <DarkModeButton />
+          {user ? (
+            <Link href="/submit" className="btn-secondary min-w-40">
+              Submit design
+            </Link>
+          ) : null}
         </div>
-
-        
+        {user ? <Account user={user} /> : null}
       </div>
     </header>
   )

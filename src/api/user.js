@@ -1,4 +1,4 @@
-import { authFetch, checkResponse, ENV, handleError } from '@/utils'
+import { authFetch, ENV, handleError } from '@/utils'
 import { Log } from './log'
 
 const logCtrl = new Log()
@@ -16,7 +16,15 @@ export class User {
       const url = `${ENV.API_URL}/${ENV.ENDPOINTS.USERS_ME}?${'populate=*'}`
 
       const response = await authFetch(url) // Authenticated petition
-      await checkResponse(response)
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw {
+          message: errorData?.error?.message || 'Unexpected error',
+          status: response.status,
+        }
+      }
+
       const result = await response.json()
 
       return {
@@ -48,7 +56,15 @@ export class User {
       }
 
       const response = await authFetch(url, params)
-      await checkResponse(response)
+
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw {
+          message: errorData?.error?.message || 'Unexpected error',
+          status: response.status,
+        }
+      }
+
       const result = await response.json()
 
       return {

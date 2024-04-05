@@ -5,12 +5,10 @@ import { useRouter } from 'next/router'
 
 import { DarkModeButton, Navigation } from '@/components'
 import { useAsideMenuStore } from '@/store'
-import { useAuth } from '@/hooks'
 
 import fallbackImg from '@/assets/images/avatar.svg'
 
-export function AsideMenu() {
-  const { user, loading, logout } = useAuth()
+export function AsideMenu({ user, loading, logout }) {
   const router = useRouter()
   const menuRef = useRef(null)
   const { isOpen, toggleMenu } = useAsideMenuStore()
@@ -95,7 +93,7 @@ export function AsideMenu() {
             <li className="w-full block">
               <Link
                 className="w-full block"
-                href={`/${user?.username || ''}/submited`}
+                href={`/${user?.username || ''}/submitted`}
                 onClick={toggleMenu}
               >
                 Submited

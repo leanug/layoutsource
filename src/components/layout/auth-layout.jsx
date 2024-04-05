@@ -1,50 +1,57 @@
 import Head from 'next/head'
-import { useEffect } from 'react'
 import { useRouter } from 'next/router'
 
-import { useAuth } from '@/hooks'
-import { ScreenLoadingIndicator } from '@/components'
+import {
+  BackToTopButton,
+  Header,
+  Modal,
+  ShowcaseModal,
+  Notification,
+  Footer,
+  AsideMenu,
+  SearchBarFull,
+  ScreenLoadingIndicator,
+} from '@/components'
+import { useAuth, useAuthProtection, useFetchLikedDesigns } from '@/hooks'
 
-/**
- * Renders the layout for authentication pages, such as login and register forms.
- *
- * @param {Object} props - The component props.
- * @param {ReactNode} props.children - The child components to render within the layout.
- * @returns {ReactNode} The rendered authentication layout.
+/*
+ * Layout component for logged in users
  */
 export const AuthLayout = ({ children }) => {
+  const { user, loading, logout } = useAuth()
   const router = useRouter()
-  const { user, loading } = useAuth()
 
-  useEffect(() => {
-    if (user && router) {
-      router.push('/')
-    }
-  }, [user, router])
+  // Protected routes and username check
+  useAuthProtection(user, loading, router)
 
-  if (loading || user) return <ScreenLoadingIndicator />
+  // Fetch a list of liked designs and store it
+  useFetchLikedDesigns(user?.id)
+
+  if (!router || (loading && !user)) return <ScreenLoadingIndicator />
 
   return (
-    <div className={`relative ${user ? 'hidden' : ''}`}>
+    <>
       <div className="h-full">
         <Head>
           <meta name="viewport" content="width=device-width, initial-scale=1" />
         </Head>
-        {/* Main content */}
         <div
           className={`
           text-slate-900 transition duration-300 flex flex-col 
-            min-h-screen font-inter
+            min-h-screen font-inter dark:text-white
           `}
         >
-          <main
-            className={`flex-1 flex items-center justify-center flex-col px-2.5`}
-          >
-            {children}
-          </main>
+          <Header user={user} />
+          <SearchBarFull />
+          <main className={`flex-1`}>{children}</main>
+          <Footer />
         </div>
-        {/* End Main content */}
+        <AsideMenu user={user} loading={loading} logout={logout} />
       </div>
-    </div>
+      <Modal />
+      <ShowcaseModal />
+      <Notification />
+      <BackToTopButton />
+    </>
   )
 }

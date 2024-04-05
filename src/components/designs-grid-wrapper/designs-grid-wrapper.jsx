@@ -1,6 +1,5 @@
 import { DesignsGrid } from '@/containers'
-import { LoadingIndicator, NoResults } from '@/components'
-import { MoreDesigns } from './more-designs'
+import { LoadingIndicator, NoResults, LoadMore } from '@/components'
 import { useDesignsStore } from '@/store'
 
 /**
@@ -12,42 +11,31 @@ import { useDesignsStore } from '@/store'
 export function DesignsGridWrapper() {
   const { designs, pagination, loading, page, incrementPage } =
     useDesignsStore()
-
   const { totalItems, totalPages } = pagination
-  console.log(loading);
+
   return (
     <section className="section-full">
-      {/* Display loading indicator if loading and totalItems not available */}
-      {loading && !totalItems && (
-        <div className="flex w-full justify-center items-center">
+      {loading && page === 1 ? null : <DesignsGrid designs={designs} />}
+      {/* Display loading indicator if loading */}
+      {loading && (
+        <div className="flex text-center items-center justify-center my-12 w-full h-full">
           <LoadingIndicator />
         </div>
       )}
-
-      {/* Render designs if totalItems available */}
-      {totalItems ? (
-        <>
-          <DesignsGrid designs={designs} />
-          {/* Display loading indicator if loading */}
-          {loading && (
-            <div className="flex text-center items-center justify-center my-12 w-full h-full">
-              <LoadingIndicator />
-            </div>
-          )}
-          {/* Render MoreDesigns component if not loading */}
-          {!loading && (
-            <MoreDesigns
-              totalItems={totalItems}
-              totalPages={totalPages}
-              handlePage={incrementPage}
-              page={page}
-            />
-          )}
-        </>
-      ) : (
-        // Render NoResults component if totalItems not available
-        <NoResults text={'No results found'} />
+      {/* Render MoreDesigns component if not loading */}
+      {!loading && (
+        <LoadMore
+          totalItems={totalItems}
+          totalPages={totalPages}
+          handlePage={incrementPage}
+          page={page}
+          message="You've seen all the designs."
+        />
       )}
+      {/* // Render NoResults component if totalItems not available */}
+      {typeof totalItems === 'number' && totalItems === 0 ? (
+        <NoResults text={'No results found'} />
+      ) : null}
     </section>
   )
 }

@@ -1,5 +1,6 @@
 // showcase-design/index.jsx
-
+import { useRouter } from 'next/router'
+import { useEffect, useRef } from 'react'
 import Image from 'next/image'
 
 import {
@@ -11,15 +12,25 @@ import {
 import { Collections } from '@/containers'
 import Tags from './tags'
 import DesignDetailes from './design-details'
-import { useModalStore } from '@/store'
+import { useModalStore, useShowcaseStore } from '@/store'
 import { useAuth } from '@/hooks'
 import fallbackImg from '@/assets/images/default.png'
 
 export function ShowcaseDesign({ design }) {
-  console.count('ShowcaseDesign')
-
+  const firstRender = useRef(true)
   const { user } = useAuth()
   const { handleModal } = useModalStore()
+  const router = useRouter()
+  const { handleShowcaseModal } = useShowcaseStore()
+
+  // Close Showcase Modal design on page change
+  useEffect(() => {
+    if (!firstRender.current) {
+      handleShowcaseModal(false)
+    }
+
+    firstRender.current = false
+  }, [router, handleShowcaseModal])
 
   const loading = false
   // Open collections modal for creating or updating a collection
@@ -110,7 +121,7 @@ export function ShowcaseDesign({ design }) {
         <div className="h-10 w-full"></div>
 
         {/* Design data */}
-        <div className="flex flex-col md:flex-row gap-10 max-w-screen-2xl mx-auto">
+        <div className="flex flex-col md:flex-row gap-10 w-full mx-auto">
           <div className="w-full">
             <Tags tags={tagsList} />
           </div>

@@ -5,7 +5,7 @@ import { useFormik } from 'formik'
 
 import { initialValues, validationSchema } from './register-form-utils'
 import { Auth } from '@/api'
-import { useLoading, useAuth } from '@/hooks'
+import { useAuth } from '@/hooks'
 import {
   EyeSolid,
   EyeSlashSolid,
@@ -20,7 +20,7 @@ export function RegisterForm() {
   const [error, setError] = useState(false)
   const [errorMsg, setErrorMsg] = useState('')
   const [showPassword, setShowPassword] = useState(false)
-  const { startLoading, stopLoading, loading } = useLoading() // Initialize the loading state
+  const [loading, setLoading] = useState(true) // Initialize the loading state
   const router = useRouter()
 
   const formik = useFormik({
@@ -28,7 +28,7 @@ export function RegisterForm() {
     validationSchema: validationSchema(),
     validateOnChange: false, // prevent validation on input change
     onSubmit: async (formValue) => {
-      startLoading() // Start loading when form is submitted
+      setLoading(true) // Start loading when form is submitted
       try {
         const response = await authCtrl.register({ ...formValue })
         if (response.success) {
@@ -41,7 +41,7 @@ export function RegisterForm() {
           setErrorMsg(response.error.message)
         }
       } finally {
-        stopLoading()
+        setLoading(false)
       }
     },
   })
@@ -105,7 +105,7 @@ export function RegisterForm() {
               type="email"
               id="email"
               className={`
-                form-input
+                form-input 
                 ${formik.errors.email && formik.touched.email ? 'border-red-500' : 'border-gray-300'}
               `}
               placeholder="Email"

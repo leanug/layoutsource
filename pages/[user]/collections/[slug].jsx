@@ -1,9 +1,9 @@
 import { useRouter } from 'next/router'
 import { useEffect } from 'react'
 
-import { sanitizeQueryString } from '@/utils'
-import { useAuth, useAuthProtection, useCollections } from '@/hooks'
-import { LoadMore, LoadingIndicator, UserLayout } from '@/components'
+import { sanitizeQueryString, sanitizeSlug } from '@/utils'
+import { useCollections } from '@/hooks'
+import { LoadMore, LoadingIndicator, AuthLayout } from '@/components'
 import { DesignsGrid } from '@/containers'
 
 /**
@@ -11,13 +11,10 @@ import { DesignsGrid } from '@/containers'
  * @returns
  */
 function CollectionPage() {
-  useAuthProtection()
-
-  const { user, loading: userLoading } = useAuth()
-
   const router = useRouter()
   const { slug, user: userSlug } = router.query
   const safeUserSlug = sanitizeQueryString(userSlug)
+  const safeSlug = sanitizeSlug(slug)
 
   const {
     description,
@@ -30,43 +27,25 @@ function CollectionPage() {
     loading,
     page,
     title,
-  } = useCollections(safeUserSlug, slug)
-
-  useEffect(() => {
-    // Invalid data
-    if (!userLoading && (!safeUserSlug || safeUserSlug !== user?.username)) {
-      //router.push('/404')
-    }
-  }, [router, safeUserSlug, user, userLoading])
-
-  // Loading
-  if (userLoading || !user) {
-    return (
-      <div className="w-full h-full flex justify-center items-center">
-        <LoadingIndicator />
-      </div>
-    )
-  }
+  } = useCollections(safeUserSlug, safeSlug)
 
   return (
     <>
-      {designs?.length ? (
-        <section className="section-full mb-8 mt-16">
-          <div className="mb-3 gap-8 flex-row flex items-center justify-between">
-            <div className="flex flex-row gap-2 items-center">
-              <h1 className="text-xl">{title}</h1>
-              <button onClick={handleEditCollection}>Edit</button>
-              <button onClick={handleDeleteCollection}>Delete</button>
-            </div>
-            <div className="flex flex-row items-center gap-3">
-              <span className="w-40 text-right">
-                {totalItems} {totalItems === 1 ? 'result' : 'results'}
-              </span>
-            </div>
+      <section className="section-full mb-8 mt-16">
+        <div className="mb-3 gap-8 flex-row flex items-center justify-between">
+          <div className="flex flex-row gap-2 items-center">
+            <h1 className="text-xl">{title}</h1>
+            <button onClick={handleEditCollection}>Edit</button>
+            <button onClick={handleDeleteCollection}>Delete</button>
           </div>
-          <p>{description}</p>
-        </section>
-      ) : null}
+          <div className="flex flex-row items-center gap-3">
+            <span className="w-40 text-right">
+              {totalItems} {totalItems === 1 ? 'item' : 'items'}
+            </span>
+          </div>
+        </div>
+        <p>{description}</p>
+      </section>
 
       <section className="section-full mb-8">
         <DesignsGrid designs={designs} />
@@ -89,7 +68,7 @@ function CollectionPage() {
 }
 
 CollectionPage.getLayout = (page) => {
-  return <UserLayout>{page}</UserLayout>
+  return <AuthLayout>{page}</AuthLayout>
 }
 
 export default CollectionPage

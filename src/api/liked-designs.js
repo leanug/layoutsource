@@ -1,7 +1,6 @@
 import QueryString from 'qs'
 
 import {
-  checkResponse,
   handleError,
   ENV,
   authFetch,
@@ -230,8 +229,14 @@ export class LikedDesigns {
               categories: {
                 fields: ['*'],
               },
+              type: {
+                fields: ['*'],
+              },
+              cover: {
+                fields: ['name', 'url'],
+              },
               image: {
-                fields: ['formats', 'height', 'name', 'url', 'width'],
+                fields: ['height', 'name', 'url', 'width'],
               },
             },
           },

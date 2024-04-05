@@ -1,8 +1,7 @@
 import Link from 'next/link'
 import Image from 'next/image'
-import { useRouter } from 'next/router'
 
-import { DefaultLayout } from '@/components'
+import { AuthLayout } from '@/components'
 import { FeaturedDesigns } from '@/containers'
 import { useAuth } from '@/hooks'
 
@@ -11,21 +10,12 @@ import fallbackImg from '@/assets/images/default.png'
 import designsGridImg from '@/assets/images/designs-grid.png'
 import collectionsMenuImg from '@/assets/images/collections-menu.png'
 import heroImg from '@/assets/images/hero-img.png'
-import { useEffect } from 'react'
 
 export default function HomePage() {
-  const router = useRouter()
   const { user, loading } = useAuth()
 
-  // Redirect if user is logged in
-  useEffect(() => {
-    if (user && router) {
-      router.push('/designs/homepages/')
-    }
-  }, [user, router])
-
   // Don't show page content if user is logged in or loading
-  if ((!user && loading) || user) return null
+  if (loading || user) return null
 
   return (
     <div className="text-gray-950 dark:text-white">
@@ -65,9 +55,9 @@ export default function HomePage() {
       />
       {/* End Hero image */}
 
-      <section className="px-2.5 md:px-0 mb-16 lg:mb-32 max-h-80 w-full">
+      {/* <section className="px-2.5 md:px-0 mb-16 lg:mb-32 max-h-80 w-full">
         <FeaturedDesigns />
-      </section>
+      </section> */}
 
       <section className="section-full mb-16 lg:mb-32">
         <div className="container flex flex-col lg:flex-row gap-8 md:gap-10 xl:gap-32 items-center">
@@ -158,6 +148,18 @@ export default function HomePage() {
   )
 }
 
+export async function getStaticProps() {
+  // Fetch initial designs data during build time
+  //const designs = await getLatestDesigns(); FEATURED DESIGNS
+  
+  return {
+    props: {
+      data: {featuredDesigns: []},
+    },
+    revalidate: 604800, // Re-generate page every 7 days (in seconds)
+  };
+}
+
 HomePage.getLayout = (page) => {
-  return <DefaultLayout>{page}</DefaultLayout>
+  return <AuthLayout>{page}</AuthLayout>
 }
