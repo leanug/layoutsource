@@ -44,50 +44,60 @@ export function SubmitDesignForm() {
         Have a website layout to suggest? You can submit the URL to the website
         and a link to the image representing the layout. Our team will review
         your suggestion, and if approved, it will be added to the site. Thank
-        you for your contribution!
+        you for your contribution! 
       </p>
       <form onSubmit={formik.handleSubmit}>
-        <div className="mb-4">
-          <label className="label" htmlFor="title">
-            Website Title
+        <div className="mb-3">
+          <label htmlFor="identifier" className="form-control w-full">
+            <div className="label">
+              <span className="label-text">Website Title</span>
+            </div>
+            <input
+              type="text"
+              id="title"
+              name="title"
+              className={`
+                grow input input-bordered w-full
+                ${formik.errors.title && formik.touched.title ? 'input-error' : ''}
+              `}
+              placeholder="Website Title"
+              onChange={formik.handleChange}
+              value={formik.values.title}
+            />
+            {formik.errors.title && formik.touched.title && (
+              <div className="label">
+                <span className="label-text-alt text-red-500">{formik.errors.title}</span>
+              </div>
+            )}
           </label>
-          <input
-            id="title"
-            name="title"
-            placeholder="Title"
-            value={formik.values.title}
-            onChange={formik.handleChange}
-            className={`form-input ${
-              formik.errors.title
-                ? 'border border-red-500'
-                : 'border border-gray-300'
-            }`}
-          />
-          {formik.errors.title && (
-            <p className="text-red-500 text-xs mt-1">{formik.errors.title}</p>
-          )}
         </div>
-        <div className="mb-4">
-          <label className="label" htmlFor="url">
-            Website URL
+
+        <div className="mb-6">
+          <label htmlFor="identifier" className="form-control w-full">
+            <div className="label">
+              <span className="label-text">Website URL</span>
+            </div>
+            <input
+              type="text"
+              id="url"
+              name="url"
+              className={`
+                grow input input-bordered w-full
+                ${formik.errors.url && formik.touched.url ? 'input-error' : ''}
+              `}
+              placeholder="https://..."
+              onChange={formik.handleChange}
+              value={formik.values.url}
+            />
+            {formik.errors.url && formik.touched.url && (
+              <div className="label">
+                <span className="label-text-alt text-red-500">{formik.errors.url}</span>
+              </div>
+            )}
           </label>
-          <input
-            id="url"
-            name="url"
-            placeholder="https://..."
-            value={formik.values.url}
-            onChange={formik.handleChange}
-            className={`form-input ${
-              formik.errors.url
-                ? 'border border-red-500'
-                : 'border border-gray-300'
-            }`}
-          />
-          {formik.errors.url && (
-            <p className="text-red-500 text-xs mt-1">{formik.errors.url}</p>
-          )}
         </div>
-        <div className="w-full text-right mt-6">
+
+        <div className="w-full text-right">
           <PrimaryButton type="submit">Submit</PrimaryButton>
         </div>
       </form>

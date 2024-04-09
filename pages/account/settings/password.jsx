@@ -1,16 +1,11 @@
 import { useAuth } from '@/hooks'
 import {
-  LoadingIndicator,
   EditPasswordForm,
   SettingsMenu,
-  UserLayout,
+  AuthLayout,
 } from '@/components'
 
 function UserSettingsPage() {
-  const { user } = useAuth()
-
-  if (!user) return <LoadingIndicator />
-
   return (
     <section className="section-full mt-20">
       <div className="flex flex-row w-full mx-auto gap-8 max-w-3xl">
@@ -26,7 +21,7 @@ function UserSettingsPage() {
 }
 
 UserSettingsPage.getLayout = (page) => {
-  return <UserLayout>{page}</UserLayout>
+  return <AuthLayout>{page}</AuthLayout>
 }
 
 export default UserSettingsPage

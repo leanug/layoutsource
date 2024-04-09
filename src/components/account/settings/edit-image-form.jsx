@@ -117,8 +117,8 @@ export function EditImageForm() {
         </div>
 
         {!showButtons && (
-          <button className="btn-light" onClick={handleShowButtons}>
-            Upload new image
+          <button className="btn btn-primary dark:text-white" onClick={handleShowButtons}>
+            Upload a new image
           </button>
         )}
 
@@ -138,7 +138,7 @@ export function EditImageForm() {
               </div>
               <button
                 type="submit"
-                className="bg-blue-500 text-white px-4 py-2 rounded mt-1.5"
+                className="btn btn-primary"
                 disabled={formik.isSubmitting}
               >
                 Upload image

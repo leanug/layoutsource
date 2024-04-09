@@ -51,7 +51,7 @@ export const Header = ({ user }) => {
         <div className="hidden xl:flex flex-row gap-2.5 w-full items-center">
           <DarkModeButton />
           {user ? (
-            <Link href="/submit" className="btn-secondary min-w-40">
+            <Link href="/submit" className="btn min-w-40">
               Submit design
             </Link>
           ) : null}

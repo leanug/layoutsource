@@ -69,7 +69,7 @@ export default function Design(props) {
         <div className="w-full mb-4 relative group flex-grow overflow-hidden">
           <div
             className={`
-              aspect-w-4 aspect-h-3 overflow-hidden w-full bg-gray-500 
+              aspect-[3/4] overflow-hidden w-full bg-gray-500 
               origin-top cursor-pointer rounded-lg border border-gray-10 
               dark:border-gray-600
             `}

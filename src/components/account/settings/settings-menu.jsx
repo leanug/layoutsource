@@ -5,19 +5,16 @@ export function SettingsMenu({ currentPage }) {
     <div className="flex flex-col gap-3">
       <Link
         href="/account/settings"
-        className={`btn-settings-menu w-48 ${currentPage === 'general' ? 'active' : ''}`}
+        className={`btn w-48 ${currentPage === 'general' ? 'btn-active' : ''}`}
       >
         General
       </Link>
       <Link
         href="/account/settings/password"
-        className={`btn-settings-menu w-48 ${currentPage === 'password' ? 'active' : ''}`}
+        className={`btn w-48 ${currentPage === 'password' ? 'btn-active' : ''}`}
       >
         Password
       </Link>
-      <button className="text-red-500 hover:text-red-700 ease-in transition duration-200 mt-2 font-medium">
-        Delete Account
-      </button>
     </div>
   )
 }

@@ -1,9 +1,9 @@
 import Link from 'next/link'
 import Image from 'next/image'
 
+import { Layout } from '@/api'
 import { AuthLayout } from '@/components'
 import { FeaturedDesigns } from '@/containers'
-import { useAuth } from '@/hooks'
 
 // Images
 import fallbackImg from '@/assets/images/default.png'
@@ -11,11 +11,10 @@ import designsGridImg from '@/assets/images/designs-grid.png'
 import collectionsMenuImg from '@/assets/images/collections-menu.png'
 import heroImg from '@/assets/images/hero-img.png'
 
-export default function HomePage() {
-  const { user, loading } = useAuth()
+const layoutCtrl = new Layout()
 
-  // Don't show page content if user is logged in or loading
-  if (loading || user) return null
+export default function HomePage(props) {
+  const {featuredDesigns} = props.data
 
   return (
     <div className="text-gray-950 dark:text-white">
@@ -32,10 +31,10 @@ export default function HomePage() {
           </p>
           {/* Links */}
           <div className="flex flex-row gap-5 max-w-2xl mx-auto mt-11 justify-center">
-            <Link href="/join/sign-in" className="big-btn-primary w-44">
+            <Link href="/join/sign-in" className="btn btn-primary dark:text-white w-44">
               Log in
             </Link>
-            <Link href="/join/sign-up" className="big-btn-primary w-44">
+            <Link href="/join/sign-up" className="btn btn-primary dark:text-white w-44">
               Sign up
             </Link>
           </div>
@@ -55,9 +54,9 @@ export default function HomePage() {
       />
       {/* End Hero image */}
 
-      {/* <section className="px-2.5 md:px-0 mb-16 lg:mb-32 max-h-80 w-full">
-        <FeaturedDesigns />
-      </section> */}
+      <section className="px-2.5 md:px-0 mb-16 lg:mb-32 max-h-80 w-full">
+        <FeaturedDesigns featuredDesigns={featuredDesigns} />
+      </section>
 
       <section className="section-full mb-16 lg:mb-32">
         <div className="container flex flex-col lg:flex-row gap-8 md:gap-10 xl:gap-32 items-center">
@@ -84,7 +83,7 @@ export default function HomePage() {
               into reality with our selectively assembled set of website designs
               tailored to fuel your creative projects.
             </p>
-            <Link href="/join/sign-up" className="btn-primary">
+            <Link href="/join/sign-in" className="btn btn-primary dark:text-white">
               Get started
             </Link>
           </div>
@@ -109,7 +108,7 @@ export default function HomePage() {
               Create multiple collections to categorize and manage your saved
               designs with ease.
             </p>
-            <Link href="/join/sign-up" className="btn-primary">
+            <Link href="/join/sign-in" className="btn btn-primary dark:text-white">
               Get started
             </Link>
           </div>
@@ -137,8 +136,8 @@ export default function HomePage() {
             Start saving and organizing your favorite designs today!
           </p>
           <Link
-            href="/designs/home-pages"
-            className="big-btn-primary w-44 mx-auto"
+            href="/join/sign-in"
+            className="btn btn-primary w-44 mx-auto dark:text-white"
           >
             Get started
           </Link>
@@ -149,12 +148,13 @@ export default function HomePage() {
 }
 
 export async function getStaticProps() {
-  // Fetch initial designs data during build time
-  //const designs = await getLatestDesigns(); FEATURED DESIGNS
-  
+  // Fetch featured designs data
+  const response = await layoutCtrl.getFeatured()
+  const featuredDesigns = response.success ? response.data : []
+
   return {
     props: {
-      data: {featuredDesigns: []},
+      data: {featuredDesigns},
     },
     revalidate: 604800, // Re-generate page every 7 days (in seconds)
   };

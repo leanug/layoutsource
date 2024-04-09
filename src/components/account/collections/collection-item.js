@@ -14,24 +14,24 @@ export function CollectionItem({ item }) {
   if (Array.isArray(dataURL)) {
     // It's an array
     imgData0 =
-      dataURL[0]?.attributes.image.data?.attributes.formats.large.url ||
+      dataURL[0]?.attributes.cover.data?.attributes.formats.large.url ||
       fallbackImg
     imgData1 =
-      dataURL[1]?.attributes.image.data?.attributes.formats.large.url ||
+      dataURL[1]?.attributes.cover.data?.attributes.formats.large.url ||
       fallbackImg
     imgData2 =
-      dataURL[2]?.attributes.image.data?.attributes.formats.large.url ||
+      dataURL[2]?.attributes.cover.data?.attributes.formats.large.url ||
       fallbackImg
   } else {
     // It's not an array
     imgData0 =
-      dataURL?.attributes.image.data?.attributes.formats.large.url ||
+      dataURL?.attributes.cover.data?.attributes.formats.large.url ||
       fallbackImg
     imgData1 =
-      dataURL?.attributes.image.data?.attributes.formats.large.url ||
+      dataURL?.attributes.cover.data?.attributes.formats.large.url ||
       fallbackImg
     imgData2 =
-      dataURL?.attributes.image.data?.attributes.formats.large.url ||
+      dataURL?.attributes.cover.data?.attributes.formats.large.url ||
       fallbackImg
   }
 
@@ -39,7 +39,7 @@ export function CollectionItem({ item }) {
 
   return (
     <Link href={`${router.asPath}/${item.attributes.slug}`}>
-      <div className="h-32 lg:h-48 overflow-hidden mb-1 bg-gray-500 rounded-lg ">
+      <div className="aspect-[4/3] overflow-hidden mb-1 bg-gray-500 rounded-lg">
         {imgData0 ? (
           <Image
             src={imgData0}
@@ -52,8 +52,8 @@ export function CollectionItem({ item }) {
           />
         ) : null}
       </div>
-      <div className="flex flex-row gap-1">
-        <div className=" bg-gray-500 h-20 lg:h-28 w-full rounded-lg overflow-hidden">
+      <div className="flex flex-row gap-1  ">
+        <div className="aspect-[4/3] bg-gray-500 w-full rounded-lg overflow-hidden">
           {imgData1 ? (
             <Image
               src={imgData1}
@@ -66,7 +66,7 @@ export function CollectionItem({ item }) {
             />
           ) : null}
         </div>
-        <div className=" bg-gray-500 h-20 lg:h-28 w-full rounded-lg overflow-hidden">
+        <div className="aspect-[4/3] bg-gray-500 w-full rounded-lg overflow-hidden">
           {imgData2 ? (
             <Image
               src={imgData2}

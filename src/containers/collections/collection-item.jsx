@@ -15,7 +15,7 @@ export function CollectionItem(props) {
       <input
         type="checkbox"
         checked={inCollection}
-        className="h-8 w-8 rounded-lg"
+        className="checkbox checkbox-primary"
         onChange={() => {
           if (inCollection) {
             deleteDesign(collectionId, designId, handleModal)

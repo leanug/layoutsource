@@ -5,11 +5,8 @@ import { Swiper, SwiperSlide } from 'swiper/react'
 import 'swiper/css'
 
 import fallbackImg from '@/assets/images/default.png'
-import { useFeaturedDesigns } from '@/hooks'
 
-export function FeaturedDesigns() {
-  const { featuredDesigns } = useFeaturedDesigns()
-
+export function FeaturedDesigns({ featuredDesigns }) {
   return (
     <Swiper
       spaceBetween={40}

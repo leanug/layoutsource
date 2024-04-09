@@ -37,7 +37,7 @@ export const AuthLayout = ({ children }) => {
         </Head>
         <div
           className={`
-          text-slate-900 transition duration-300 flex flex-col 
+          text-gray-950 transition duration-300 flex flex-col 
             min-h-screen font-inter dark:text-white
           `}
         >

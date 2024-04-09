@@ -1,5 +1,5 @@
 import { useFormik } from 'formik'
-import { initialValues, validationSchema } from './'
+import { initialValues, validationSchema } from '.'
 import { Collection } from '@/api'
 import { generateRandomSlug } from '@/utils'
 import { useNotificationStore } from '@/store'
@@ -57,12 +57,12 @@ export function AddCollectionForm({ designId, userId, handleModal }) {
   })
 
   return (
-    <form onSubmit={formik.handleSubmit} className="flex flex-col gap-3">
+    <form onSubmit={formik.handleSubmit} className="flex flex-col gap-3 mx-[4px]">
       {/* Title */}
-      <div className="px-[2px]">
-        <label htmlFor="title" className="block">
-          Title:
-        </label>
+      <label htmlFor="title" className="form-control w-full">
+        <div className="label">
+          <span className="label-text">Title:</span>
+        </div>
         <input
           name="title"
           id="title"
@@ -71,20 +71,22 @@ export function AddCollectionForm({ designId, userId, handleModal }) {
           value={formik.values.title}
           onChange={formik.handleChange}
           className={`
-            form-input
-            ${formik.errors.title && formik.touched.title ? 'border-red-500' : 'border-gray-300'}
+            input input-bordered w-full
+            ${formik.errors.title && formik.touched.title ? 'input-error' : ''}
           `}
         />
         {formik.errors.title && (
-          <p className="text-red-500 text-sm mt-1">{formik.errors.title}</p>
+          <div className="label">
+            <span className="label-text-alt text-red-500">{formik.errors.title}</span>
+          </div>
         )}
-      </div>
+      </label>
 
       {/* Description */}
-      <div className="px-[2px]">
-        <label htmlFor="description" className="block">
-          Collection Description:
-        </label>
+      <label htmlFor="description" className="form-control w-full">
+        <div className="label">
+          <span className="label-text">Collection Description:</span>
+        </div>
         <textarea
           id="description"
           name="description"
@@ -92,19 +94,19 @@ export function AddCollectionForm({ designId, userId, handleModal }) {
           value={formik.values.description}
           onChange={formik.handleChange}
           className={`
-          form-input
-            ${formik.errors.description && formik.touched.description ? 'border-red-500' : 'border-gray-300'}
+            textarea textarea-bordered w-full
+            ${formik.errors.description && formik.touched.description ? 'input-error' : ''}
           `}
         />
         {formik.errors.description && (
-          <p className="text-red-500 text-sm mt-1">
-            {formik.errors.description}
-          </p>
+          <div className="label">
+            <span className="label-text-alt text-red-500">{formik.errors.description}</span>
+          </div>
         )}
-      </div>
-
+      </label>
+      
       {/* Submit */}
-      <PrimaryButton type="submit">Create collection</PrimaryButton>
+      <button className="btn btn-primary mt-3 text-white" type="submit">Create collection</button>
     </form>
   )
 }

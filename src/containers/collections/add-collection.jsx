@@ -1,4 +1,4 @@
-import { AddCollectionForm } from './'
+import { AddCollectionForm } from '.'
 
 export function AddCollection(props) {
   const { designId, userId, handleModal, addDesign } = props

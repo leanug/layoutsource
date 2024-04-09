@@ -1,5 +1,5 @@
 import Head from 'next/head'
-import { useLayoutEffect, useRef } from 'react'
+import { useEffect, useRef } from 'react'
 import { useRouter } from 'next/router'
 
 import { useAuth } from '@/hooks'
@@ -17,7 +17,7 @@ export const JoinLayout = ({ children }) => {
   const { user, loading } = useAuth()
   const calledPush = useRef(false)
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (calledPush.current) return
     if (user && router) {
       calledPush.current = true

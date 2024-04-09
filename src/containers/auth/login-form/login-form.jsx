@@ -18,6 +18,7 @@ const authCtrl = new Auth()
 
 export function LoginForm() {
   const calledPush = useRef(false)
+  const [loading, setLoading] = useState(false) // Initialize the loading state
   const [showPassword, setShowPassword] = useState(false)
   const [error, setError] = useState(false)
   const router = useRouter()
@@ -32,17 +33,22 @@ export function LoginForm() {
     initialValues: initialValues(),
     validationSchema: validationSchema(),
     validateOnChange: false,
+
     onSubmit: async (formValue) => {
+      setLoading(true)
       const response = await authCtrl.login(formValue)
       if (response.success) {
         setError(false)
         login(response.data.jwt)
+
         if (!calledPush.current) {
           calledPush.current = true
+          setLoading(false)
           router.push('/designs/homepages')
         }
       } else {
         calledPush.current = false
+        setLoading(false)
         setError(true)
       }
     }
@@ -51,8 +57,6 @@ export function LoginForm() {
   return (
     <section className="w-full max-w-[420px]">
       <div className="mx-auto mb-10 container">
-        {/* Render loading indicator if loading */}
-        {loading && <LoadingIndicator />}
         <h1 className="form-title text-center mb-7">Log in</h1>
 
         {/* Error login warning */}
@@ -70,88 +74,91 @@ export function LoginForm() {
           className={formik.isSubmitting ? 'pointer-events-none' : ''}
         >
           <div className="mb-4">
-            <label htmlFor="identifier" className="label">
-              Email or username:
+            <label htmlFor="identifier" className="form-control w-full">
+              <div className="label">
+                <span className="label-text">Email or Username</span>
+              </div>
+              <input
+                type="text"
+                id="identifier"
+                name="identifier"
+                className={`
+                  grow input input-bordered w-full
+                  ${formik.errors.identifier && formik.touched.identifier ? 'input-error' : ''}
+                `}
+                placeholder="Email or username"
+                onChange={formik.handleChange}
+                value={formik.values.identifier}
+              />
+              {formik.errors.identifier && (
+                <div className="label">
+                  <span className="label-text-alt text-red-500">{formik.errors.identifier}</span>
+                </div>
+              )}
             </label>
-            <input
-              type="text"
-              id="identifier"
-              name="identifier"
-              className={`
-                form-input
-                ${formik.errors.identifier && formik.touched.identifier ? 'border-red-500' : 'border-gray-300'}
-              `}
-              placeholder="Email or username"
-              onChange={formik.handleChange}
-              value={formik.values.identifier}
-            />
-            {formik.errors.identifier && (
-              <p className="text-red-500 text-sm mt-1">
-                {formik.errors.identifier}
-              </p>
-            )}
           </div>
 
           {/* Password */}
-          <div className="mb-2.5 relative">
-            <label htmlFor="password" className="label">
-              Password:
-            </label>
-            <div className="relative">
+          <div className="mb-2.5">
+            <div className="label">
+              <span className="label-text">Password</span>
+            </div>
+            
+            {/* Button */}
+            <label htmlFor="password" className="input input-bordered flex items-center gap-2">
               <input
                 type={showPassword ? 'text' : 'password'}
                 id="password"
                 name="password"
                 className={`
-                  form-input bg-transparent
-                  ${formik.errors.password && formik.touched.password ? 'border-red-500' : 'border-gray-300'} 
+                  grow
+                  ${formik.errors.password && formik.touched.password ? 'input-error' : ''}
                 `}
                 placeholder="Password"
                 onChange={formik.handleChange}
-              />
-              <button
-                className="absolute top-1/2 transform -translate-y-1/2 right-4"
-                onClick={(event) => handleTogglePassword(event)}
-              >
-                {showPassword ? (
-                  <EyeSlashSolid className="w-5 h-5 fill-gray-600" />
-                ) : (
-                  <EyeSolid className="w-5 h-5 fill-gray-600" />
-                )}
-              </button>
-            </div>
+              />                
+              <button onClick={(event) => handleTogglePassword(event)}>
+              {showPassword ? (
+                <EyeSlashSolid className="w-5 h-5 fill-gray-600 dark:fill-gray-200" />
+              ) : (
+                <EyeSolid className="w-5 h-5 fill-gray-600 dark:fill-gray-200" />
+              )}
+            </button>
+            </label>
+             {/* End Button */}
+            
             {formik.errors.password && (
-              <p className="text-red-500 text-sm mt-1">
-                {formik.errors.password}
-              </p>
+              <div className="label">
+                <span className="label-text-alt text-red-500">{formik.errors.password}</span>
+              </div>
             )}
           </div>
           {/* End Password */}
 
           <div className="text-end mt-2.5 mb-5">
-            <Link
+            {/* <Link
               href="/join/sign-up"
               className="text-blue-750 dark:text-blue-200 dark:hover:text-blue-400 hover:text-blue-900 transition ease-in"
             >
               Forgot your password?{' '}
-            </Link>
+            </Link> */}
           </div>
           <button
             type="submit"
-            className="btn-primary w-full relative"
+            className="btn btn-primary dark:text-white w-full relative"
             disabled={formik.isSubmitting}
           >
             <span>Log in</span>
             {loading ? (
               <div className="absolute inset-0 right-3 flex justify-end items-center">
-                <LoadingIndicator size="6" />
+                <LoadingIndicator />
               </div>
             ) : null}
           </button>
         </form>
         {/* End login form */}
 
-        <div className="mt-3 text-center">
+        <div className="mt-4 text-center">
           <Link
             href="/join/sign-up"
             className="text-blue-750 hover:text-blue-900 dark:text-blue-200 dark:hover:text-blue-400 transition ease-in"

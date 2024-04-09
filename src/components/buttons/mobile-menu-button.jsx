@@ -1,5 +1,5 @@
 import { useAsideMenuStore } from '@/store'
-import { MenuSolid } from './icons/menu-solid'
+import { MenuSolid } from '../icons/menu-solid'
 
 export function MobileMenuButton() {
   const { toggleMenu } = useAsideMenuStore()

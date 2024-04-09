@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router'
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 
 import { useFormik } from 'formik'
 
@@ -16,32 +16,36 @@ import {
 const authCtrl = new Auth()
 
 export function RegisterForm() {
+  const calledPush = useRef(false)
   const { login } = useAuth()
   const [error, setError] = useState(false)
   const [errorMsg, setErrorMsg] = useState('')
   const [showPassword, setShowPassword] = useState(false)
-  const [loading, setLoading] = useState(true) // Initialize the loading state
+  const [loading, setLoading] = useState(false) // Initialize the loading state
   const router = useRouter()
 
   const formik = useFormik({
     initialValues: initialValues(),
     validationSchema: validationSchema(),
     validateOnChange: false, // prevent validation on input change
+    
     onSubmit: async (formValue) => {
       setLoading(true) // Start loading when form is submitted
-      try {
-        const response = await authCtrl.register({ ...formValue })
-        if (response.success) {
-          setErrorMsg('')
-          setError(false)
-          login(response.data.jwt)
+      const response = await authCtrl.register({ ...formValue })
+      if (response.success) {
+        setErrorMsg('')
+        setError(false)
+        login(response.data.jwt)
+
+        if (!calledPush.current) {
+          calledPush.current = true
+          setLoading(false)
           router.push('/')
-        } else {
-          setError(true)
-          setErrorMsg(response.error.message)
         }
-      } finally {
+      } else {
         setLoading(false)
+        setError(true)
+        setErrorMsg(response.error.message)
       }
     },
   })
@@ -74,96 +78,109 @@ export function RegisterForm() {
         >
           {/* Username input */}
           <div className="mb-5">
-            <label htmlFor="username" className="label">
-              Username:
-            </label>
-            <input
-              type="text"
-              id="username"
-              className={`
-                form-input
-                ${formik.errors.username && formik.touched.username ? 'border-red-500' : 'border-gray-300'}
-              `}
-              placeholder="Email"
-              onChange={formik.handleChange}
-              defaultValue={formik.values.username}
-            />
-            {formik.errors.username && (
-              <p className="text-red-500 text-sm mt-1">
-                {formik.errors.username}
-              </p>
+            <label htmlFor="username" className="form-control w-full">
+              <div className="label">
+                <span className="label-text">Username</span>
+              </div>
+
+              <input
+                type="text"
+                id="username"
+                className={`
+                  grow input input-bordered w-full
+                  ${formik.errors.username && formik.touched.username ? 'input-error' : ''}
+                `}
+                placeholder="Email"
+                onChange={formik.handleChange}
+                defaultValue={formik.values.username}
+              />
+
+              {formik.errors.username && (
+              <div className="label">
+                <span className="label-text-alt text-red-500">{formik.errors.username}</span>
+              </div>
             )}
+            </label>
           </div>
           {/* End Username input */}
 
           {/* Email input */}
           <div className="mb-5">
-            <label htmlFor="email" className="label">
-              Email:
+            <label htmlFor="email" className="form-control w-full">
+              <div className="label">
+                <span className="label-text">Email</span>
+              </div>
+              
+              <input
+                type="email"
+                id="email"
+                className={`
+                grow input input-bordered w-full
+                  ${formik.errors.email && formik.touched.email ? 'input-error' : ''}
+                `}
+                placeholder="Email"
+                onChange={formik.handleChange}
+                defaultValue={formik.values.email}
+              />
+
+              {formik.errors.email && (
+                <div className="label">
+                  <span className="label-text-alt text-red-500">{formik.errors.email}</span>
+                </div>
+              )}
             </label>
-            <input
-              type="email"
-              id="email"
-              className={`
-                form-input 
-                ${formik.errors.email && formik.touched.email ? 'border-red-500' : 'border-gray-300'}
-              `}
-              placeholder="Email"
-              onChange={formik.handleChange}
-              defaultValue={formik.values.email}
-            />
-            {formik.errors.email && (
-              <p className="text-red-500 text-sm mt-1">{formik.errors.email}</p>
-            )}
           </div>
           {/* End Email input */}
 
           {/* Password */}
           <div className="mb-5 relative">
-            <label htmlFor="password" className="label">
-              Password:
+            <label htmlFor="password" className="form-control w-full">
+              <div className="label">
+                <span className="label-text">Password:</span>
+              </div>
+              
+              {/* Button */}
+              <label htmlFor="password" className="input input-bordered flex items-center gap-2">
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  id="password"
+                  name="password"
+                  className={`
+                    grow
+                    ${formik.errors.password && formik.touched.password ? 'input-error' : ''}
+                  `}
+                  placeholder="Password"
+                  onChange={formik.handleChange}
+                />                
+                <button onClick={(event) => handleTogglePassword(event)}>
+                  {showPassword ? (
+                    <EyeSlashSolid className="w-5 h-5 fill-gray-600 dark:fill-gray-200" />
+                  ) : (
+                    <EyeSolid className="w-5 h-5 fill-gray-600 dark:fill-gray-200" />
+                  )}
+                </button>
+              </label>
+              {/* End Button */}
+              
+              {formik.errors.password && (
+                <div className="label">
+                  <span className="label-text-alt text-red-500">{formik.errors.password}</span>
+                </div>
+              )}
             </label>
-            <div className="relative">
-              <input
-                type={showPassword ? 'text' : 'password'}
-                id="password"
-                name="password"
-                className={`
-                  form-input
-                  ${formik.errors.password && formik.touched.password ? 'border-red-500' : 'border-gray-300'} 
-                `}
-                placeholder="Password"
-                onChange={formik.handleChange}
-              />
-              <button
-                className="absolute top-1/2 transform -translate-y-1/2 right-4"
-                onClick={(event) => handleTogglePassword(event)}
-              >
-                {showPassword ? (
-                  <EyeSlashSolid className="w-5 h-5 fill-gray-600" />
-                ) : (
-                  <EyeSolid className="w-5 h-5 fill-gray-600" />
-                )}
-              </button>
-            </div>
-            {formik.errors.password && (
-              <p className="text-red-500 text-sm mt-1">
-                {formik.errors.password}
-              </p>
-            )}
           </div>
           {/* End Password */}
 
           {/* Submit */}
           <button
             type="submit"
-            className="btn-primary w-full relative"
+            className="btn btn-primary dark:text-white w-full relative"
             disabled={formik.isSubmitting}
           >
-            <span>Register with email</span>
+            <span>Sign up</span>
             {loading ? (
               <div className="absolute inset-0 right-3 flex justify-end items-center">
-                <LoadingIndicator size="6" />
+                <LoadingIndicator />
               </div>
             ) : null}
           </button>

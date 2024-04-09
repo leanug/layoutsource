@@ -34,9 +34,9 @@ function CollectionPage() {
       <section className="section-full mb-8 mt-16">
         <div className="mb-3 gap-8 flex-row flex items-center justify-between">
           <div className="flex flex-row gap-2 items-center">
-            <h1 className="text-xl">{title}</h1>
-            <button onClick={handleEditCollection}>Edit</button>
-            <button onClick={handleDeleteCollection}>Delete</button>
+            <h1 className="text-xl mr-2">{title}</h1>
+            <button className="btn btn-sm" onClick={handleEditCollection}>Edit</button>
+            <button className="btn btn-sm" onClick={handleDeleteCollection}>Delete</button>
           </div>
           <div className="flex flex-row items-center gap-3">
             <span className="w-40 text-right">

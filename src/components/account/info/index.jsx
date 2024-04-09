@@ -4,6 +4,7 @@ import fallbackImg from '@/assets/images/avatar.svg'
 import { LoadingIndicator } from '@/components'
 
 export function Info({ user }) {
+  // Loading
   if (!user)
     return (
       <div className="w-full h-full flex justify-center items-center">
@@ -16,7 +17,7 @@ export function Info({ user }) {
       {/* User profile image */}
       <div className="w-32 h-32 rounded-full overflow-hidden mb-6">
         <Image
-          src={user.avatar?.url || fallbackImg}
+          src={user?.avatar?.url || fallbackImg}
           alt="User Avatar"
           width={'120'}
           height={'120'}
@@ -37,7 +38,7 @@ export function Info({ user }) {
 
       {/* UserName */}
       <h3 className="text-md font-semibold mb-2 text-gray-700 dark:text-gray-100">
-        @{user.username}
+        @{user?.username}
       </h3>
       {/* End UserName */}
     </div>

@@ -142,7 +142,7 @@ export class Layout {
           featured: true,
         },
         populate: {
-          image: {
+          cover: {
             fields: ['height', 'name', 'url', 'width'],
           },
         },
@@ -203,6 +203,9 @@ export class Layout {
           cover: {
             fields: ['name', 'url'],
           },
+          image: {
+            fields: ['height', 'name', 'url', 'width'],
+          },
         },
         filters: {
           title: {
@@ -228,7 +231,7 @@ export class Layout {
       }
 
       const result = await response.json()
-      console.log('result', result);
+
       const { data, meta } = result
       const mappedDesigns = mapDesigns(data)
       const mappedPagination = mapPagination(meta.pagination)

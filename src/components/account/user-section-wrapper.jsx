@@ -10,9 +10,11 @@ export function UserSectionWrapper({children}) {
 
   const { user: userSlug } = router.query
   const safeUserSlug = sanitizeQueryString(userSlug)
-  const activeTab = router.pathname.split('/').pop()
-  const safeActiveTab = sanitizeSlug(activeTab)
-  
+  const tabSlug = router.pathname.split('/').pop()
+  const safeActiveTab = sanitizeSlug(tabSlug)
+  // Pathname equals /[user] or /[user]/liked
+  const activeTab = safeActiveTab === 'user' ? 'liked' : safeActiveTab
+
   // Prevent user page flicker
   if (!user || safeUserSlug !== user?.username) return null
 
@@ -21,7 +23,7 @@ export function UserSectionWrapper({children}) {
       <Info user={user} />
       <div className="h-4 w-full"></div>
       <div className="py-10">
-        <Nav activeTab={safeActiveTab} slug={safeUserSlug} />
+        <Nav activeTab={activeTab} slug={safeUserSlug} />
         <div className="mt-10">
           {children}
         </div>

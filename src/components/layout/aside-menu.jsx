@@ -11,6 +11,7 @@ import fallbackImg from '@/assets/images/avatar.svg'
 export function AsideMenu({ user, loading, logout }) {
   const router = useRouter()
   const menuRef = useRef(null)
+  const calledPush = useRef(false)
   const { isOpen, toggleMenu } = useAsideMenuStore()
 
   useEffect(() => {
@@ -36,19 +37,20 @@ export function AsideMenu({ user, loading, logout }) {
   const logoutHandler = () => {
     // Close the menu
     toggleMenu()
-
     // Perform the logout action (e.g., clearing user data from state or cookies)
     logout()
-
     // Redirect to the login page
-    router.push('/join/sign-in') // Replace '/login' with the actual login route
+    if (!calledPush.current) {
+      calledPush.current = true
+      router.push('/join/sign-in') // Replace '/login' with the actual login route
+    }
   }
 
-  if (loading || !user || !router) return null
+  if (loading || !user) return null
 
   const renderMenuContent = () => {
     return (
-      <ul className="p-8 flex flex-col gap-4 border-gray-200 dark:border-gray-400 w-full dark:bg-gray-950 dark:text-white rounded-lg">
+      <ul className="p-8 flex flex-col gap-4">
         <li className="flex items-center border-b border-gray-200 dark:border-gray-400 pb-7">
           <Image
             src={user?.avatar?.url || fallbackImg}
@@ -138,8 +140,8 @@ export function AsideMenu({ user, loading, logout }) {
     <div
       ref={menuRef}
       className={`
-        absolute top-[72px] sm:right-4 bg-white sm:rounded-lg shadow-xl
-        sm:max-w-md w-full transition-opacity duration-200
+        absolute top-[72px] sm:right-4 bg-white shadow-xl
+        sm:max-w-md w-full transition-opacity duration-200 border-gray-200 dark:border-gray-400 dark:bg-gray-900 dark:text-white rounded-xl
         ${isOpen ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-2 hidden'}
       `}
     >

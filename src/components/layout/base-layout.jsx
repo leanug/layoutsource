@@ -13,7 +13,9 @@ export const BaseLayout = ({ children }) => {
   const { darkMode } = useDarkModeStore()
 
   return (
-    <div className={`relative ${darkMode ? 'dark' : ''}`}>
+    <div 
+      data-theme={`${darkMode ? 'dark' : 'light'}`} 
+      className={`relative ${darkMode ? 'dark' : 'light'}`}>
       <div className="dark:bg-gray-900 h-full">{children}</div>
     </div>
   )

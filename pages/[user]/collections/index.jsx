@@ -4,6 +4,9 @@ import {
   UserSectionWrapper,
 } from '@/components'
 
+/* 
+ * User designs collections page
+ */
 function CollectionsPage() {
   return (
     <UserSectionWrapper>

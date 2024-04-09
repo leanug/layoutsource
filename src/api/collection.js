@@ -65,9 +65,9 @@ export class Collection {
         sort: ['title:asc'],
         populate: {
           designs: {
-            fields: ['image'],
+            fields: ['cover'],
             populate: {
-              image: {
+              cover: {
                 fields: ['formats', 'height', 'name', 'url', 'width'],
               },
             },

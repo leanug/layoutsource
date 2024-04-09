@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-import { AddCollection, CollectionList, CollectionButtons } from './'
+import { AddCollection, CollectionList, CollectionButtons } from '.'
 import { UseCollectionsModal } from '@/hooks'
 import { LoadingIndicator } from '@/components'
 

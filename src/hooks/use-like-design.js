@@ -18,7 +18,7 @@ export function useLikeDesign(props) {
     useLikedDesignsStore()
   const { addNotification } = useNotificationStore()
   const { incrementLikes, decrementLikes } = useDesignsStore()
-  const { loading, setLoading } = useState(true)
+  const [loading, setLoading] = useState(false)
   const [likedLayout, setLikedLayout] = useState(null)
 
   // Check if a design has been liked
@@ -77,7 +77,7 @@ export function useLikeDesign(props) {
   const handleDislikeLayout = async () => {
     if (typeof userId === 'number') {
       try {
-        startLoading()
+        setLoading(true)
 
         // Send a request to dislike the layout
         const removeDesignResponse = await likedDesignCtrl.delete(
@@ -98,7 +98,7 @@ export function useLikeDesign(props) {
           )
         }
       } finally {
-        stopLoading() // Stop loading after data is fetched
+        setLoading(false) // Stop loading after data is fetched
       }
     }
   }
