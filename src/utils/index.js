@@ -1,4 +1,3 @@
-export * from './auth-fetch'
 export * from './category-types'
 export * from './constants'
 export * from './compare-update'
