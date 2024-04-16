@@ -21,7 +21,7 @@ function SignIn() {
       <SignInForm />
 
       <div className="text-center">
-        <Link href="/join/sign-up" className="btn btn-link">
+        <Link href="/auth/signup" className="btn btn-link">
           You don&apos;t have an account?
         </Link>
       </div>

@@ -1,19 +1,22 @@
 import Link from 'next/link'
 import React from 'react'
+import { useSession, signOut } from 'next-auth/react'
 
 import {
-  Account,
-  DarkModeButton,
-  Navigation,
-  SearchBar,
+  //Account,
+  //Navigation,
+  //SearchBar,
   MagnifyingGlassSolid,
   CircleXmarkSolid,
   Logo,
 } from '@/components'
 import { useFullSearchBarStore } from '@/store'
 
-export const Header = ({ user }) => {
-  const { toggleBar, isOpen: isFullBarOpen } = useFullSearchBarStore()
+export const Header = () => {
+  //const { toggleBar, isOpen: isFullBarOpen } = useFullSearchBarStore()
+  const {status} = useSession()
+  const session = true
+  const user = false
 
   return (
     <header
@@ -22,16 +25,19 @@ export const Header = ({ user }) => {
         font-semibold items-center
       `}
     >
+      {/* Logo */}
       <Link className="block w-40" href={user ? '/designs/homepages' : '/'}>
         <span className="sr-only">Layoutloom home page</span>
         <Logo />
       </Link>
+      {/* End Logo */}
+
       <div className="hidden xl:flex flex-row gap-5 w-full items-center">
-        {user ? <Navigation /> : null}
-        {user ? <SearchBar /> : null}
+        {/* {user ? <Navigation /> : null} */}
+        {/* {user ? <SearchBar /> : null} */}
       </div>
       <div className="flex flex-row gap-5 items-center">
-        <button className="xl:hidden" onClick={toggleBar}>
+        {/* <button className="xl:hidden" onClick={toggleBar}>
           {isFullBarOpen ? (
             <CircleXmarkSolid
               className={`
@@ -47,16 +53,26 @@ export const Header = ({ user }) => {
               `}
             />
           )}
-        </button>
-        <div className="hidden xl:flex flex-row gap-2.5 w-full items-center">
-          <DarkModeButton />
-          {user ? (
-            <Link href="/submit" className="btn min-w-40">
-              Submit design
-            </Link>
-          ) : null}
-        </div>
-        {user ? <Account user={user} /> : null}
+        </button> */}
+        {/* {user ? <Account user={user} /> : null} */}
+        {status === 'authenticated' ? (
+          <>
+          <Link href="/support" className="btn btn-outline btn-info">
+            Support
+          </Link>
+          <Link href="/admin" className="btn btn-link">
+            Admin
+          </Link>
+          <button onClick={signOut} className="btn">
+            Log out
+          </button>
+          </>
+          
+        ) : (
+          <Link href="/auth/signin" className="btn btn-neutral">
+            Log in
+          </Link>
+        )}
       </div>
     </header>
   )

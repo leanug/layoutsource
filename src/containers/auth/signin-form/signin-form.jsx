@@ -1,7 +1,6 @@
 'use client'
 
 import { useRouter } from 'next/navigation'
-import Link from 'next/link'
 import { useRef, useState } from 'react'
 import { signIn } from 'next-auth/react'
 
@@ -45,30 +44,22 @@ export function SignInForm() {
           email: formValue.email,
           password: formValue.password,
         })
-        console.log('result=', result)
 
         if (result?.error) {
-          console.log('ERROR')
           setError(true)
           setErrorMsg(result.error)
+          calledPush.current = false
+        }
+
+        if (!calledPush.current && result.ok) {
+          calledPush.current = true
+          setLoading(false)
+          setError(false)
+          router.push('/designs/homepages')
         }
       } finally {
         setLoading(false)
       }
-
-      /* if (response.success) {
-        setError(false)
-
-        if (!calledPush.current) {
-          calledPush.current = true
-          setLoading(false)
-          router.push('/designs/homepages')
-        }
-      } else {
-        calledPush.current = false
-        setLoading(false)
-        setError(true)
-      } */
     },
   })
 

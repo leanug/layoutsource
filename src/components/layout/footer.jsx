@@ -1,6 +1,6 @@
 import Link from 'next/link'
 
-import { Logo } from '../../../src/components'
+import { Logo } from '..'
 
 export const Footer = () => {
   return (
@@ -10,12 +10,6 @@ export const Footer = () => {
           <Link href="/">
             <Logo />
           </Link>
-          <span>
-            <Link href="/about">About</Link>
-          </span>
-          <span>
-            <Link href="/blog">Blog</Link>
-          </span>
         </div>
         <div className="text-sm flex flex-row gap-5 items-center">
           <span>

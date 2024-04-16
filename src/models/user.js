@@ -30,6 +30,10 @@ const userSchema = new Schema(
     website: {
       type: String,
     },
+    role: {
+      type: String,
+      default: 'trial', // trial / admin / premium
+    },
   },
   { timestamps: true },
 )

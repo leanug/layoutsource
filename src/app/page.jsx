@@ -27,10 +27,16 @@ export default function HomePage(props) {
           </p>
           {/* Links */}
           <div className="flex flex-row gap-5 max-w-2xl mx-auto mt-11 justify-center">
-            <Link href="/auth/signin" className="btn btn-primary dark:text-white w-44">
+            <Link
+              href="/auth/signin"
+              className="btn btn-primary dark:text-white w-44"
+            >
               Log in
             </Link>
-            <Link href="/auth/signup" className="btn btn-primary dark:text-white w-44">
+            <Link
+              href="/auth/signup"
+              className="btn btn-primary dark:text-white w-44"
+            >
               Sign up
             </Link>
           </div>
@@ -79,7 +85,10 @@ export default function HomePage(props) {
               into reality with our selectively assembled set of website designs
               tailored to fuel your creative projects.
             </p>
-            <Link href="/join/sign-in" className="btn btn-primary dark:text-white">
+            <Link
+              href="/join/sign-in"
+              className="btn btn-primary dark:text-white"
+            >
               Get started
             </Link>
           </div>
@@ -104,7 +113,10 @@ export default function HomePage(props) {
               Create multiple collections to categorize and manage your saved
               designs with ease.
             </p>
-            <Link href="/join/sign-in" className="btn btn-primary dark:text-white">
+            <Link
+              href="/join/sign-in"
+              className="btn btn-primary dark:text-white"
+            >
               Get started
             </Link>
           </div>
