@@ -1,22 +1,25 @@
-import { useEffect } from 'react'
+'use client'
 
-import { Layout } from '@/api'
+import { useEffect, useState } from 'react'
+
 import { useDesignsStore } from '@/store'
-
-const layoutCtrl = new Layout()
 
 /**
  * Custom hook for fetching searched designs.
  * @returns {void}
  */
 export function useSearchDesigns(query) {
-  const { sortBy, setDesigns, setPagination, page, setPage, setLoading } =
-    useDesignsStore()
+  const { designs, setDesigns } = useDesignsStore()
+  const [page, setPage] = useState(1)
+  const [pagination, setPagination] = useState({ totalItems: 0, totalPages: 0 })
+  const [loading, setLoading] = useState(true)
+  const { sortBy } = useDesignsStore()
 
   // Reset values
   useEffect(() => {
     setPage(1)
-  }, [setPage, query, sortBy])
+    setDesigns([])
+  }, [setPage, query, sortBy, setDesigns])
 
   // Load more designs on page change
   useEffect(() => {
@@ -25,17 +28,25 @@ export function useSearchDesigns(query) {
       ;(async () => {
         try {
           setLoading(true)
-          const result = await layoutCtrl.searchDesigns({
-            queryString: query,
-            page,
-            sortBy,
+          // SORTBY MISSING
+          const response = await fetch('/api/designs/search', {
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            method: 'POST',
+            body: JSON.stringify({ query, page, limit: 1 }),
           })
-          if (result.success) {
-            setDesigns(result.data?.designs || [])
-            page === 1 && setPagination(result.data?.pagination || {})
+          if (response.ok) {
+            const data = await response.json()
+            setDesigns(data.designs, page)
+            page === 1 &&
+              setPagination({
+                totalItems: data.totalItems,
+                totalPages: data.totalPages,
+              })
           } else {
             setDesigns([])
-            setPagination({})
+            setPagination({ totalItems: 0, totalPages: 0 })
           }
         } finally {
           setLoading(false)
@@ -43,7 +54,13 @@ export function useSearchDesigns(query) {
       })()
     } else {
       setDesigns([])
-      setPagination({})
+      setPagination({ totalItems: 0, totalPages: 0 })
     }
-  }, [page, sortBy, query, setLoading, setDesigns, setPagination])
+  }, [page, sortBy, query, setLoading, setDesigns])
+
+  const pageHandler = () => {
+    setPage((prevPage) => prevPage + 1)
+  }
+
+  return { designs, loading, pagination, page, pageHandler }
 }

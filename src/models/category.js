@@ -11,12 +11,8 @@ const categorySchema = new Schema(
       type: String,
       unique: true,
     },
-    parentCategory: {
+    parentSlug: {
       type: String,
-    },
-    subcategories: {
-      type: String,
-      unique: true,
     },
   },
   { timestamps: true },

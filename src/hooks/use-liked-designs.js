@@ -1,9 +1,7 @@
 import { useEffect } from 'react'
 
 import { useDesignsStore } from '@/store'
-import { LikedDesigns as LikedDesignsService } from '@/api'
 
-const likedDesignsCtrl = new LikedDesignsService()
 
 /**
  * Custom hook for managing designs data and fetching new designs.

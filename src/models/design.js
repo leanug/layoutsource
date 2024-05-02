@@ -16,12 +16,16 @@ const designSchema = new Schema(
       type: String,
     },
     category: {
-      type: String,
-      required: true,
+      type: Schema.Types.ObjectId,
+      ref: 'Category',
     },
     subcategory: {
-      type: String,
-      required: true,
+      type: [
+        {
+          type: Schema.Types.ObjectId,
+          ref: 'Subcategory',
+        },
+      ],
     },
     views: {
       type: Number,
@@ -35,7 +39,7 @@ const designSchema = new Schema(
       type: String,
     },
     fonts: {
-      fonts: [{ type: String }],
+      type: [{ type: String }],
       default: [],
     },
     slug: {

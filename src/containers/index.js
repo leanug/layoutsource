@@ -1,7 +1,7 @@
 export * from './auth'
-//export * from '../../resources/containers/collections'
-//export * from './designs-grid'
-/* export * from '../../resources/containers/display-designs'
-export * from '../../resources/containers/featured-designs'
-export * from '../../resources/containers/page-menu'
-export * from '../../resources/containers/related-designs-grid' */
+export * from './ui'
+export * from './collections'
+//export * from '../../resources/containers/display-designs'
+//export * from '../../resources/containers/featured-designs'
+export * from './page-menu'
+//export * from '../../resources/containers/related-designs-grid'

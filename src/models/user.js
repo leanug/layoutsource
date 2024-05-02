@@ -5,7 +5,7 @@ import { v4 as uuidv4 } from 'uuid'
 // Define the user schema
 const userSchema = new Schema(
   {
-    avatar: {
+    picture: {
       type: String,
     },
     bio: {

@@ -1,4 +1,4 @@
-import { useDarkMode } from '@/hooks'
+import { useDarkMode, useFetchLikedDesigns } from '@/hooks'
 import { useDarkModeStore } from '@/store'
 
 /**
@@ -11,12 +11,12 @@ import { useDarkModeStore } from '@/store'
 export const BaseLayout = ({ children }) => {
   useDarkMode()
   const { darkMode } = useDarkModeStore()
+  console.log('fetched liked designs')
+  useFetchLikedDesigns('6618479f3c2188cfe0f324c3')
 
   return (
-    <div 
-      data-theme={`${darkMode ? 'dark' : 'light'}`} 
-      className={`relative ${darkMode ? 'dark' : 'light'}`}>
-      <div className="dark:bg-gray-900 h-full">{children}</div>
+    <div data-theme={`${darkMode ? 'dark' : 'light'}`} className="relative">
+      <div className="h-full">{children}</div>
     </div>
   )
 }

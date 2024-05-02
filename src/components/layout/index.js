@@ -1,10 +1,8 @@
 /* export * from '../../../resources/components/layout/account'
-export * from '../../../resources/components/layout/aside-menu'
-export * from '../../../resources/components/layout/auth-layout'
-export * from '../../../resources/components/layout/base-layout' */
+*/
+//export * from './aside-menu'
 export * from './footer'
 export * from './header'
 export * from './base-layout'
-//export * from '../../../resources/components/layout/navigation'
-//export * from './search-bar'
+export * from './navigation'
 //export * from '../../../resources/components/layout/search-bar-full'

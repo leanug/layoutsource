@@ -20,34 +20,26 @@ import { create } from 'zustand'
 
 export const useDesignsStore = create((set) => ({
   designs: [],
-  error: null,
-  loading: true,
-  pagination: {},
-  page: 1,
   sortBy: 'updatedAt',
-  type: 'homepages',
   category: null,
   query: '',
 
-  setType: (type) => set({ type }),
   setQuery: (query) => set({ query }),
   setCategory: (category) => set({ category }),
-  setLoading: (loading) => set({ loading }),
   setPagination: (pagination) => set({ pagination }),
   setPage: (page) => set({ page }),
-  incrementPage: () => set((state) => ({ page: state.page + 1 })),
   setSortBy: (sortBy) => set({ sortBy }),
-  setDesigns: (newDesigns) =>
+
+  setDesigns: (newDesigns, page) =>
     set((state) => ({
-      designs:
-        state.page === 1 ? newDesigns : [...state.designs, ...newDesigns],
+      designs: page === 1 ? newDesigns : [...state.designs, ...newDesigns],
     })),
 
   incrementLikes: (designId) => {
     set((state) => {
       const updatedState = {
         designs: state.designs.map((design) =>
-          design.id === designId
+          design._id === designId
             ? { ...design, likes: design.likes + 1 }
             : design,
         ),
@@ -60,7 +52,7 @@ export const useDesignsStore = create((set) => ({
     set((state) => {
       const updatedState = {
         designs: state.designs.map((design) =>
-          design.id === designId && design.likes > 0
+          design._id === designId && design.likes > 0
             ? { ...design, likes: design.likes - 1 }
             : design,
         ),

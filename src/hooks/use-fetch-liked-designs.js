@@ -1,8 +1,8 @@
+'use client'
+
 import { useEffect, useRef } from 'react'
 import { useLikedDesignsStore } from '@/store'
-import { LikedDesigns } from '@/api'
-
-const likedDesignsCtrl = new LikedDesigns()
+import { arrayToObject } from '@/utils'
 
 /**
  * Custom hook to fetch liked designs for a user.
@@ -10,14 +10,19 @@ const likedDesignsCtrl = new LikedDesigns()
  * @param {Object} likedDesignsCtrl - Controller for managing liked designs.
  */
 export const useFetchLikedDesigns = (userId) => {
-  const hasFetchedDesigns = useRef(false)
+  const dataFetched = useRef(false)
   const { setLikedDesigns } = useLikedDesignsStore()
+
+  // Reset values
+  useEffect(() => {
+    dataFetched.current = false
+  }, [userId])
 
   /**
    * useEffect to fetch and update liked designs when the user changes.
    */
   useEffect(() => {
-    if (userId && !hasFetchedDesigns.current) {
+    if (userId && !dataFetched.current) {
       ;(async () => {
         /**
          * Fetch liked designs for the user.
@@ -26,11 +31,22 @@ export const useFetchLikedDesigns = (userId) => {
          *   @property {Object} data - Object where keys are designIds and values are
          *     likedDesignCollectionItemIds.
          */
-        const result = await likedDesignsCtrl.getAll(userId)
+        const response = await fetch('/api/liked-designs/get', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ userId }),
+        })
 
-        if (result.success) {
-          setLikedDesigns(result.data)
-          hasFetchedDesigns.current = true
+        if (response.ok) {
+          const data = await response.json()
+
+          // Convert array of liked designs into an object for easy search
+          const likedDesignsObj = arrayToObject(data.likedDesigns)
+
+          setLikedDesigns(likedDesignsObj)
+          dataFetched.current = true
         }
       })()
     }

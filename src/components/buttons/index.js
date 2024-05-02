@@ -1,4 +1,6 @@
 export * from './back-top-top-button'
+export * from './like-design-button'
+export * from './collections-toggle-button'
 /* export * from '../../../resources/components/buttons/dark-mode-button'
 export * from '../../../resources/components/buttons/design-like-button'
 export * from '../../../resources/components/buttons/light-button'

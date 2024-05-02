@@ -1,17 +1,21 @@
-import { SecondaryButton } from '@/components'
-
+/*
+ * Load more collections or designs
+ */
 export function LoadMore(props) {
-  const { totalItems, totalPages, handlePage, page, message } = props
+  const { pagination, pageHandler, page, loading } = props
+  const { totalPages } = pagination
+
+  if (loading) return null
 
   return (page || 0) < (totalPages || 0) ? (
     <div className="flex justify-center my-12">
-      <SecondaryButton type="secondary-gray" onClick={() => handlePage()}>
+      <button
+        className="btn btn-outline"
+        type="button"
+        onClick={() => pageHandler()}
+      >
         Load More
-      </SecondaryButton>
-    </div>
-  ) : totalItems ? (
-    <div className="flex justify-center my-12">
-      <p className="text-center">{message}</p>
+      </button>
     </div>
   ) : null
 }

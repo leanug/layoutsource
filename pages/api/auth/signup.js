@@ -1,5 +1,4 @@
-
-import connectMongoDB from '@/lib/mongodb'
+import { connectDB } from '@/lib/mongodb'
 import { hashPassword } from '@/lib/auth'
 import User from '@/models/user'
 import { ENV } from '@/utils'
@@ -12,23 +11,21 @@ import { ENV } from '@/utils'
  */
 export default async function handler(req, res) {
   try {
+    // Connect to MongoDB
+    await connectDB()
+
     if (req.method === 'POST') {
       const { email, password } = req.body
       // Hash the password securely
       let hashedPassword = await hashPassword(password)
 
-      // Connect to MongoDB
-      await connectMongoDB()
-
       // Create a new user in the database
       const newUser = await User.create({ email, password: hashedPassword })
       // Return a success response with the newly created user
-      res
-        .status(201)
-        .json({ message: 'Hello from Next.js!', user: newUser, success: true })
+      res.status(201).json({ user: newUser })
     } else {
       // Handle invalid HTTP methods
-      res.status(405).json({ success: false, error: 'Method Not Allowed' })
+      res.status(405).json({ error: 'Method Not Allowed' })
     }
   } catch (error) {
     // Handle errors gracefully
@@ -36,7 +33,6 @@ export default async function handler(req, res) {
 
     res.status(500).json({
       error: 'An error occurred while registering the user',
-      success: false,
     })
   }
 }

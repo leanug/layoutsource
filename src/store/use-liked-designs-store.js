@@ -28,10 +28,14 @@ export const useLikedDesignsStore = create((set) => ({
       }
     }),
 
-  removeLikedDesign: (designId) =>
+  deleteLikedDesign: (designId) =>
     set((state) => {
+      // Create a copy of the likedDesigns object
       const updatedLikedDesigns = { ...state.likedDesigns }
+      // Delete the specified designId from the copied object
       delete updatedLikedDesigns[designId]
+
+      // Return a new state object with the updated likedDesigns
       return {
         likedDesigns: updatedLikedDesigns,
       }

@@ -1,2 +1,2 @@
-export * from './modal'
+export * from '../../../src/components/modal'
 export * from './showcase-modal'

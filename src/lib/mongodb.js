@@ -4,39 +4,34 @@ import mongoose from 'mongoose'
 // Define the MongoDB connection string
 const MONGODB_URI = process.env.MONGODB_URI
 
-let cachedConnection = null
+if (!MONGODB_URI) {
+  throw new Error(
+    'Please define the MONGODB_URI environment variable inside .env.local',
+  )
+}
 
-// Function to connect to MongoDB
-async function connectMongoDB() {
-  if (!cachedConnection) {
-    try {
-      // Connect to MongoDB using Mongoose
-      const connection = await mongoose.connect(MONGODB_URI)
+let cached = global.mongoose
 
-      // Cache the connection
-      cachedConnection = connection
+if (!cached) {
+  cached = global.mongoose = { conn: null, promise: null }
+}
 
-      // Log a message upon successful connection
-      console.log('Connected to MongoDB')
-    } catch (error) {
-      // Log any errors that occur during connection
-      console.error('Error connecting to MongoDB:', error.message)
-      throw error // Rethrow the error to propagate it
+async function connectDB() {
+  if (cached.conn) {
+    return cached.conn
+  }
+
+  if (!cached.promise) {
+    const opts = {
+      bufferCommands: false,
     }
+
+    cached.promise = mongoose.connect(MONGODB_URI, opts).then((mongoose) => {
+      return mongoose
+    })
   }
-  return cachedConnection
+  cached.conn = await cached.promise
+  return cached.conn
 }
 
-// Function to disconnect from MongoDB
-async function disconnectMongoDB() {
-  if (cachedConnection) {
-    // Close the MongoDB connection
-    await cachedConnection.disconnect()
-
-    // Log a message upon successful disconnection
-    console.log('Disconnected from MongoDB')
-  }
-}
-
-// Export the functions to be used in other parts of the application
-export { connectMongoDB, disconnectMongoDB }
+export { connectDB }

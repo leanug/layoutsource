@@ -1,7 +1,7 @@
 import NextAuth from 'next-auth'
 import CredentialsProvider from 'next-auth/providers/credentials'
 
-import { connectMongoDB } from '@/lib/mongodb'
+import { connectDB } from '@/lib/mongodb'
 import { verifyPassword } from '@/lib/auth'
 import User from '@/models/user'
 
@@ -10,7 +10,7 @@ const authOptions = {
     CredentialsProvider({
       name: 'credentials',
       async authorize(credentials, req) {
-        await connectMongoDB()
+        await connectDB()
 
         // Get user
         const user = await User.findOne({ email: credentials.email })
@@ -35,7 +35,13 @@ const authOptions = {
         }
 
         // User is valid
-        return { email: user.email }
+        return {
+          email: user.email,
+          name: user.name,
+          username: user.username,
+          _id: user._id,
+          picture: user.picture,
+        }
       },
     }),
   ],
@@ -46,6 +52,16 @@ const authOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   pages: {
     signIn: '/auth/signin',
+  },
+  callbacks: {
+    async jwt({ token, user }) {
+      if (user) token.user = user
+      return token
+    },
+    async session({ session, token }) {
+      session.user = token.user
+      return session
+    },
   },
 }
 
