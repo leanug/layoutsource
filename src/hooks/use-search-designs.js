@@ -9,11 +9,10 @@ import { useDesignsStore } from '@/store'
  * @returns {void}
  */
 export function useSearchDesigns(query) {
-  const { designs, setDesigns } = useDesignsStore()
+  const { designs, setDesigns, sortBy } = useDesignsStore()
   const [page, setPage] = useState(1)
   const [pagination, setPagination] = useState({ totalItems: 0, totalPages: 0 })
   const [loading, setLoading] = useState(true)
-  const { sortBy } = useDesignsStore()
 
   // Reset values
   useEffect(() => {
@@ -26,31 +25,29 @@ export function useSearchDesigns(query) {
     // Check if query is not an empty string
     if (query !== '') {
       ;(async () => {
-        try {
-          setLoading(true)
-          // SORTBY MISSING
-          const response = await fetch('/api/designs/search', {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            method: 'POST',
-            body: JSON.stringify({ query, page, limit: 1 }),
-          })
-          if (response.ok) {
-            const data = await response.json()
-            setDesigns(data.designs, page)
-            page === 1 &&
-              setPagination({
-                totalItems: data.totalItems,
-                totalPages: data.totalPages,
-              })
-          } else {
-            setDesigns([])
-            setPagination({ totalItems: 0, totalPages: 0 })
-          }
-        } finally {
-          setLoading(false)
+        setLoading(true)
+        // SORTBY MISSING
+        const response = await fetch('/api/designs/search', {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          method: 'POST',
+          body: JSON.stringify({ query, page, limit: 1 }),
+        })
+        if (response.ok) {
+          const data = await response.json()
+          setDesigns(data.designs, page)
+          page === 1 &&
+            setPagination({
+              totalItems: data.totalItems,
+              totalPages: data.totalPages,
+            })
+        } else {
+          setDesigns([])
+          setPagination({ totalItems: 0, totalPages: 0 })
         }
+
+        setLoading(false)
       })()
     } else {
       setDesigns([])

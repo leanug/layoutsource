@@ -17,8 +17,10 @@ export default async function handler(req, res) {
       })
       // Save the new liked design to the database
       const savedLikedDesign = await newLikedDesign.save()
-
-      res.status(200).json({ message: 'Design added', data: savedLikedDesign })
+      console.log(savedLikedDesign);
+      res.status(200).json({
+        newlikedDesignDocumentId: savedLikedDesign._id,
+      })
     } else {
       // Handle invalid HTTP methods
       res.status(405).json({ error: 'Method Not Allowed' })

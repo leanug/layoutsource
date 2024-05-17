@@ -1,29 +1,28 @@
 'use client'
 
-import { useDesignLikes } from '@/hooks'
-import { LoadingIndicator, HeartSolid, HeartRegular } from '..'
+import { useDesignLikesManager } from '@/hooks'
+import { LoadingIndicator } from '..'
+import { HeartIcon } from '@heroicons/react/24/solid'
+import { HeartIcon as HeartOutlineIcon } from '@heroicons/react/24/outline'
 
-export function LikeDesignButton({ designId, designLikes, userId }) {
-  const { loading, isLikedDesign, handleLikeDesign, handleDislikeDesign } =
-    useDesignLikes(designId, designLikes, userId)
-
-  loading ? (
-    <button className="btn z-30" disabled={loading}>
-      <LoadingIndicator />
-    </button>
-  ) : null
+export function LikeDesignButton({ designId, designLikes }) {
+  const { loading, handleLikeDesign, isLikedDesign, handleDislikeDesign } =
+    useDesignLikesManager(designId, designLikes)
 
   return (
     <button
-      onClick={isLikedDesign ? handleDislikeDesign : handleLikeDesign}
+      onClick={(event) => {
+        if (!loading) {
+          isLikedDesign ? handleDislikeDesign() : handleLikeDesign()
+        }
+        event.stopPropagation() // Don't open design
+      }}
       className="btn z-30"
-      disabled={loading}
     >
-      {isLikedDesign ? (
-        <HeartSolid className="w-5 h-5" />
-      ) : (
-        <HeartRegular className="w-5 h-5" />
-      )}
+      {loading ? <LoadingIndicator /> : null}
+      {isLikedDesign
+        ? !loading && <HeartIcon className="h-6 w-6 " />
+        : !loading && <HeartOutlineIcon className="h-6 w-6 " />}
     </button>
   )
 }

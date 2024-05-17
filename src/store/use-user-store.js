@@ -7,7 +7,7 @@ export const useUserStore = create((set) => ({
   user: {
     email: '',
     username: '',
-    id: '',
+    _id: '',
     picture: '',
     bio: '',
     location: '',

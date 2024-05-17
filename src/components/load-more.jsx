@@ -9,11 +9,7 @@ export function LoadMore(props) {
 
   return (page || 0) < (totalPages || 0) ? (
     <div className="flex justify-center my-12">
-      <button
-        className="btn btn-outline"
-        type="button"
-        onClick={() => pageHandler()}
-      >
+      <button className="btn" type="button" onClick={() => pageHandler()}>
         Load More
       </button>
     </div>

@@ -21,12 +21,10 @@ export function CollectionItem(props) {
     setLoading(true)
     if (!inCollection) {
       const updateResult = await addDesign(collection._id, designId)
-      console.log(updateResult)
       updateResult && setInCollection(true)
     } else {
       const updateResult = await deleteDesign(collection._id, designId)
       updateResult && setInCollection(false)
-      console.log(updateResult)
     }
     setLoading(false)
   }

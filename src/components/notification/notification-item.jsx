@@ -2,19 +2,19 @@
 
 import React, { useEffect } from 'react'
 
-import { InfoSolid, XmarkSolid } from '@/components'
-import {InformationSolid} from '@heroicons/react'
+import { InformationCircleIcon, XMarkIcon } from '@heroicons/react/24/solid'
+
 export const Notification = ({ id, message, type, removeNotification }) => {
   let alertModifier
 
   if (type === 'error') {
     alertModifier = 'alert-error'
-  } else if (type === 'info') {
-    alertModifier = 'alert-info'
   } else if (type === 'success') {
     alertModifier = 'alert-success'
   } else if (type === 'warning') {
     alertModifier = 'alert-warning'
+  } else {
+    alertModifier = 'alert-info'
   }
 
   useEffect(() => {
@@ -33,10 +33,10 @@ export const Notification = ({ id, message, type, removeNotification }) => {
 
   return (
     <div role="alert" className={`alert ${alertModifier}`}>
-      
+      <InformationCircleIcon className="w-5 h-5" />
       <span>{message}</span>
       <button className="btn btn-sm" onClick={handleClose}>
-        <XmarkSolid className="w-4 h-4 fill-gray-950" />
+        <XMarkIcon className="w-5 h-5" />
       </button>
     </div>
   )

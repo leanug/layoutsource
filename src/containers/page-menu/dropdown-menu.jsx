@@ -1,7 +1,8 @@
 'use client'
 
 import React, { useState } from 'react'
-import { CaretDown, CaretUp } from '@/components'
+
+import { ChevronDownIcon } from '@heroicons/react/24/solid'
 
 export function DropdownMenu({ setSortBy }) {
   const [dropdownVisible, setDropdownVisible] = useState(false)
@@ -32,16 +33,12 @@ export function DropdownMenu({ setSortBy }) {
 
   return (
     <div className="relative flex justify-end">
-      <button onClick={toggleDropdown} className=" btn">
+      <button onClick={toggleDropdown} className="btn btn-sm">
         {selectedFilter}
-        {dropdownVisible ? (
-          <CaretUp className="w-4 h-4 p-0 fill-gray-800 dark:fill-gray-50 transform rotate-180 transition-transform duration-300" />
-        ) : (
-          <CaretDown className="w-4 h-4 fill-gray-800 dark:fill-gray-50" />
-        )}
+        <ChevronDownIcon className="w-4 h-4 p-0" />
       </button>
       {dropdownVisible && (
-        <ul className="absolute mt-14 dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-52">
+        <ul className="absolute mt-10 dropdown-content z-[1] menu p-2 shadow bg-base-100 rounded-box w-44">
           {/* Additional content goes here */}
           <li>
             <button onClick={() => handleClick('updatedAt')}>Latest</button>

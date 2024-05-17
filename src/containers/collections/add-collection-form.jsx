@@ -2,7 +2,7 @@ import { useFormik } from 'formik'
 
 import { initialValues, validationSchema } from '.'
 import { generateRandomSlug } from '@/utils'
-import { useNotificationStore } from '@/store'
+import { useCollectionStore, useNotificationStore } from '@/store'
 import { PlusIcon } from '@heroicons/react/24/solid'
 import { useModalStore } from '@/store'
 
@@ -19,6 +19,7 @@ import { useModalStore } from '@/store'
 export function AddCollectionForm({ designId, userId }) {
   const { addNotification } = useNotificationStore()
   const { handleModal } = useModalStore()
+  const { setCollections } = useCollectionStore()
 
   const formik = useFormik({
     initialValues: initialValues(),
@@ -36,7 +37,7 @@ export function AddCollectionForm({ designId, userId }) {
         const data = {
           ...formValue,
           designs: [designId],
-          slug: 'col' + generateRandomSlug(),
+          slug: 'col-' + generateRandomSlug(),
           totalDesigns: 1,
           user: userId,
         }
@@ -51,6 +52,12 @@ export function AddCollectionForm({ designId, userId }) {
         })
 
         if (response?.ok) {
+          const result = await response.json()
+
+          // Add the new collection to the collections store
+          setCollections(result.data)
+          console.log('data: ', data)
+          // Update collection store
           addNotification('Collection created', 'success')
         } else {
           addNotification('Error creating collection', 'error')

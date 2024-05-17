@@ -8,6 +8,13 @@ const collectionSchema = new Schema(
       type: String,
       required: true,
     },
+    cover: {
+      type: [
+        {
+          type: String,
+        },
+      ],
+    },
     slug: {
       type: String,
       unique: true,

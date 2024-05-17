@@ -1,14 +1,6 @@
 'use client'
 
-import { useSession } from 'next-auth/react'
-import { usePathname } from 'next/navigation'
-
-import {
-  useCategories,
-  useDesigns,
-  useSubCategories,
-  useFetchLikedDesigns,
-} from '@/hooks'
+import { useDesigns } from '@/hooks'
 import {
   DropdownMenu,
   Collections,
@@ -27,50 +19,11 @@ import {
   LikeDesignButton,
   CollectionsToggleButton,
 } from '@/components'
-import { sanitizeSlug } from '@/utils'
-import { useModalStore } from '@/store'
+import { useModalStore, useUserStore } from '@/store'
 
 const DesignsPage = () => {
-  const { data } = useSession()
-  const user = data?.user
-  useFetchLikedDesigns(user?._id)
-
-  const pathname = usePathname()
-  const parts = pathname.split('/')
-  const categorySlug = parts[2]
-  const subcategorySlug = parts[3] || null // Set to null if subcategory is not present
-
-  const { categories } = useCategories()
-  const safeCategorySlug = sanitizeSlug(categorySlug) // Get current category slug
-
-  // Get current category
-  const currentCategory = categories.find(
-    (category) => category.slug === safeCategorySlug,
-  )
-  const categoryId = currentCategory ? currentCategory._id : null // Get current category ID
-
-  // Get subcategories
-  const { subCategories } = useSubCategories(safeCategorySlug)
-
-  // Get current subcategory if available
-  let subcategoryId = ''
-  let currentSubcategorySlug = ''
-  if (subcategorySlug) {
-    const safeSubcategorySlug = sanitizeSlug(subcategorySlug)
-    currentSubcategorySlug = safeSubcategorySlug
-
-    // Get current subcategory
-    const currentSubcategory = subCategories.find(
-      (subcategory) => subcategory.slug === safeSubcategorySlug,
-    )
-    if (currentSubcategory) {
-      subcategoryId = currentSubcategory._id
-      currentSubcategorySlug = currentSubcategory.slug
-    }
-  }
-
-  // Determine the data ID based on the URL parts
-  const fetchDataId = parts.length === 3 ? categoryId : subcategoryId
+  const { user } = useUserStore()
+  const { handleModal } = useModalStore()
 
   const {
     designs,
@@ -81,20 +34,12 @@ const DesignsPage = () => {
     loading,
     setSortBy,
     setPage,
-  } = useDesigns(fetchDataId, pathname)
-
-  const { handleModal } = useModalStore()
+  } = useDesigns()
 
   return (
     <>
       <PageMenu
-        info={
-          <PageMenuSubCategories
-            subcategories={subCategories}
-            currentCategorySlug={safeCategorySlug}
-            currentSubcategorySlug={currentSubcategorySlug}
-          />
-        }
+        info={<PageMenuSubCategories />}
         resultsInfo={<PageMenuResultsInfo totalItems={pagination.totalItems} />}
         action={<DropdownMenu setPage={setPage} setSortBy={setSortBy} />}
       />
@@ -105,7 +50,7 @@ const DesignsPage = () => {
             key={item._id}
             design={item}
             designImage={
-              <DesignImage coverSrc={item?.cover} title={item.title} />
+              <DesignImage /* coverSrc={item?.cover} */ title={item.title} />
             }
             designInfo={
               <DesignInfo
@@ -121,22 +66,24 @@ const DesignsPage = () => {
                 action={() =>
                   handleModal(
                     true,
-                    <Collections userId={user?._id} designId={item._id} />,
+                    <Collections userId={user.id} designId={item._id} />,
                     'Collections',
                   )
                 }
               />
             }
             actionLike={
-              <LikeDesignButton
-                userId={user?._id}
-                designLikes={item.likes}
-                designId={item._id}
-              />
+              <LikeDesignButton designLikes={item.likes} designId={item._id} />
             }
           />
         ))}
-        LoadingIndicator={loading ? <LoadingIndicator centered={true} /> : null}
+        LoadingIndicator={
+          loading ? (
+            <div className="pt-3">
+              <LoadingIndicator centered={true} />
+            </div>
+          ) : null
+        }
       />
 
       <LoadMore

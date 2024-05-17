@@ -2,39 +2,55 @@
 
 import { useEffect, useState } from 'react'
 
-import { useNotificationStore } from '@/store'
+import axios from 'axios'
 
-export function UseCollectionDesignManager(userId) {
-  const [collections, setCollections] = useState([])
+import { useNotificationStore, useCollectionStore, useUserStore } from '@/store'
+import { ENV } from '@/utils'
+
+export function UseCollectionDesignManager() {
   const [loading, setLoading] = useState(false)
+
   const { addNotification } = useNotificationStore()
+  const { user } = useUserStore()
+  const { collections, setCollections, addDesignStore, deleteDesignStore } =
+    useCollectionStore()
+
+  const isFetchedCollections = collections.length ? true : false
 
   // Fetch all collections
   useEffect(() => {
-    ;(async () => {
-      try {
-        setLoading(true)
-        const response = await fetch('/api/collections/get', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ userId }),
-        })
+    if (!isFetchedCollections) {
+      ;(async () => {
+        try {
+          setLoading(true)
 
-        if (response.ok) {
-          const data = await response.json()
-          setCollections(data.collections)
-        } else {
-          setCollections([])
+          const data = {
+            filterBy: 'getCollectionList',
+            userId: user._id,
+          }
+
+          const response = await axios.post('/api/collections/get', data, {
+            headers: { 'Content-Type': 'application/json' },
+          })
+
+          if (response.status === 200) {
+            setCollections(response.data.collections)
+          } else {
+            setCollections([])
+            throw new Error('Failed to fetch collections')
+          }
+        } catch (error) {
+          ENV.IS_DEV && console.error('Error fetching collections:', error)
+          addNotification({
+            message: 'Failed to fetch collections',
+            type: 'error',
+          })
+        } finally {
+          setLoading(false)
         }
-      } catch (error) {
-        setCollections([])
-      } finally {
-        setLoading(false)
-      }
-    })()
-  }, [userId])
+      })()
+    }
+  }, [user._id, setCollections, isFetchedCollections, addNotification])
 
   /*
    * Get the target collection from the collections array
@@ -65,26 +81,25 @@ export function UseCollectionDesignManager(userId) {
       }
 
       // Add design to target collection
-      try {
-        setLoading(true)
-        const response = await fetch('/api/collections/update', {
-          method: 'PUT',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ filter, update }),
-        })
+      setLoading(true)
+      const response = await fetch('/api/collections/update', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ filter, update }),
+      })
 
-        // Check if the response is not ok and show an error notification
-        if (!response.ok) {
-          addNotification('Oops! An error occurred.', 'error')
-        } else {
-          collectionUpdated = true
-        }
-      } finally {
-        // Ensure that loading state is always set to false, even if an error occurs
-        setLoading(false)
+      // Check if the response is not ok and show an error notification
+      if (!response.ok) {
+        addNotification('Oops! An error occurred.', 'error')
+      } else {
+        addDesignStore(collectionId, designId) // Update collections zustand store
+        collectionUpdated = true
       }
+
+      // Ensure that loading state is always set to false, even if an error occurs
+      setLoading(false)
     }
 
     return collectionUpdated
@@ -127,6 +142,7 @@ export function UseCollectionDesignManager(userId) {
         if (!response.ok) {
           addNotification('Oops! An error occurred.', 'error')
         } else {
+          deleteDesignStore(collectionId, designId) // Update collections zustand store
           collectionUpdated = true
         }
       } finally {

@@ -1,3 +1,4 @@
+export * from './page-collection-header'
 export * from './page-menu-subcategories'
 export * from './page-menu-search-header'
 export * from './page-menu-results-info'

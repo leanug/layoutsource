@@ -1,6 +1,6 @@
 import Link from 'next/link'
 
-import { SignUpForm } from '@/containers'
+import SignUpForm from '@/containers/auth/signup-form'
 import { HouseSolid } from '@/components'
 
 function SignUp() {

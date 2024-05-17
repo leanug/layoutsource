@@ -1,7 +1,0 @@
-export * from './info'
-export * from './collections'
-export * from './settings'
-export * from './liked-designs'
-export * from './nav'
-export * from './user-designs'
-export * from './user-section-wrapper'

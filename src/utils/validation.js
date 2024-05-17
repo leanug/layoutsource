@@ -16,7 +16,7 @@
  */
 function sanitizeSlug(input) {
   // Remove non-alphanumeric characters except hyphens and underscores
-  const sanitized = input.replace(/[^\w\s-]/g, '')
+  const sanitized = input ? input.replace(/[^\w\s-]/g, '') : ''
 
   // Replace spaces with hyphens
   const slug = sanitized.replace(/\s+/g, '-')

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 
-import { ArrowTop } from '@/components'
+import { ArrowUpIcon } from '@heroicons/react/24/solid'
 
 export function BackToTopButton() {
   const [isVisible, setIsVisible] = useState(false)
@@ -34,10 +34,10 @@ export function BackToTopButton() {
     <button
       className={`${
         isVisible ? 'block' : 'hidden'
-      } fixed bottom-5 right-5 p-3 bg-gray-400 rounded-full text-white hover:bg-gray-500 transition-all duration-300`}
+      } fixed bottom-5 right-5 btn btn-square`}
       onClick={scrollToTop}
     >
-      <ArrowTop className="w-6 h-6 fill-white" />
+      <ArrowUpIcon className="w-6 h-6" />
     </button>
   )
 }

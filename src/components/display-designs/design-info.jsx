@@ -1,4 +1,4 @@
-import { HeartSolid, EyeSolid } from '@/components'
+import { HeartIcon, EyeIcon } from '@heroicons/react/24/solid'
 
 export function DesignInfo(props) {
   const { slug, views, likes, title, showcaseDesign } = props
@@ -13,11 +13,11 @@ export function DesignInfo(props) {
       </h2>
       <div className="flex flex-row items-center gap-4">
         <div className="flex flex-row gap-1.5 items-center">
-          <EyeSolid className="w-4 h-4 fill-slate-400" />
+          <EyeIcon className="w-4 h-4 fill-slate-400" />
           <span className="text-gray-600 dark:text-gray-200">{views}</span>
         </div>
         <div className="flex flex-row gap-1.5 items-center">
-          <HeartSolid className="w-4 h-4 fill-slate-400" />
+          <HeartIcon className="w-4 h-4 fill-slate-400" />
           <span className="text-gray-600 dark:text-gray-200">{likes}</span>
         </div>
       </div>

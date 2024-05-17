@@ -1,40 +1,57 @@
-import { useEffect } from 'react'
+'use client'
 
-import { useDesignsStore } from '@/store'
+import { useEffect, useRef } from 'react'
+import { usePathname } from 'next/navigation'
 
+import { useLikedDesignsStore, useUserStore } from '@/store'
+import { arrayToObject } from '@/utils'
 
 /**
- * Custom hook for managing designs data and fetching new designs.
- * @returns {Object} An object containing designs data, loading state, and a function to load more designs.
+ * Custom hook to fetch liked designs for a user.
+ * @param {Object} user - The user object containing user information.
+ * @param {Object} likedDesignsCtrl - Controller for managing liked designs.
  */
-export function useLikedDesigns(userId) {
-  const { setDesigns, page, setPagination, setLoading, setPage } =
-    useDesignsStore()
+export const useLikedDesigns = () => {
+  const { setLikedDesigns } = useLikedDesignsStore()
+  const { user } = useUserStore()
 
-  // Reset values
-  useEffect(() => {
-    setPage(1)
-  }, [setPage, userId])
+  const pathname = usePathname()
 
-  // Load more designs on page change
+  const hasFetchedData = useRef(false)
+
+  /**
+   * useEffect to fetch and update liked designs when the user changes.
+   */
   useEffect(() => {
-    ;(async () => {
-      setLoading(true)
-      try {
-        const result = await likedDesignsCtrl.get({
-          userId,
-          page,
+    // Load liked designs only once if likedDesigns is an empty object in the store
+    // and user is logged in
+    if (!hasFetchedData.current && user._id && !/\/showcase\//.test(pathname)) {
+      ;(async () => {
+        /**
+         * Fetch liked designs for the user.
+         * @returns {Promise<Object>} - Object with success status and data.
+         *   @property {boolean} success - Indicates the success status of the operation.
+         *   @property {Object} data - Object where keys are designIds and values are
+         *     likedDesignCollectionItemIds.
+         */
+        const response = await fetch('/api/liked-designs/get', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ userId: user._id }),
         })
-        if (result.success) {
-          setDesigns(result.data?.designs || [])
-          page === 1 && setPagination(result.data?.pagination || {})
-        } else {
-          setDesigns([])
-          setPagination({})
+
+        if (response.ok) {
+          const data = await response.json()
+
+          // Convert array of liked designs into an object for easy search
+          const likedDesignsObj = arrayToObject(data.likedDesigns)
+
+          setLikedDesigns(likedDesignsObj)
+          hasFetchedData.current = true
         }
-      } finally {
-        setLoading(false)
-      }
-    })()
-  }, [page, setLoading, setPagination, userId, setDesigns])
+      })()
+    }
+  }, [user._id, setLikedDesigns, pathname])
 }

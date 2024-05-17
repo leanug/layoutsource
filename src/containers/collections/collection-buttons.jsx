@@ -5,7 +5,7 @@ export function CollectionButtons({
   toggleComponents,
 }) {
   return (
-    <button onClick={toggleComponents} className="btn no-animation">
+    <button onClick={toggleComponents} className="btn no-animation w-full">
       {isAddCollectionVisible ? (
         <>
           <ArrowUturnLeftIcon className="h-6 w-6" />
@@ -16,7 +16,6 @@ export function CollectionButtons({
           <PlusIcon className="h-6 w-6" />
           {'Create a New Collection'}
         </>
-        
       )}
     </button>
   )

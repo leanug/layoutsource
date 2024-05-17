@@ -12,7 +12,7 @@ export function PageMenu(props) {
         `}
       >
         {info} {/* Sub categories / Search query / Tag name */}
-        <div className="flex flex-row items-center w-full lg:w-56 justify-end gap-3">
+        <div className="flex flex-row items-center justify-end gap-3">
           {resultsInfo}
           {action}
         </div>

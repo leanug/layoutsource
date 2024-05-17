@@ -1,6 +1,5 @@
-import mongoose from 'mongoose'
-
 import { connectDB } from '@/lib/mongodb'
+
 import Design from '@/models/design'
 import { ENV } from '@/utils'
 
@@ -13,10 +12,9 @@ export default async function handler(req, res) {
   await connectDB()
 
   try {
-    const { designId, updates } = req.body // Assuming categoryId is passed in the request body
-    const designIdObj = new mongoose.Types.ObjectId(designId)
+    const { filter, update } = req.body
 
-    const design = await Design.findByIdAndUpdate(designIdObj, updates, {
+    const design = await Design.findByIdAndUpdate(filter, update, {
       new: true,
     })
 

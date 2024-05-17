@@ -1,154 +1,76 @@
-import { useEffect, useState } from 'react'
+'use client'
 
-import { useAuth } from '@/hooks'
-import { useModalStore, useNotificationStore } from '@/store'
-import { EditCollectionForm } from '@/containers'
-import { ConfirmationDialog } from '@/components'
-import { Collection } from '@/api'
-import { useRouter } from 'next/router'
+import { useEffect, useState, useRef } from 'react'
 
-const collectionCtrl = new Collection()
+import axios from 'axios'
 
-const PAGE_SIZE = 2 // Set to your desired number of items per page
+import { useUserStore } from '@/store'
 
 /**
- * Fetch collection data by slug
- * @returns
+ * Custom hook for managing liked designs data and fetching new liked designs.
+ * @returns {Object} An object containing designs data, loading state, and a function to load more designs.
  */
-export function useCollections(userSlug, slug) {
-  const { user } = useAuth()
-  const router = useRouter()
-  const { handleModal } = useModalStore()
-  const [designs, setDesigns] = useState([])
-  const { addNotification } = useNotificationStore()
-
-  const [loading, setLoading] = useState(false)
-  const [totalItems, setTotalItems] = useState(0)
-  const [totalPages, setTotalPages] = useState(0)
+export function useCollections() {
   const [page, setPage] = useState(1)
-  const [title, setTitle] = useState('')
-  const [description, setDescription] = useState('')
-  const [collectionId, setCollectionId] = useState(0)
-  const [collectionExists, setCollectionExists] = useState(true)
- 
+  const [pagination, setPagination] = useState({ totalItems: 0, totalPages: 0 })
+  const [loading, setLoading] = useState(true)
+  const [collections, setCollections] = useState([])
+
+  const { user } = useUserStore()
+  const firstRender = useRef(true)
+
   // Reset values
   useEffect(() => {
     setPage(1)
-  }, [setPage])
+    setCollections([])
+  }, [setPage, setCollections])
 
-  // Load more designs on page change
+  // Load more collections
   useEffect(() => {
-    if (!user) return
-    ;(async () => {
-      try {
+    if (user._id !== '') {
+      if (firstRender.current && page === 1) {
+        firstRender.current = false
+        return
+      }
+
+      ;(async () => {
         setLoading(true)
 
-        const response = await collectionCtrl.getBySlug({
-          userId: user['id'],
-          slug,
-          page,
-          itemsPerPage: PAGE_SIZE,
+        console.log('fetch collections')
+
+        const data = { userId: user._id, page, filterBy: 'getAll' }
+
+        console.log('data', data)
+
+        // '/api/collections/get' ----> ENV -----------------
+        const response = await axios.post('/api/collections/get', data, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
         })
 
-        if (response?.success) {
-          const { data } = response
-          setDesigns((designs) => designs.concat(data?.designs))
+        if (response.status === 200) {
+          const { collections, totalItems, totalPages } = response.data
 
+          setCollections((prevCollections) => [
+            ...prevCollections,
+            ...collections,
+          ])
           if (page === 1) {
-            setTotalItems(data.totalDesigns)
-            setTotalPages(Math.ceil(data.totalDesigns / PAGE_SIZE))
-            setTitle(data.collectionTitle)
-            setDescription(data.collectionDescription)
-            setCollectionId(data.collectionId)
-            setCollectionExists(true)
+            setPagination({ totalItems, totalPages })
           }
         } else {
-          setDesigns([])
-          setCollectionExists(false)
-          setTotalItems(0)
-          setTitle('')
-          setDescription('')
-          setCollectionId(null)
-          setCollectionExists(false)
+          setCollections([])
+          setPagination({})
         }
-      } catch {
-        setDesigns([])
-      } finally {
         setLoading(false)
-      }
-    })()
-  }, [user, page, setDesigns, slug])
-
-  /**
-   * Delete a collection
-   */
-  const deleteCollection = async () => {
-    try {
-      setLoading(true)
-      const result = await collectionCtrl.delete(user?.id, collectionId)
-
-      if (result?.success) {
-        addNotification(result?.message || '', 'success')
-        router.push(`/${userSlug}/collections`)
-      } else {
-        addNotification(result?.error.message || '', 'error')
-      }
-    } finally {
-      setLoading(false)
+      })()
     }
-  }
+  }, [page, setLoading, setPagination, user._id, setCollections])
 
-  // Open a delete collection modal
-  const handleDeleteCollection = () => {
-    const content = (
-      <ConfirmationDialog
-        handleModal={handleModal}
-        onConfirm={deleteCollection}
-      />
-    )
-
-    // Open modal
-    handleModal(true, content, 'Delete collection')
-  }
-
-  /**
-   * Edit the current collection
-   */
-  const handleEditCollection = () => {
-    const content = (
-      <EditCollectionForm
-        userId={user?.id}
-        collectionId={collectionId}
-        title={title}
-        description={description}
-        collectionCtrl={collectionCtrl}
-        handleModal={handleModal}
-        setTitle={setTitle}
-        setDescription={setDescription}
-      />
-    )
-
-    // Open modal
-    handleModal(true, content, 'Edit collection')
-  }
-
-  const handlePage = () => {
+  const pageHandler = () => {
     setPage((prevPage) => prevPage + 1)
   }
 
-  return {
-    totalPages,
-    totalItems,
-    title,
-    description,
-    page,
-    collectionExists,
-    loading,
-    designs,
-    handlePage,
-    handleDeleteCollection,
-    handleEditCollection,
-    setTitle,
-    setDescription,
-  }
+  return { collections, loading, pagination, page, pageHandler }
 }

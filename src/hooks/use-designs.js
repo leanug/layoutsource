@@ -1,9 +1,13 @@
 'use client'
 
-import { useDesignsStore } from '@/store'
 import { useEffect, useState } from 'react'
 
-export function useDesigns(fetchDataId) {
+import axios from 'axios'
+
+import { useDesignsStore } from '@/store'
+import { usePageData } from './use-page-data'
+
+export function useDesigns() {
   const { designs, setDesigns } = useDesignsStore()
   const [isDataFetched, setIsDataFetched] = useState(false)
   const [page, setPage] = useState(1)
@@ -11,48 +15,50 @@ export function useDesigns(fetchDataId) {
   const [pagination, setPagination] = useState({ totalItems: 0, totalPages: 0 })
   const [sortBy, setSortBy] = useState('')
 
+  const { filterData } = usePageData()
   // Reset values
   useEffect(() => {
     setPage(1)
     setDesigns([], 1) // Reset designs store data, it prevents the display of old designs
-  }, [fetchDataId, sortBy, setPage, setDesigns])
+  }, [sortBy, setPage, setDesigns])
 
   useEffect(() => {
-    if (fetchDataId) {
+    if (filterData && filterData.length > 0) {
       ;(async () => {
-        try {
-          setLoading(true)
+        setLoading(true)
 
-          /* categories && categories.length === 2 ? categories[1] : undefined,
-            tag: tag || undefined,*/
-          const response = await fetch('/api/designs/get-by-category', {
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            method: 'POST',
-            body: JSON.stringify({ dataId: fetchDataId, page, sortBy }),
-          })
-
-          if (response.ok) {
-            const data = await response.json()
-            setDesigns(data.designs, page)
-            if (page === 1) {
-              setIsDataFetched(true)
-              setPagination({
-                totalItems: data.totalItems,
-                totalPages: data.totalPages,
-              })
-            }
-          } else {
-            setDesigns([])
-            setPagination({ totalItems: 0, totalPages: 0 })
-          }
-        } finally {
-          setLoading(false)
+        const data = {
+          filterBy: 'catOrSubCatId',
+          filterData: [filterData],
+          page,
+          sortBy,
         }
+
+        const response = await axios.post('/api/designs/get', data, {
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+        console.log('response', response);
+        if (response.status === 200) {
+          const data = response.data
+          setDesigns(data.designs, page)
+          if (page === 1) {
+            setIsDataFetched(true)
+            setPagination({
+              totalItems: data.totalItems,
+              totalPages: data.totalPages,
+            })
+          }
+        } else {
+          setDesigns([])
+          setPagination({ totalItems: 0, totalPages: 0 })
+        }
+
+        setLoading(false)
       })()
     }
-  }, [page, sortBy, fetchDataId, setDesigns])
+  }, [filterData, page, sortBy, setDesigns])
 
   const pageHandler = () => {
     setPage((prevPage) => prevPage + 1)

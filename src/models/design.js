@@ -19,7 +19,7 @@ const designSchema = new Schema(
       type: Schema.Types.ObjectId,
       ref: 'Category',
     },
-    subcategory: {
+    subcategories: {
       type: [
         {
           type: Schema.Types.ObjectId,

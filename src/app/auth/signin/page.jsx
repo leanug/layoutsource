@@ -1,7 +1,7 @@
 import Link from 'next/link'
 
-import { SignInForm } from '@/containers'
-import { HouseSolid } from '@/components'
+import SignInForm from '@/containers/auth/signin-form'
+import { HomeIcon } from '@heroicons/react/24/solid'
 
 function SignIn() {
   return (
@@ -12,7 +12,7 @@ function SignIn() {
           href="/"
           className="text-gray-500 dark:text-gray-100 flex flex-row gap-2.5 items-center"
         >
-          <HouseSolid className="w-5 h-5 fill-gray-500 dark:fill-gray-100" />
+          <HomeIcon className="w-6 h-6" />
           Home
         </Link>
       </div>
